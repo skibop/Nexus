@@ -1,6 +1,9 @@
 [build]
   command = "npm ci --legacy-peer-deps && npm run build"
-  publish = "."  # Let the plugin handle the output directory
+  publish = "out" # or ".next" if needed
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[context.production.environment]
+  NODE_VERSION = "18"  # Ensure this matches the version you're using locally
