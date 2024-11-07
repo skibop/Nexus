@@ -1,6 +1,6 @@
 [build]
-  command = "npm install --legacy-peer-deps && npm run build"
-  publish = ".next" # This is typically the output directory for Next.js on Netlify
+  command = "npm ci --legacy-peer-deps && npm run build"
+  publish = "."  # Let the plugin handle the output directory
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
