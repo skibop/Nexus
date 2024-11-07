@@ -8,7 +8,7 @@ import 'jspdf-autotable'
 import { TransactionForm } from '@/components/TransactionForm'
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
-import { Loader2, TrendingUp, TrendingDown, Menu, X, RotateCcw } from "lucide-react"
+import { Loader2, TrendingUp, TrendingDown, Menu, X } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -84,8 +84,6 @@ export default function Dashboard() {
   const [exportEndDate, setExportEndDate] = useState<string>('')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  
-  
 
   useEffect(() => {
     const checkIsMobile = () => {
