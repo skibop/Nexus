@@ -110,37 +110,25 @@ export default function Home() {
     </div>
   </div>
 </header>
-      {isMenuOpen && (
-        <div className="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden z-50">
-          <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white divide-y-2 divide-gray-50">
-            <div className="pt-5 pb-6 px-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Nexus</h1>
-                </div>
-                <div className="-mr-2">
-                  <Button variant="ghost" onClick={() => setIsMenuOpen(false)}>
-                    <span className="sr-only">Close menu</span>
-                    <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </Button>
-                </div>
+{isMenuOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
+          <div className="fixed top-0 right-0 bottom-0 w-64 bg-white shadow-lg overflow-y-auto">
+            <div className="p-5">
+              <div className="flex items-center justify-between mb-6">
+                <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Nexus</h1>
+                <Button variant="ghost" onClick={() => setIsMenuOpen(false)}>
+                  <span className="sr-only">Close menu</span>
+                  <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </Button>
               </div>
+              <nav className="space-y-4">
+                <a href="#features" className="block text-base font-medium text-gray-900 hover:text-indigo-600" onClick={() => setIsMenuOpen(false)}>Features</a>
+                <a href="#testimonials" className="block text-base font-medium text-gray-900 hover:text-indigo-600" onClick={() => setIsMenuOpen(false)}>Testimonials</a>
+              </nav>
               <div className="mt-6">
-                <nav className="grid gap-y-8">
-                  <a href="#features" className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50">
-                    <span className="ml-3 text-base font-medium text-gray-900">Features</span>
-                  </a>
-                  <a href="#testimonials" className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50">
-                    <span className="ml-3 text-base font-medium text-gray-900">Testimonials</span>
-                  </a>
-                </nav>
-              </div>
-            </div>
-            <div className="py-6 px-5 space-y-6">
-              <div>
-                <Button className="w-full bg-indigo-600 text-white hover:bg-indigo-700" onClick={() => router.push("/signup")}>
+                <Button className="w-full bg-indigo-600 text-white hover:bg-indigo-700" onClick={() => { router.push("/signup"); setIsMenuOpen(false); }}>
                   Sign up
                 </Button>
               </div>
@@ -148,6 +136,7 @@ export default function Home() {
           </div>
         </div>
       )}
+
 
       <main>
       <ContainerScroll

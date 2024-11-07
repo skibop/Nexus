@@ -6,7 +6,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/Button"
-import { Menu, ArrowRight, Star } from "lucide-react"
+import { Menu, ArrowRight, Star, X } from "lucide-react"
 
 const FeatureItem = ({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) => {
   const ref = useRef(null)
@@ -48,6 +48,14 @@ export default function MissionPage() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId)
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' })
+    }
+    setIsMenuOpen(false)
+  }
+
   return (
     <AnimatePresence>
       <motion.div 
@@ -57,38 +65,69 @@ export default function MissionPage() {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-<header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? "bg-white shadow-md" : ""}`}>
-  <div className="w-full px-4 sm:px-6 lg:px-8">
-    <div className="flex justify-between items-center py-4 md:justify-start md:space-x-10">
-      <div className="flex items-center"> {/* Flex container to align text and logo */}
-        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-          Nexus
-        </h1>
-        <img src="/Nexus.png" alt="Nexus Logo" className="h-12 w-auto ml-2 mt-1" /> {/* Added margin-top */}
-      </div>
-      <div className="-mr-2 -my-2 md:hidden">
-        <Button variant="ghost" onClick={() => setIsMenuOpen(true)}>
-          <span className="sr-only">Open menu</span>
-          <Menu className="h-6 w-6" aria-hidden="true" />
-        </Button>
-      </div>
-      <nav className="hidden md:flex space-x-10">
-        {/* Place navigation links here */}
-      </nav>
-      <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-        <Button variant="ghost" className="text-base font-medium text-gray-500 hover:text-gray-900" onClick={() => router.push("/login")}>
-          Log in
-        </Button>
-        <Button className="ml-8 bg-indigo-600 text-white hover:bg-indigo-700" onClick={() => router.push("/signup")}>
-          Sign up
-        </Button>
-      </div>
-    </div>
-  </div>
-</header>
+        <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? "bg-white shadow-md" : ""}`}>
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4 md:justify-start md:space-x-10">
+            <div className="flex items-center">
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+                Nexus
+              </h1>
+              <img src="/Nexus.png" alt="Nexus Logo" className="h-12 w-auto ml-2 mt-1" />
+            </div>
+            <div className="-mr-2 -my-2 md:hidden">
+              <Button variant="ghost" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                <span className="sr-only">Open menu</span>
+                <Menu className="h-6 w-6" aria-hidden="true" />
+              </Button>
+            </div>
+            <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
+              <Button variant="ghost" className="text-base font-medium text-gray-500 hover:text-gray-900" onClick={() => router.push("/login")}>
+                Log in
+              </Button>
+              <Button className="ml-8 bg-indigo-600 text-white hover:bg-indigo-700" onClick={() => router.push("/signup")}>
+                Sign up
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
 
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            className="fixed inset-0 z-50 bg-gray-800 bg-opacity-75 md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="fixed right-0 top-0 bottom-0 w-64 bg-white shadow-xl"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween" }}
+            >
+              <div className="p-4">
+                <div className="flex justify-between items-center mb-8">
+                  <h2 className="text-2xl font-bold text-indigo-600">Menu</h2>
+                  <Button variant="ghost" onClick={() => setIsMenuOpen(false)}>
+                    <X className="h-6 w-6" />
+                  </Button>
+                </div>
+                <nav className="space-y-4">
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => { router.push("#mission"); setIsMenuOpen(false); }}>Our Mission</Button>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => { router.push("#values"); setIsMenuOpen(false); }}>Our Values</Button>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => { router.push("#get-started"); setIsMenuOpen(false); }}>Get Started</Button>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => { router.push("/login"); setIsMenuOpen(false); }}>Log in</Button>
+                  <Button className="w-full bg-indigo-600 text-white hover:bg-indigo-700" onClick={() => { router.push("/signup"); setIsMenuOpen(false); }}>Sign up</Button>
+                </nav>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
         <main className="pt-20">
-          <section className="py-24 bg-gradient-to-b from-indigo-600 to-purple-600 text-white">
+          <section id="mission" className="py-24 bg-gradient-to-b from-indigo-600 to-purple-600 text-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <motion.div 
                 className="text-center"
@@ -120,7 +159,7 @@ export default function MissionPage() {
             </div>
           </section>
 
-          <section className="py-24 bg-white">
+          <section id="values" className="py-24 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <motion.div 
                 className="lg:text-center"
@@ -156,7 +195,7 @@ export default function MissionPage() {
             </div>
           </section>
 
-          <section className="bg-indigo-700">
+          <section id="cta" className="bg-indigo-700">
             <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
               <motion.h2 
                 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl"

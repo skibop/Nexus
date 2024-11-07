@@ -1,9 +1,9 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { DollarSign, PieChart, Filter, Download, HelpCircle, TrendingUp } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { DollarSign, PieChart, Filter, Download, HelpCircle, TrendingUp, Menu, X } from 'lucide-react'
 import { Button } from "@/components/ui/Button"
 import './page.css'
 
@@ -28,6 +28,17 @@ const Card = ({ children, className = "" }: { children: React.ReactNode, classNa
 export default function Instructions() {
   const router = useRouter()
   const pathname = usePathname()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkIsMobile()
+    window.addEventListener('resize', checkIsMobile)
+    return () => window.removeEventListener('resize', checkIsMobile)
+  }, [])
 
   const instructionCards: InstructionCard[] = [
     {
@@ -110,6 +121,11 @@ export default function Instructions() {
     }
   ]
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    router.push('/');
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white no-scroll">
       <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md shadow-md">
@@ -118,23 +134,83 @@ export default function Instructions() {
             <div className="flex items-center">
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Nexus</h1>
             </div>
-            <nav className="hidden md:flex space-x-8">
-              <Button variant="ghost" className={`transition-all duration-300 ${pathname === "/dashboard" ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white" : "text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100"}`} onClick={() => router.push("/dashboard")}>Dashboard</Button>
-              <Button variant="ghost" className={`transition-all duration-300 ${pathname === "/budgeting-tips" ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white" : "text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100"}`} onClick={() => router.push("/budgeting-tips")}>Budgeting Tips</Button>
-              <Button variant="ghost" className={`transition-all duration-300 ${pathname === "/instructions" ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white" : "text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100"}`} onClick={() => router.push("/instructions")}>Instructions</Button>
+            <nav className="hidden md:flex space-x-8 justify-center w-full">
+              <div className="flex flex-grow justify-center space-x-8">
+                <Button
+                  variant="ghost"
+                  className={`transition-all duration-300 ${pathname === "/dashboard" ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white" : "text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100"}`}
+                  onClick={() => router.push("/dashboard")}
+                >
+                  Dashboard
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`transition-all duration-300 ${pathname === "/budgeting-tips" ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white" : "text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100"}`}
+                  onClick={() => router.push("/budgeting-tips")}
+                >
+                  Budgeting Tips
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`transition-all duration-300 ${pathname === "/instructions" ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white" : "text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100"}`}
+                  onClick={() => router.push("/instructions")}
+                >
+                  Instructions
+                </Button>
+              </div>
+              <Button
+                className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 ml-auto"
+                onClick={handleLogout}
+              >
+                Log Out
+              </Button>
             </nav>
-            <Button
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition-all duration-300"
-              onClick={() => {
-                localStorage.removeItem('token');
-                router.push('/');
-              }}
-            >
-              Log Out
-            </Button>
+            {isMobile && (
+              <div className="md:hidden">
+                <Button variant="ghost" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </header>
+
+      <AnimatePresence>
+        {isMobile && isMenuOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="fixed right-0 top-0 bottom-0 w-64 bg-white shadow-lg"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween" }}
+            >
+              <div className="p-4">
+                <Button variant="ghost" onClick={() => setIsMenuOpen(false)} className="mb-4">
+                  <X className="h-6 w-6" />
+                </Button>
+                <div className="flex flex-col space-y-4">
+                  <Button variant="ghost" className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 transition-all duration-300" onClick={() => { router.push("/dashboard"); setIsMenuOpen(false); }}>Dashboard</Button>
+                  <Button variant="ghost" className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 transition-all duration-300" onClick={() => { router.push("/budgeting-tips"); setIsMenuOpen(false); }}>Budgeting Tips</Button>
+                  <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition-all duration-300" onClick={() => { router.push("/instructions"); setIsMenuOpen(false); }}>Instructions</Button>
+                  <Button
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition-all duration-300"
+                    onClick={() => { handleLogout(); setIsMenuOpen(false); }}
+                  >
+                    Log Out
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">

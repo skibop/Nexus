@@ -8,7 +8,7 @@ import 'jspdf-autotable'
 import { TransactionForm } from '@/components/TransactionForm'
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
-import { Loader2, TrendingUp, TrendingDown } from "lucide-react"
+import { Loader2, TrendingUp, TrendingDown, Menu, X, RotateCcw } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -23,20 +23,19 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 
 const categoryColors: { [key: string]: string } = {
-  Job: "#450de7",           // Olive green
-  Allowance: "#FFD166",     // Warm yellow
-  Gift: "#5BC0EB",          // Soft sky blue
-  Chores: "#F45D48",        // Coral red
-  Misc: "#36c147",          // Some sort of green
-  Transportation: "#EF476F", // Soft pink-red
-  Entertainment: "#9D4EDD",  // Violet purple
-  Clothing: "#52e1db",       // Peachy orange
-  Personal: "#7C77B9",       // Lavender
+  Job: "#450de7",
+  Allowance: "#FFD166",
+  Gift: "#5BC0EB",
+  Chores: "#F45D48",
+  Misc: "#36c147",
+  Transportation: "#EF476F",
+  Entertainment: "#9D4EDD",
+  Clothing: "#52e1db",
+  Personal: "#7C77B9",
 };
-
 
 interface Transaction {
   _id: string;
@@ -83,6 +82,19 @@ export default function Dashboard() {
   const [exportDateRange, setExportDateRange] = useState<'all' | 'custom'>('all')
   const [exportStartDate, setExportStartDate] = useState<string>('')
   const [exportEndDate, setExportEndDate] = useState<string>('')
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  
+  
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkIsMobile()
+    window.addEventListener('resize', checkIsMobile)
+    return () => window.removeEventListener('resize', checkIsMobile)
+  }, [])
 
   const fetchTransactions = useCallback(async () => {
     const token = localStorage.getItem('token')
@@ -377,28 +389,79 @@ export default function Dashboard() {
             <div className="flex items-center">
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Nexus</h1>
             </div>
-            <nav className="hidden md:flex space-x-8">
-              <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition-all duration-300" onClick={() => router.push("/dashboard")}>Dashboard</Button>
-              <Button variant="ghost" className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 transition-all duration-300" onClick={() => router.push("/budgeting-tips")}>Budgeting Tips</Button>
-              <Button variant="ghost" className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 transition-all duration-300" onClick={() => router.push("/instructions")}>Instructions</Button>
+            <nav className="hidden md:flex flex-grow justify-center">
+              <div className="flex space-x-8">
+                <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition-all duration-300" onClick={() => router.push("/dashboard")}>Dashboard</Button>
+                <Button variant="ghost" className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 transition-all duration-300" onClick={() => router.push("/budgeting-tips")}>Budgeting Tips</Button>
+                <Button variant="ghost" className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 transition-all duration-300" onClick={() => router.push("/instructions")}>Instructions</Button>
+              </div>
             </nav>
-            <Button
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition-all duration-300"
-              onClick={() => {
-                localStorage.removeItem('token')
-                router.push('/')
-              }}
-            >
-              Log Out
-            </Button>
+            <div className="hidden md:block">
+              <Button
+                className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition-all duration-300"
+                onClick={() => {
+                  localStorage.removeItem('token')
+                  router.push('/')
+                }}
+              >
+                Log Out
+              </Button>
+            </div>
+            {isMobile && (
+              <div className="md:hidden">
+                <Button variant="ghost" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </header>
 
+      <AnimatePresence>
+        {isMobile && isMenuOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="fixed right-0 top-0 bottom-0 w-64 bg-white shadow-lg"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween" }}
+            >
+              <div className="p-4">
+                <Button variant="ghost" onClick={() => setIsMenuOpen(false)} className="mb-4">
+                  <X className="h-6 w-6" />
+                </Button>
+                <div className="flex flex-col space-y-4">
+                  <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition-all duration-300" onClick={() => { router.push("/dashboard"); setIsMenuOpen(false); }}>Dashboard</Button>
+                  <Button variant="ghost" className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 transition-all duration-300" onClick={() => { router.push("/budgeting-tips"); setIsMenuOpen(false); }}>Budgeting Tips</Button>
+                  <Button variant="ghost" className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 transition-all duration-300" onClick={() => { router.push("/instructions"); setIsMenuOpen(false); }}>Instructions</Button>
+                  <Button
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transition-all duration-300"
+                    onClick={() => {
+                      localStorage.removeItem('token')
+                      router.push('/')
+                      setIsMenuOpen(false)
+                    }}
+                  >
+                    Log Out
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <main className="container mx-auto px-4 pt-24 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="relative overflow-hidden">
-            <div className="absolute left-0 top-0 h-full w-2 bg-indigo-600"></div> {/* Indigo bar */}
+          <Card className="relative overflow-hidden">
+            <div className="absolute left-0 top-0 h-full w-2 bg-indigo-600"></div>
             <CardHeader>
               <CardTitle>Total Balance</CardTitle>
             </CardHeader>
@@ -408,7 +471,7 @@ export default function Dashboard() {
           </Card>
 
           <Card className="relative overflow-hidden">
-            <div className="absolute left-0 top-0 h-full w-2 bg-green-600"></div> {/* Green bar for Income */}
+            <div className="absolute left-0 top-0 h-full w-2 bg-green-600"></div>
             <CardHeader>
               <CardTitle>Income</CardTitle>
             </CardHeader>
@@ -418,7 +481,7 @@ export default function Dashboard() {
           </Card>
 
           <Card className="relative overflow-hidden">
-            <div className="absolute left-0 top-0 h-full w-2 bg-red-600"></div> {/* Red bar for Expenses */}
+            <div className="absolute left-0 top-0 h-full w-2 bg-red-600"></div>
             <CardHeader>
               <CardTitle>Expenses</CardTitle>
             </CardHeader>
@@ -452,7 +515,6 @@ export default function Dashboard() {
                   >
                     {incomeChartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={categoryColors[entry.category] || "#8884d8"} />
-                      // Now TypeScript understands categoryColors can accept string keys
                     ))}
                   </Pie>
                 </PieChart>
@@ -476,22 +538,21 @@ export default function Dashboard() {
                 className="mx-auto aspect-square max-h-[250px]"
               >
                 <PieChart>
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
-                />
-                <Pie
-                  data={expenseChartData}
-                  dataKey="amount"
-                  nameKey="category"
-                  innerRadius={60}
-                >
-                  {expenseChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={categoryColors[entry.category] || "#8884d8"} />
-                    // Uses categoryColors to assign colors
-                  ))}
-                </Pie>
-              </PieChart>
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                  <Pie
+                    data={expenseChartData}
+                    dataKey="amount"
+                    nameKey="category"
+                    innerRadius={60}
+                  >
+                    {expenseChartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={categoryColors[entry.category] || "#8884d8"} />
+                    ))}
+                  </Pie>
+                </PieChart>
               </ChartContainer>
             </CardContent>
             <CardFooter className="flex-col gap-2 text-sm">
@@ -507,30 +568,30 @@ export default function Dashboard() {
             <CardTitle>Income and Expenses Over Time</CardTitle>
           </CardHeader>
           <CardContent>
-          <div className="flex space-x-4 mb-4">
-            <Button
-              onClick={() => setTimePeriod('weekly')}
-              variant={timePeriod === 'weekly' ? 'default' : 'outline'}
-              className={`${
-                timePeriod === 'weekly' 
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white' 
-                  : 'bg-gray-200 text-black'
-              } hover:from-indigo-700 hover:to-purple-700 transition-all duration-300`}
-            >
-              Weekly
-            </Button>
-            <Button
-              onClick={() => setTimePeriod('monthly')}
-              variant={timePeriod === 'monthly' ? 'default' : 'outline'}
-              className={`${
-                timePeriod === 'monthly' 
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white' 
-                  : 'bg-gray-200 text-black'
-              } hover:from-indigo-700 hover:to-purple-700 transition-all duration-300`}
-            >
-              Monthly
-            </Button>
-          </div>
+            <div className="flex space-x-4 mb-4">
+              <Button
+                onClick={() => setTimePeriod('weekly')}
+                variant={timePeriod === 'weekly' ? 'default' : 'outline'}
+                className={`${
+                  timePeriod === 'weekly' 
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white' 
+                    : 'bg-gray-200 text-black'
+                } hover:from-indigo-700 hover:to-purple-700 transition-all duration-300`}
+              >
+                Weekly
+              </Button>
+              <Button
+                onClick={() => setTimePeriod('monthly')}
+                variant={timePeriod === 'monthly' ? 'default' : 'outline'}
+                className={`${
+                  timePeriod === 'monthly' 
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white' 
+                    : 'bg-gray-200 text-black'
+                } hover:from-indigo-700 hover:to-purple-700 transition-all duration-300`}
+              >
+                Monthly
+              </Button>
+            </div>
             <div className="h-96">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={timeSeriesData}>
@@ -555,13 +616,13 @@ export default function Dashboard() {
                 onClick={() => setShowForm(true)}
                 className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
               >
-                Add Transaction
+                Add
               </Button>
               <Button
                 onClick={() => setShowFilterModal(true)}
                 className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
               >
-                Filter Transactions
+                Filter
               </Button>
             </div>
           </CardHeader>
@@ -669,7 +730,7 @@ export default function Dashboard() {
                     <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
                       <Button
                         onClick={applyFilters}
-                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
+                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm: col-start-2 sm:text-sm"
                       >
                         Apply Filters
                       </Button>

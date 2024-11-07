@@ -1,4 +1,14 @@
-.no-scroll {
-    overflow: hidden;
-    height: 100vh;
+/* Hide scrollbar on larger screens (desktops) */
+@media (min-width: 768px) {
+  /* This will hide the scrollbar but allow scrolling */
+  body {
+    overflow-y: hidden;
   }
+}
+
+/* Ensure scrolling remains enabled on mobile */
+@media (max-width: 767px) {
+  body {
+    overflow-y: auto;
+  }
+}
