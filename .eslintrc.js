@@ -24,6 +24,7 @@ module.exports = {
       '@typescript-eslint/no-explicit-any': 'off', // Allow 'any' type (can be adjusted if needed)
       'react/no-unescaped-entities': 'off', // Disable rule for unescaped entities in JSX
       'import/no-unresolved': 'off', // Allow unresolved imports temporarily (adjust if needed)
+      '@typescript-eslint/no-empty-object-type': 'off', // Disable the no-empty-object-type rule
     },
   };
   
