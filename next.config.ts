@@ -2,7 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['your-image-domain.com', 'www.chatbase.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'your-image-domain.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.chatbase.co',
+      },
+    ],
   },
 }
 

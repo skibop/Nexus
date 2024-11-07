@@ -65,6 +65,18 @@ export default function SignupComponent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-4">
+         <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md shadow-md">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Nexus</h1>
+              <img src="/Nexus.png" alt="Nexus Logo" className="h-12 ml-3" />
+            </div>
+            {/* Empty nav for login screen */}
+          </div>
+        </div>
+      </header>
+
       <div className="max-w-md w-full bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="p-8">
           <h2 className="text-2xl font-bold mb-2 text-gray-900">Create an account</h2>

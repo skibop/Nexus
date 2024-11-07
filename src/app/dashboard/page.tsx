@@ -58,7 +58,7 @@ interface FilterOptions {
 const incomeCategories: string[] = ["Job", "Allowance", "Gift", "Chores", "Misc"];
 const expenseCategories: string[] = ["Transportation", "Entertainment", "Clothing", "Personal", "Misc"];
 
-const Motioncard = motion(Card)
+const Motioncard = motion.create(Card)
 
 export default function Dashboard() {
   const router = useRouter()

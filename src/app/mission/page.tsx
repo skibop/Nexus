@@ -57,42 +57,35 @@ export default function MissionPage() {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? "bg-white shadow-md" : ""}`}>
-          <div className="w-full px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4 md:justify-start md:space-x-10">
-              <div className="flex justify-start">
-                <Link href="/">
-                  <span className="sr-only">Nexus</span>
-                  <motion.h1 
-                    className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600"
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.5 }}
-                  >
-                    Nexus
-                  </motion.h1>
-                </Link>
-              </div>
-              <div className="-mr-2 -my-2 md:hidden">
-                <Button variant="ghost" onClick={() => setIsMenuOpen(true)}>
-                  <span className="sr-only">Open menu</span>
-                  <Menu className="h-6 w-6" aria-hidden="true" />
-                </Button>
-              </div>
-              <nav className="hidden md:flex space-x-10">
-                {/* Place navigation links here */}
-              </nav>
-              <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-                <Button variant="ghost" className="text-base font-medium text-gray-500 hover:text-gray-900" onClick={() => router.push("/login")}>
-                  Log in
-                </Button>
-                <Button className="ml-8 bg-indigo-600 text-white hover:bg-indigo-700" onClick={() => router.push("/signup")}>
-                  Sign up
-                </Button>
-              </div>
-            </div>
-          </div>
-        </header>
+<header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? "bg-white shadow-md" : ""}`}>
+  <div className="w-full px-4 sm:px-6 lg:px-8">
+    <div className="flex justify-between items-center py-4 md:justify-start md:space-x-10">
+      <div className="flex items-center"> {/* Flex container to align text and logo */}
+        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+          Nexus
+        </h1>
+        <img src="/Nexus.png" alt="Nexus Logo" className="h-12 w-auto ml-2 mt-1" /> {/* Added margin-top */}
+      </div>
+      <div className="-mr-2 -my-2 md:hidden">
+        <Button variant="ghost" onClick={() => setIsMenuOpen(true)}>
+          <span className="sr-only">Open menu</span>
+          <Menu className="h-6 w-6" aria-hidden="true" />
+        </Button>
+      </div>
+      <nav className="hidden md:flex space-x-10">
+        {/* Place navigation links here */}
+      </nav>
+      <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
+        <Button variant="ghost" className="text-base font-medium text-gray-500 hover:text-gray-900" onClick={() => router.push("/login")}>
+          Log in
+        </Button>
+        <Button className="ml-8 bg-indigo-600 text-white hover:bg-indigo-700" onClick={() => router.push("/signup")}>
+          Sign up
+        </Button>
+      </div>
+    </div>
+  </div>
+</header>
 
         <main className="pt-20">
           <section className="py-24 bg-gradient-to-b from-indigo-600 to-purple-600 text-white">
