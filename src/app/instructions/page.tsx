@@ -32,13 +32,24 @@ export default function Instructions() {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
+    // Function to check if the device is mobile
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    checkIsMobile()
-    window.addEventListener('resize', checkIsMobile)
-    return () => window.removeEventListener('resize', checkIsMobile)
-  }, [])
+      setIsMobile(window.innerWidth < 768);
+      // Set overflow based on screen size
+      document.body.style.overflowY = window.innerWidth >= 768 ? 'hidden' : 'auto';
+    };
+  
+    // Initial check and event listener for resizing
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+  
+    // Clean up: reset overflow and remove the resize event listener on unmount
+    return () => {
+      document.body.style.overflowY = 'auto'; // Reset overflow on component unmount
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, []);
+  
 
   const instructionCards: InstructionCard[] = [
     {
