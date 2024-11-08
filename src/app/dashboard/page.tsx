@@ -611,23 +611,30 @@ export default function Dashboard() {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Transactions</CardTitle>
-            <div className="space-x-2">
-              <Button
-                onClick={() => setShowForm(true)}
-                className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
-              >
-                Add
-              </Button>
-              <Button
-                onClick={() => setShowFilterModal(true)}
-                className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
-              >
-                Filter
-              </Button>
-            </div>
-          </CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
+    <CardTitle>
+      Transactions
+      {filters.type !== 'all' && ` - ${filters.type.charAt(0).toUpperCase() + filters.type.slice(1)}`}
+      {filters.searchTerm && ` - "${filters.searchTerm}"`}
+      {filters.dateRange === 'custom' && filters.startDate && filters.endDate && 
+        ` - ${formatDate(filters.startDate)} to ${formatDate(filters.endDate)}`
+      }
+    </CardTitle>
+    <div className="space-x-2">
+      <Button
+        onClick={() => setShowForm(true)}
+        className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
+      >
+        Add
+      </Button>
+      <Button
+        onClick={() => setShowFilterModal(true)}
+        className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
+      >
+        Filter
+      </Button>
+    </div>
+  </CardHeader>
           <CardContent>
             {showForm && (
               <TransactionForm
