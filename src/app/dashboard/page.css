@@ -1,0 +1,28 @@
+/* App.css or your main CSS file */
+#rotate-message {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh; /* Dynamically adjusts to viewport height */
+    background-color: rgba(0, 0, 0, 1.0); /* Dark blackout */
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 9999;
+    overflow: hidden; /* Prevents scrollbars from showing */
+  }
+  
+  /* Ensures #rotate-message updates dimensions on orientation change */
+  @media (orientation: portrait) {
+    #rotate-message {
+      display: flex;
+      width: 100dvw;
+      height: 100dvh; /* Forces recalculation to cover entire screen */
+    }
+  }
+  

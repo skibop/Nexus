@@ -24,6 +24,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { motion, AnimatePresence } from "framer-motion"
+import './page.css'
 
 const categoryColors: { [key: string]: string } = {
   Job: "#450de7",
@@ -381,6 +382,9 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <div id="rotate-message"> 
+        <p> Please rotate your device to landscape mode for the best experience.</p>
+      </div>
       <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md shadow-md">
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">

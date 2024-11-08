@@ -165,7 +165,6 @@ export function TransactionForm({ onSubmit, initialValues, onCancel, incomeCateg
             control={control}
             render={({ field }) => (
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <Input
                   id="date"
                   type="date"
@@ -181,7 +180,6 @@ export function TransactionForm({ onSubmit, initialValues, onCancel, incomeCateg
                     const date = e.target.value ? new Date(e.target.value) : null;
                     field.onChange(date ? date.toISOString().split('T')[0] : '');
                   }}
-                  className="pl-10"
                 />
               </div>
             )}
