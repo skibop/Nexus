@@ -144,6 +144,7 @@ export default function Instructions() {
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Nexus</h1>
+              <img src="/Nexus.png" alt="Nexus Logo" className="h-12 ml-3" />
             </div>
             <nav className="hidden md:flex space-x-8 justify-center w-full">
               <div className="flex flex-grow justify-center space-x-8">
