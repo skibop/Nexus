@@ -117,7 +117,7 @@ export default function MissionPage() {
                 <nav className="space-y-4">
                   <Button variant="ghost" className="w-full justify-start" onClick={() => { router.push("#mission"); setIsMenuOpen(false); }}>Our Mission</Button>
                   <Button variant="ghost" className="w-full justify-start" onClick={() => { router.push("#values"); setIsMenuOpen(false); }}>Our Values</Button>
-                  <Button variant="ghost" className="w-full justify-start" onClick={() => { router.push("#get-started"); setIsMenuOpen(false); }}>Get Started</Button>
+                  {/* <Button variant="ghost" className="w-full justify-start" onClick={() => { router.push("#get-started"); setIsMenuOpen(false); }}>Get Started</Button> */}
                   <Button variant="ghost" className="w-full justify-start" onClick={() => { router.push("/login"); setIsMenuOpen(false); }}>Log in</Button>
                   <Button className="w-full bg-indigo-600 text-white hover:bg-indigo-700" onClick={() => { router.push("/signup"); setIsMenuOpen(false); }}>Sign up</Button>
                 </nav>
