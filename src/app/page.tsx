@@ -208,7 +208,7 @@ export default function Home() {
               <TestimonialItem
                 quote="Nexus has completely changed how I think about managing my allowance and savings. It's easy to use and super helpful!"
                 author="Alex M."
-                role="High School Junior"
+                role="Junior"
               />
               <TestimonialItem
                 quote="The budgeting tools and simple charts helped me keep track of my spending for the first time. Now I can save for things I really want!"
