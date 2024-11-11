@@ -98,7 +98,7 @@ export default function Instructions() {
           <ul className="list-disc list-inside space-y-2 text-gray-600">
             <li>Click "Export to PDF" for a detailed report</li>
             <li>Use "Export to CSV" for spreadsheet analysis</li>
-            <li>All current filters will be applied to exports</li>
+            <li>Choose filters to be applied to exports</li>
           </ul>
         </>
       )
