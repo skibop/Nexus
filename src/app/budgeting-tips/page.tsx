@@ -55,7 +55,7 @@ export default function BudgetingTips() {
     },
     {
       title: "Saving Tips for Students",
-      description: "Explore practical ways to save money as a student, from groceries to textbooks.",
+      description: "Explore practical ways to save money as a student.",
       link: "https://www.bankrate.com/banking/savings/how-to-save-money-as-high-school-student/",
     },
     {

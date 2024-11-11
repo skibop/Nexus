@@ -110,9 +110,8 @@ export default function Instructions() {
         <>
           <p className="mb-2 text-gray-600">Need assistance? We're here to help:</p>
           <ul className="list-disc list-inside space-y-2 text-gray-600">
-            <li>Check our FAQ section for quick answers</li>
-            <li>Email support at help@studentfinance.com</li>
-            <li>Live chat available 9 AM - 5 PM weekdays</li>
+            <li>Check our Budgeting Tips section for quick answers</li>
+            <li>Live chat available 24/7/365</li>
           </ul>
         </>
       )
@@ -125,7 +124,7 @@ export default function Instructions() {
           <ul className="list-disc list-inside space-y-2 text-gray-600">
             <li>Generate reports to track financial progress over time</li>
             <li>Categorize expenses to spot savings opportunities</li>
-            <li>Understand your overall financial health trends</li>
+            <li>Understand your overall financial health as a student</li>
           </ul>
         </>
       )

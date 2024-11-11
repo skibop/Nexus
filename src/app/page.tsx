@@ -174,7 +174,7 @@ export default function Home() {
                 <FeatureItem
                   icon={CreditCard}
                   title="Expense Tracking"
-                  description="Effortlessly categorize and analyze your spending with AI-powered insights."
+                  description="Easily categorize and analyze your spending to understand your financial habits."
                 />
                 <FeatureItem
                   icon={PieChart}
