@@ -79,7 +79,7 @@ export default function Dashboard() {
 
   const [showExportModal, setShowExportModal] = useState(false)
   const [exportType, setExportType] = useState<'pdf' | 'csv'>('pdf')
-  const [exportContent, setExportContent] = useState<'all' | 'income' | 'expenses'>('all')
+  const [exportContent, setExportContent] = useState<'all' | 'income' | 'expenses' | 'selected'>('all')
   const [exportDateRange, setExportDateRange] = useState<'all' | 'custom'>('all')
   const [exportStartDate, setExportStartDate] = useState<string>('')
   const [exportEndDate, setExportEndDate] = useState<string>('')
@@ -329,9 +329,11 @@ export default function Dashboard() {
   const timeSeriesData = generateTimeSeriesData()
 
   const handleExport = () => {
-    let dataToExport = filteredTransactions
+    let dataToExport = transactions
 
-    if (exportContent !== 'all') {
+    if (exportContent === 'selected') {
+      dataToExport = filteredTransactions
+    } else if (exportContent !== 'all') {
       dataToExport = dataToExport.filter(t => t.type === (exportContent === 'income' ? 'income' : 'expense'))
     }
 
@@ -845,12 +847,13 @@ export default function Dashboard() {
                   <label className="block text-sm font-medium text-gray-700">Content to Export</label>
                   <select
                     value={exportContent}
-                    onChange={(e) => setExportContent(e.target.value as 'all' | 'income' | 'expenses')}
+                    onChange={(e) => setExportContent(e.target.value as 'all' | 'income' | 'expenses' | 'selected')}
                     className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                   >
                     <option value="all">All Transactions</option>
                     <option value="income">Income Only</option>
                     <option value="expenses">Expenses Only</option>
+                    <option value="selected">Selected Transactions</option>
                   </select>
                 </div>
                 <div className="mt-4">
@@ -920,6 +923,7 @@ export default function Dashboard() {
                 </Button>
                 <Button
                   onClick={() => setShowExportModal(false)}
+                  variant="outline"
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                 >
                   Cancel
