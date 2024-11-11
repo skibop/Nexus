@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Pie, PieChart, Cell } from 'recharts'
 import { jsPDF } from "jspdf"
@@ -36,27 +36,27 @@ const categoryColors: { [key: string]: string } = {
   Entertainment: "#9D4EDD",
   Clothing: "#52e1db",
   Personal: "#7C77B9",
-};
+}
 
 interface Transaction {
-  _id: string;
-  type: 'income' | 'expense';
-  amount: number;
-  category: string;
-  description?: string;
-  date: string;
+  _id: string
+  type: 'income' | 'expense'
+  amount: number
+  category: string
+  description?: string
+  date: string
 }
 
 interface FilterOptions {
-  searchTerm: string;
-  dateRange: 'all' | 'custom';
-  startDate: string;
-  endDate: string;
-  type: 'all' | 'income' | 'expense';
+  searchTerm: string
+  dateRange: 'all' | 'custom'
+  startDate: string
+  endDate: string
+  type: 'all' | 'income' | 'expense'
 }
 
-const incomeCategories: string[] = ["Job", "Allowance", "Gift", "Chores", "Misc"];
-const expenseCategories: string[] = ["Transportation", "Entertainment", "Clothing", "Personal", "Misc"];
+const incomeCategories: string[] = ["Job", "Allowance", "Gift", "Chores", "Misc"]
+const expenseCategories: string[] = ["Transportation", "Entertainment", "Clothing", "Personal", "Misc"]
 
 const Motioncard = motion.create(Card)
 
@@ -85,6 +85,20 @@ export default function Dashboard() {
   const [exportEndDate, setExportEndDate] = useState<string>('')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+
+  const formRef = useRef<HTMLDivElement>(null)
+
+  const scrollToForm = useCallback(() => {
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (showForm && editingTransaction) {
+      scrollToForm()
+    }
+  }, [showForm, editingTransaction, scrollToForm])
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -383,7 +397,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div id="rotate-message"> 
-        <p> Please rotate your device to landscape mode for the best experience.</p>
+        <p>Please rotate your device to landscape mode for the best experience.</p>
       </div>
       <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md shadow-md">
         <div className="container mx-auto px-6 py-4">
@@ -612,42 +626,44 @@ export default function Dashboard() {
         </Card>
 
         <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-    <CardTitle>
-      Transactions
-      {filters.type !== 'all' && ` - ${filters.type.charAt(0).toUpperCase() + filters.type.slice(1)}`}
-      {filters.searchTerm && ` - "${filters.searchTerm}"`}
-      {filters.dateRange === 'custom' && filters.startDate && filters.endDate && 
-        ` - ${formatDate(filters.startDate)} to ${formatDate(filters.endDate)}`
-      }
-    </CardTitle>
-    <div className="space-x-2">
-      <Button
-        onClick={() => setShowForm(true)}
-        className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
-      >
-        Add
-      </Button>
-      <Button
-        onClick={() => setShowFilterModal(true)}
-        className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
-      >
-        Filter
-      </Button>
-    </div>
-  </CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>
+              Transactions
+              {filters.type !== 'all' && ` - ${filters.type.charAt(0).toUpperCase() + filters.type.slice(1)}`}
+              {filters.searchTerm && ` - "${filters.searchTerm}"`}
+              {filters.dateRange === 'custom' && filters.startDate && filters.endDate && 
+                ` - ${formatDate(filters.startDate)} to ${formatDate(filters.endDate)}`
+              }
+            </CardTitle>
+            <div className="space-x-2">
+              <Button
+                onClick={() => setShowForm(true)}
+                className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
+              >
+                Add
+              </Button>
+              <Button
+                onClick={() => setShowFilterModal(true)}
+                className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
+              >
+                Filter
+              </Button>
+            </div>
+          </CardHeader>
           <CardContent>
             {showForm && (
-              <TransactionForm
-                onSubmit={handleSubmit}
-                initialValues={editingTransaction || undefined}
-                onCancel={() => {
-                  setShowForm(false)
-                  setEditingTransaction(null)
-                }}
-                incomeCategories={incomeCategories}
-                expenseCategories={expenseCategories}
-              />
+              <div ref={formRef}>
+                <TransactionForm
+                  onSubmit={handleSubmit}
+                  initialValues={editingTransaction || undefined}
+                  onCancel={() => {
+                    setShowForm(false)
+                    setEditingTransaction(null)
+                  }}
+                  incomeCategories={incomeCategories}
+                  expenseCategories={expenseCategories}
+                />
+              </div>
             )}
             {showFilterModal && (
               <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" id="filter-modal">
@@ -725,7 +741,7 @@ export default function Dashboard() {
                       )}
                       <div>
                         <label htmlFor="searchTerm" className="block text-sm font-medium text-gray-700">
-                          Search
+                          Search Term
                         </label>
                         <Input
                           type="text"
@@ -737,19 +753,12 @@ export default function Dashboard() {
                         />
                       </div>
                     </div>
-                    <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
-                      <Button
-                        onClick={applyFilters}
-                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm: col-start-2 sm:text-sm"
-                      >
-                        Apply Filters
-                      </Button>
-                      <Button
-                        onClick={() => setShowFilterModal(false)}
-                        variant="outline"
-                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
-                      >
+                    <div className="mt-5 sm:mt-6 flex justify-end space-x-2">
+                      <Button onClick={() => setShowFilterModal(false)} variant="outline">
                         Cancel
+                      </Button>
+                      <Button onClick={applyFilters} className="bg-indigo-600 text-white hover:bg-indigo-700">
+                        Apply Filters
                       </Button>
                     </div>
                   </div>
@@ -759,33 +768,35 @@ export default function Dashboard() {
             <div className="space-y-4">
               {filteredTransactions.map((transaction) => (
                 <div key={transaction._id} className="bg-gray-50 p-4 rounded-md shadow">
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                     <div>
                       <h3 className="text-lg font-medium text-gray-900">{transaction.category}</h3>
                       <p className="text-sm text-gray-500">{transaction.description}</p>
                       <p className="text-xs text-gray-400">{formatDate(transaction.date)}</p>
                     </div>
-                    <div className="flex items-center space-x-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 mt-2 sm:mt-0">
                       <span className={`text-lg font-medium ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                         {transaction.type === 'income' ? '+' : '-'}${transaction.amount.toFixed(2)}
                       </span>
-                      <Button
-                        onClick={() => {
-                          setEditingTransaction(transaction)
-                          setShowForm(true)
-                        }}
-                        variant="outline"
-                        className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-md hover:bg-indigo-200 transition-colors duration-300"
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        onClick={() => handleDelete(transaction._id)}
-                        variant="outline"
-                        className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors duration-300"
-                      >
-                        Delete
-                      </Button>
+                      <div className="flex space-x-2">
+                        <Button
+                          onClick={() => {
+                            setEditingTransaction(transaction)
+                            setShowForm(true)
+                          }}
+                          variant="outline"
+                          className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-md hover:bg-indigo-200 transition-colors duration-300"
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          onClick={() => handleDelete(transaction._id)}
+                          variant="outline"
+                          className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors duration-300"
+                        >
+                          Delete
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -826,75 +837,79 @@ export default function Dashboard() {
                   Export Transactions
                 </h3>
                 <div className="mt-2">
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">Export Content</label>
-                    <select
-                      value={exportContent}
-                      onChange={(e) => setExportContent(e.target.value as 'all' | 'income' | 'expenses')}
-                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                    >
-                      <option value="all">All Transactions</option>
-                      <option value="income">Income Only</option>
-                      <option value="expenses">Expenses Only</option>
-                    </select>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">Date Range</label>
-                    <div className="mt-2">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="radio"
-                          className="form-radio"
-                          name="exportDateRange"
-                          value="all"
-                          checked={exportDateRange === 'all'}
-                          onChange={() => setExportDateRange('all')}
-                        />
-                        <span className="ml-2">All Dates</span>
-                      </label>
-                      <br />
-                      <label className="inline-flex items-center">
-                        <input
-                          type="radio"
-                          className="form-radio"
-                          name="exportDateRange"
-                          value="custom"
-                          checked={exportDateRange === 'custom'}
-                          onChange={() => setExportDateRange('custom')}
-                        />
-                        <span className="ml-2">Custom Range</span>
-                      </label>
-                    </div>
-                  </div>
-                  {exportDateRange === 'custom' && (
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label htmlFor="exportStartDate" className="block text-sm font-medium text-gray-700">
-                          Start Date
-                        </label>
-                        <Input
-                          type="date"
-                          id="exportStartDate"
-                          name="exportStartDate"
-                          value={exportStartDate}
-                          onChange={(e) => setExportStartDate(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="exportEndDate" className="block text-sm font-medium text-gray-700">
-                          End Date
-                        </label>
-                        <Input
-                          type="date"
-                          id="exportEndDate"
-                          name="exportEndDate"
-                          value={exportEndDate}
-                          onChange={(e) => setExportEndDate(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  )}
+                  <p className="text-sm text-gray-500">
+                    Choose the content and date range for your export.
+                  </p>
                 </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700">Content to Export</label>
+                  <select
+                    value={exportContent}
+                    onChange={(e) => setExportContent(e.target.value as 'all' | 'income' | 'expenses')}
+                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  >
+                    <option value="all">All Transactions</option>
+                    <option value="income">Income Only</option>
+                    <option value="expenses">Expenses Only</option>
+                  </select>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700">Date Range</label>
+                  <div className="mt-2">
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        className="form-radio"
+                        name="exportDateRange"
+                        value="all"
+                        checked={exportDateRange === 'all'}
+                        onChange={() => setExportDateRange('all')}
+                      />
+                      <span className="ml-2">All Dates</span>
+                    </label>
+                    <label className="inline-flex items-center ml-6">
+                      <input
+                        type="radio"
+                        className="form-radio"
+                        name="exportDateRange"
+                        value="custom"
+                        checked={exportDateRange === 'custom'}
+                        onChange={() => setExportDateRange('custom')}
+                      />
+                      <span className="ml-2">Custom Range</span>
+                    </label>
+                  </div>
+                </div>
+                {exportDateRange === 'custom' && (
+                  <div className="mt-4 grid grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="exportStartDate" className="block text-sm font-medium text-gray-700">
+                        Start Date
+                      </label>
+                      <input
+                        type="date"
+                        id="exportStartDate"
+                        name="exportStartDate"
+                        value={exportStartDate}
+                        onChange={(e) => setExportStartDate(e.target.value)}
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="exportEndDate" className="block text-sm font-medium text-gray-700">
+                        End Date
+                      </label>
+                      <input
+                        type="date"
+                        id="exportEndDate"
+                        name="exportEndDate"
+                        value={exportEndDate}
+                        onChange={(e) => setExportEndDate(e.target.value)}
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <Button
@@ -905,7 +920,6 @@ export default function Dashboard() {
                 </Button>
                 <Button
                   onClick={() => setShowExportModal(false)}
-                  variant="outline"
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                 >
                   Cancel
