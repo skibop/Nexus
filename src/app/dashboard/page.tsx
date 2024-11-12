@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/chart"
 import { motion, AnimatePresence } from "framer-motion"
 import './page.css'
+import MoneySavingRecommendations from '@/components/MoneySaver'
+
 
 const categoryColors: { [key: string]: string } = {
   Job: "#450de7",
@@ -626,6 +628,10 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
+
+        <div className="mb-8">
+          <MoneySavingRecommendations />
+        </div>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
