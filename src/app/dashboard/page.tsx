@@ -187,13 +187,12 @@ export default function Dashboard() {
       router.push('/login')
       return
     }
-
     try {
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/transaction/${id}`, {
         method: 'DELETE',
         headers: { 'x-auth-token': token }
       })
-      fetchTransactions()
+      fetchTransactions() 
     } catch (error) {
       console.error('Error deleting transaction:', error)
     }

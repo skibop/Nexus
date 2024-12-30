@@ -149,10 +149,10 @@ export default function Home() {
         >
         <div className="relative w-full h-full">
           <Image
-            src="/dashboard.png"
+            src="/daxboard.png"
             alt="Financial Management Dashboard"
             fill
-            style={{ objectFit: 'contain' }}
+            style={{ objectFit: 'fill' }}
             className="rounded-xl"
           />
         </div>
