@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DollarSign, PieChart, Filter, Download, HelpCircle, TrendingUp, Menu, X } from 'lucide-react'
 import { Button } from "@/components/ui/Button"
-import './page.css'
+// import './page.css'
 
 interface InstructionCard {
   icon: React.ReactNode;
@@ -31,24 +31,24 @@ export default function Instructions() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
-  useEffect(() => {
-    // Function to check if the device is mobile
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      // Set overflow based on screen size
-      document.body.style.overflowY = window.innerWidth >= 768 ? 'hidden' : 'auto';
-    };
+  // useEffect(() => {
+  //   // Function to check if the device is mobile
+  //   const checkIsMobile = () => {
+  //     setIsMobile(window.innerWidth < 768);
+  //     // Set overflow based on screen size
+  //     document.body.style.overflowY = window.innerWidth >= 768 ? 'hidden' : 'auto';
+  //   };
   
-    // Initial check and event listener for resizing
-    checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
+  //   // Initial check and event listener for resizing
+  //   checkIsMobile();
+  //   window.addEventListener('resize', checkIsMobile);
   
-    // Clean up: reset overflow and remove the resize event listener on unmount
-    return () => {
-      document.body.style.overflowY = 'auto'; // Reset overflow on component unmount
-      window.removeEventListener('resize', checkIsMobile);
-    };
-  }, []);
+  //   // Clean up: reset overflow and remove the resize event listener on unmount
+  //   return () => {
+  //     document.body.style.overflowY = 'auto'; // Reset overflow on component unmount
+  //     window.removeEventListener('resize', checkIsMobile);
+  //   };
+  // }, []);
   
 
   const instructionCards: InstructionCard[] = [
