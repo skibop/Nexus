@@ -51,6 +51,8 @@ export default function Instructions() {
   // }, []);
   
 
+  // Function for making an array of all of the cards so we can loop through everything and display it on the screen.
+
   const instructionCards: InstructionCard[] = [
     {
       icon: <DollarSign className="w-6 h-6 text-indigo-600" />,
@@ -224,22 +226,30 @@ export default function Instructions() {
       </AnimatePresence>
 
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+        {/* Main container for the "How to use Student Finance Manager" section*/}
         <div className="max-w-7xl mx-auto">
+          {/* {Animated title for the page} */}
           <motion.h1
-            className="text-4xl font-bold text-gray-900 mb-8 text-center"
+            className="text-4xl font-bold text-gray-900 mb-8 text-center" // Styling for the title
+            // Initial animation found (faded and slighthly above position)
             initial={{ opacity: 0, y: -20 }}
+            // Final animation state (fully visible and in position)
             animate={{ opacity: 1, y: 0 }}
+            // Animation duration (0.5 seconds)
             transition={{ duration: 0.5 }}
           >
-            How to Use Student Finance Manager
+            How to Use Student Finance Manager {/* {Page heading} */}
           </motion.h1>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {/* {Map over the instructionCards array to dynamically render each card} */}
             {instructionCards.map((card, index) => (
               <Card key={index}>
+                {/* {Card title with icon and styling} */}
                 <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
-                  {card.icon}
-                  <span className="ml-2">{card.title}</span>
+                  {card.icon} {/* {Display card's associated icon} */}
+                  <span className="ml-2">{card.title}</span> {/* {Card Title with spacing} */}
                 </h2>
+                {/* {Render card content} */}
                 {card.content}
               </Card>
             ))}

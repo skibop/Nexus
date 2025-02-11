@@ -1,5 +1,6 @@
 'use client'
 
+// Import everything needed for the Dashboard to work
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Pie, PieChart, Cell } from 'recharts'
@@ -27,7 +28,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import './page.css'
 import MoneySavingRecommendations from '@/components/MoneySaver'
 
-
+// Category colors for the dynamic pie charts on the beginning of the page
 const categoryColors: { [key: string]: string } = {
   Job: "#450de7",
   Allowance: "#FFD166",
@@ -40,6 +41,7 @@ const categoryColors: { [key: string]: string } = {
   Personal: "#7C77B9",
 }
 
+// List the interfaces going to be used for transactions and filter options
 interface Transaction {
   _id: string
   type: 'income' | 'expense'
@@ -57,11 +59,13 @@ interface FilterOptions {
   type: 'all' | 'income' | 'expense'
 }
 
+// Categories that people can sort their things through
 const incomeCategories: string[] = ["Job", "Allowance", "Gift", "Chores", "Misc"]
 const expenseCategories: string[] = ["Transportation", "Entertainment", "Clothing", "Personal", "Misc"]
 
 const Motioncard = motion.create(Card)
 
+// Define all of our use states 
 export default function Dashboard() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
@@ -90,12 +94,15 @@ export default function Dashboard() {
 
   const formRef = useRef<HTMLDivElement>(null)
 
+  // Smooth animation question
   const scrollToForm = useCallback(() => {
     if (formRef.current) {
       formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }, [])
 
+
+// Our Use Effects to check if it is mobile and to see our editing transaction.
   useEffect(() => {
     if (showForm && editingTransaction) {
       scrollToForm()
@@ -111,6 +118,7 @@ export default function Dashboard() {
     return () => window.removeEventListener('resize', checkIsMobile)
   }, [])
 
+  // Function to fetch transactions
   const fetchTransactions = useCallback(async () => {
     const token = localStorage.getItem('token')
     if (!token) {
@@ -120,7 +128,7 @@ export default function Dashboard() {
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/transactions`, {
-        headers: { 'x-auth-token': token },
+        headers: { 'x-auth-token': token }, // check with the token to see if it matches up
       })
       if (!response.ok) {
         throw new Error('Failed to fetch transactions')
@@ -141,11 +149,13 @@ export default function Dashboard() {
     fetchTransactions()
   }, [fetchTransactions])
 
+  // format the date properly on everything
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return date.toISOString().split('T')[0]
   }
 
+  // function for handling submitting for every function
   const handleSubmit = async (data: Omit<Transaction, '_id'>) => {
     const token = localStorage.getItem('token')
     if (!token) {
@@ -187,11 +197,13 @@ export default function Dashboard() {
       router.push('/login')
       return
     }
+    // If all goes well --> send the DELETE method to the backend
     try {
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/transaction/${id}`, {
         method: 'DELETE',
         headers: { 'x-auth-token': token }
       })
+      // Important because we still need to display the transactions after a deletion.
       fetchTransactions() 
     } catch (error) {
       console.error('Error deleting transaction:', error)
@@ -199,26 +211,37 @@ export default function Dashboard() {
   }
 
   const applyFilters = () => {
+    // Filter transactions based on user-defined criteria
     const filtered = transactions.filter((transaction) => {
+      // Check if the transactions matches the search term (in description or category)
       const matchesSearchTerm = transaction.description?.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
                                 transaction.category.toLowerCase().includes(filters.searchTerm.toLowerCase())
+      // Check if the transaction type matches the second filter or if 'all' is selected
       const matchesType = filters.type === 'all' || transaction.type === filters.type
       
+      // Default to true for date matching (no date filter applied)
       let matchesDate = true
       const transactionDate = new Date(transaction.date)
+
+      // If a custom date range is selected, check if the transaction falls within the range
       if (filters.dateRange === 'custom' && filters.startDate && filters.endDate) {
         const startDate = new Date(filters.startDate)
         const endDate = new Date(filters.endDate)
         matchesDate = transactionDate >= startDate && transactionDate <= endDate
       }
 
+      // Return true only if the transaction matches all filters (search term, type, and date range)
       return matchesSearchTerm && matchesType && matchesDate
     })
 
+
+    // Update the state with the filtered transaction
     setFilteredTransactions(filtered)
+    // Close the filter modal after applying the filter
     setShowFilterModal(false)
   }
 
+  // calculations for everything including income and expenses and balance
   const calculateTotalByCategory = (type: 'income' | 'expense') => {
     return filteredTransactions
       .filter(t => t.type === type)
@@ -238,6 +261,7 @@ export default function Dashboard() {
 
   const totalBalance = totalIncome - totalExpenses
 
+  // generating our pie chart data 
   const generatePieChartData = (type: 'income' | 'expense') => {
     const data = calculateTotalByCategory(type)
     const categories = type === 'income' ? incomeCategories : expenseCategories
@@ -277,6 +301,7 @@ export default function Dashboard() {
     )
   }
 
+  // this is for our graphs for monthly and weekly
   const generateTimeSeriesData = () => {
     const sortedTransactions = [...filteredTransactions].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     const data: { date: string; income: number; expenses: number }[] = []
@@ -329,6 +354,7 @@ export default function Dashboard() {
 
   const timeSeriesData = generateTimeSeriesData()
 
+  // function for handling the exports to PDF or CSV
   const handleExport = () => {
     let dataToExport = transactions
 
@@ -355,22 +381,26 @@ export default function Dashboard() {
   }
 
   const exportToPDF = (data: Transaction[]) => {
+    // Initalize a new jsPDF document
     const doc = new jsPDF()
     doc.text('Transaction Report', 20, 10)
     
+    // Add a title to the PDF documnet
     const tableData = data.map(t => [
-      formatDate(t.date),
-      t.type,
-      t.category,
-      t.description,
-      `$${t.amount.toFixed(2)}`
+      formatDate(t.date),   // Format the date of the transaction 
+      t.type,               // Include the type of the transaction (e.g., income, expense)
+      t.category,           // Include the category of the transaction
+      t.description,        // Add a brief description of the transcraption
+      `$${t.amount.toFixed(2)}` // Format the amount as a currency string
     ])
 
+    // Generate a table in the PDF document using the autoTable plugin
     ;(doc as any).autoTable({
-      head: [['Date', 'Type', 'Category', 'Description', 'Amount']],
-      body: tableData,
+      head: [['Date', 'Type', 'Category', 'Description', 'Amount']], // Table headers
+      body: tableData, // Table Content
     })
 
+    // Save the PDF with a default filename
     doc.save('transaction_report.pdf')
   }
 

@@ -33,6 +33,7 @@ const FeatureItem = ({ icon: Icon, title, description }: { icon: React.ElementTy
   );
 };
 
+// These are our reviews that are made in a way that it can just be put as a section and it will show up on the screen.
 const TestimonialItem = ({ quote, author, role }: { quote: string; author: string; role: string }) => (
   <motion.div 
     className="bg-white p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-xl"
@@ -211,7 +212,7 @@ export default function Home() {
                 role="Junior"
               />
               <TestimonialItem
-                quote="The budgeting tools and simple charts helped me keep track of my spending for the first time. Now I can save for things I really want!"
+                quote="The simple charts helped me keep track of my spending for the first time. Now I can save for things I really want!"
                 author="Jordan L."
                 role="Sophomore"
               />

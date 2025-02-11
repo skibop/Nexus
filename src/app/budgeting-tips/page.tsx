@@ -1,52 +1,64 @@
+// Enable React's strict mode for the component
 'use client'
 
-import React, { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/Button"
-import { ExternalLink, Menu, X } from "lucide-react"
+// Import necessary modules and components
+import React, { useState, useEffect } from "react" // Import React and hooks for state and lifecycle management
+import { useRouter } from "next/navigation" // Import useRouter for navigation
+import { motion, AnimatePresence } from "framer-motion" // Import animation library for smooth transitions
+import { Button } from "@/components/ui/Button" // Import custom Button component
+import { ExternalLink, Menu, X } from "lucide-react" // Import icons from Lucide React
 
+// Define a reusable Card component for displaying content with animations
 const Card = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
   <motion.div
+    // Define the card's style and animation properties
     className={`bg-white p-6 rounded-3xl shadow-lg transition-all duration-300 hover:shadow-xl ${className}`}
-    whileHover={{ scale: 1.05 }}
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
+    whileHover={{ scale: 1.05 }} // Scale card slightly on hover
+    initial={{ opacity: 0, y: 20 }} // Initial animation state
+    animate={{ opacity: 1, y: 0 }} // Final animation state
+    transition={{ duration: 0.5 }} // Animation duration
   >
-    {children}
+    {children} 
+    {/* // Render child components inside the card */}
   </motion.div>
 )
 
+// Define a reusable ResourceLink component for displaying resource links
 const ResourceLink = ({ title, description, link }: { title: string; description: string; link: string }) => (
   <Card>
+    {/* Resource title */}
     <h3 className="text-lg font-semibold text-indigo-800 mb-2">{title}</h3>
+    {/* Resource description */}
     <p className="text-gray-600 mb-4">{description}</p>
+    {/* Button to open the resource link */}
     <Button
       variant="outline"
       size="sm"
       className="flex items-center text-indigo-600 border-indigo-600 hover:bg-indigo-50"
-      onClick={() => window.open(link, "_blank")}
+      onClick={() => window.open(link, "_blank")} // Open link in a new tab
     >
-      Learn More <ExternalLink className="ml-2 h-4 w-4" />
+      Learn More <ExternalLink className="ml-2 h-4 w-4" /> {/* External link icon */}
     </Button>
   </Card>
 );
 
+// Define the main BudgetingTips component
 export default function BudgetingTips() {
-  const router = useRouter()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const router = useRouter() // Hook for navigation
+  const [isMenuOpen, setIsMenuOpen] = useState(false) // State for mobile menu visibility
+  const [isMobile, setIsMobile] = useState(false) // State to track if the screen is mobile-sized
 
+  // Effect to handle screen resize and determine if it's mobile
   useEffect(() => {
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+      setIsMobile(window.innerWidth < 768) // Update state based on window width
     }
-    checkIsMobile()
-    window.addEventListener('resize', checkIsMobile)
-    return () => window.removeEventListener('resize', checkIsMobile)
+    checkIsMobile() // Initial check on component mount
+    window.addEventListener('resize', checkIsMobile) // Listen to window resize events
+    return () => window.removeEventListener('resize', checkIsMobile) // Cleanup event listener on component unmount
   }, [])
 
+  // Define resources for the page
   const resources = [
     {
       title: "Building a Student Budget",
@@ -65,20 +77,24 @@ export default function BudgetingTips() {
     },
   ]
 
+  // Function to handle user logout
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    router.push('/');
+    localStorage.removeItem('token'); // Remove token from local storage
+    router.push('/'); // Navigate to the home page
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Header section */}
       <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md shadow-md">
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
+            {/* Logo and title */}
             <div className="flex items-center">
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Nexus</h1>
               <img src="/Nexus.png" alt="Nexus Logo" className="h-12 ml-3" />
             </div>
+            {/* Desktop navigation */}
             <nav className="hidden md:flex space-x-8 justify-center w-full">
               <div className="flex flex-grow justify-center space-x-8">
                 <Button variant="ghost" className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 transition-all duration-300" onClick={() => router.push("/dashboard")}>Dashboard</Button>
@@ -92,6 +108,7 @@ export default function BudgetingTips() {
                 Log Out
               </Button>
             </nav>
+            {/* Mobile navigation toggle */}
             {isMobile && (
               <div className="md:hidden">
                 <Button variant="ghost" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -102,6 +119,7 @@ export default function BudgetingTips() {
           </div>
         </div>
       </header>
+      {/* Mobile menu */}
       <AnimatePresence>
         {isMobile && isMenuOpen && (
           <motion.div
@@ -137,7 +155,7 @@ export default function BudgetingTips() {
           </motion.div>
         )}
       </AnimatePresence>
-
+      {/* Main content */}
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.h1
@@ -148,8 +166,8 @@ export default function BudgetingTips() {
           >
             Budgeting Tips & Resources
           </motion.h1>
-
           <div className="flex flex-col lg:flex-row gap-8">
+            {/* Main chatbot section */}
             <motion.div
               className="lg:w-2/3"
               initial={{ opacity: 0, x: -20 }}
@@ -158,6 +176,7 @@ export default function BudgetingTips() {
             >
               <Card className="h-full">
                 <h3 className="text-xl font-semibold text-indigo-800 mb-4">Ask Our Finance Expert</h3>
+                {/* Embedded chatbot */}
                 <iframe
                   title="Finance Expert Chatbot"
                   src="https://www.chatbase.co/chatbot-iframe/twKXHAVsHvTUTt2iPXnja"
@@ -167,7 +186,7 @@ export default function BudgetingTips() {
                 />
               </Card>
             </motion.div>
-
+            {/* Resource links */}
             <motion.div
               className="lg:w-1/3 space-y-6"
               initial={{ opacity: 0, x: 20 }}
