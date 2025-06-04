@@ -64,7 +64,7 @@ export default function BudgetingTips() {
     {
       title: "Personal Financial Literacy Modules",
       description: "Access comprehensive financial literacy courses designed specifically for students to master money management.",
-      link: "#",
+      link: "https://www.khanacademy.org/college-careers-more/financial-literacy",
       icon: <BookOpen className="w-5 h-5 text-white" />,
       gradient: "from-purple-500 to-indigo-600"
     }
