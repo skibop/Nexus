@@ -252,7 +252,7 @@ export default function Dashboard() {
   }
 
   const sortedTransactions = React.useMemo(() => {
-    let sortableTransactions = [...filteredTransactions]
+    const sortableTransactions = [...filteredTransactions]
     if (sortConfig.key) {
       sortableTransactions.sort((a, b) => {
         if (sortConfig.key === 'amount') {
