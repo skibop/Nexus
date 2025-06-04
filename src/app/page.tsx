@@ -223,7 +223,7 @@ export default function Home() {
         >
           <div className="relative w-full h-full">
             <Image
-              src="/daxboard.png"
+              src="/updated_dash.png"
               alt="Financial Management Dashboard"
               fill
               style={{ objectFit: 'fill' }}
