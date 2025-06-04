@@ -937,7 +937,7 @@ export default function Dashboard() {
                     <div className="flex space-x-2">
                       <Button
                         onClick={() => setShowForm(true)}
-                        className="flex flex-row items-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 shadow-md"
+                        className="flex flex-row items-center bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-700 hover:to-green-700 shadow-md"
                         size="sm"
                       >
                         <Plus className="w-4 h-4 mr-2" />
@@ -1435,10 +1435,10 @@ export default function Dashboard() {
                   </Button>
                   <Button
                     onClick={handleExport}
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700"
+                    className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-indigo-700 hover:to-purple-700"
                   >
-                    <Download className="w-4 h-4 mr-2" />
-                    Export
+                    <Download className="w-4 h-4" />
+                    <span>Export</span>
                   </Button>
                 </div>
               </motion.div>
