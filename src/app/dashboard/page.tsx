@@ -1090,7 +1090,7 @@ export default function Dashboard() {
                                 {formatDate(transaction.date)}
                               </td>
                               <td className="px-6 py-4 text-sm text-slate-800 dark:text-slate-200">
-                                {transaction.description || 'No description'}
+                                {transaction.description || ''}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
