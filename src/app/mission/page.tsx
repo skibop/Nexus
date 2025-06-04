@@ -67,7 +67,13 @@ const FeatureItem = ({ icon: Icon, title, description, delay }: { icon: React.El
   )
 }
 
-const FloatingOrb = ({ delay, size, color }: { delay: number; size: string; color: string }) => {
+const FloatingOrb = ({ delay, size, color, initialX, initialY }: { 
+  delay: number; 
+  size: string; 
+  color: string;
+  initialX: number;
+  initialY: number;
+}) => {
   return (
     <motion.div
       className={`absolute ${size} rounded-full ${color} blur-3xl opacity-20`}
@@ -83,24 +89,36 @@ const FloatingOrb = ({ delay, size, color }: { delay: number; size: string; colo
         repeatType: "reverse"
       }}
       style={{
-        left: `${Math.random() * 100}%`,
-        top: `${Math.random() * 100}%`,
+        left: `${initialX}%`,
+        top: `${initialY}%`,
       }}
     />
   )
 }
+
+// Pre-generated particle positions for SSR consistency
+const particlePositions = [
+  { x: 10, y: 20 }, { x: 80, y: 15 }, { x: 25, y: 60 }, { x: 70, y: 40 },
+  { x: 45, y: 80 }, { x: 90, y: 70 }, { x: 15, y: 45 }, { x: 60, y: 25 },
+  { x: 35, y: 90 }, { x: 85, y: 35 }, { x: 5, y: 75 }, { x: 65, y: 55 },
+  { x: 40, y: 10 }, { x: 75, y: 85 }, { x: 20, y: 65 }, { x: 95, y: 50 },
+  { x: 30, y: 30 }, { x: 55, y: 70 }, { x: 50, y: 5 }, { x: 12, y: 88 }
+]
 
 export default function MissionPage() {
   const router = useRouter()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isMounted, setIsMounted] = useState(false)
   
   const { scrollYProgress } = useScroll()
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
 
   useEffect(() => {
+    setIsMounted(true)
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
     }
@@ -135,19 +153,21 @@ export default function MissionPage() {
         transition={{ duration: 0.5 }}
       >
         {/* Animated background elements */}
-        <FloatingOrb delay={0} size="w-96 h-96" color="bg-green-400" />
-        <FloatingOrb delay={5} size="w-72 h-72" color="bg-emerald-400" />
-        <FloatingOrb delay={10} size="w-64 h-64" color="bg-green-300" />
+        <FloatingOrb delay={0} size="w-96 h-96" color="bg-green-400" initialX={20} initialY={30} />
+        <FloatingOrb delay={5} size="w-72 h-72" color="bg-emerald-400" initialX={70} initialY={60} />
+        <FloatingOrb delay={10} size="w-64 h-64" color="bg-green-300" initialX={45} initialY={10} />
         
-        {/* Interactive cursor glow - FIXED: removed z-index and added pointer-events-none */}
-        <motion.div
-          className="fixed w-64 h-64 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full blur-3xl opacity-20 pointer-events-none"
-          animate={{
-            x: mousePosition.x - 128,
-            y: mousePosition.y - 128,
-          }}
-          transition={{ type: "spring", damping: 30, stiffness: 200 }}
-        />
+        {/* Interactive cursor glow - only render after mount */}
+        {isMounted && (
+          <motion.div
+            className="fixed w-64 h-64 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full blur-3xl opacity-20 pointer-events-none"
+            animate={{
+              x: mousePosition.x - 128,
+              y: mousePosition.y - 128,
+            }}
+            transition={{ type: "spring", damping: 30, stiffness: 200 }}
+          />
+        )}
 
         <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${isScrolled ? "bg-white/80 backdrop-blur-md shadow-lg" : "bg-transparent"}`}>
           <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -252,23 +272,23 @@ export default function MissionPage() {
               }}
             />
             
-            {/* Animated particles */}
-            {[...Array(20)].map((_, i) => (
+            {/* Animated particles - only render after mount with fixed positions */}
+            {isMounted && particlePositions.map((pos, i) => (
               <motion.div
                 key={i}
                 className="absolute w-2 h-2 bg-white rounded-full"
                 initial={{
-                  x: Math.random() * window.innerWidth,
-                  y: Math.random() * window.innerHeight,
+                  x: `${pos.x}vw`,
+                  y: `${pos.y}vh`,
                 }}
                 animate={{
                   y: [null, -100],
                   opacity: [0, 1, 0],
                 }}
                 transition={{
-                  duration: Math.random() * 5 + 5,
+                  duration: (i % 5) + 5, // Varies between 5-9 seconds
                   repeat: Infinity,
-                  delay: Math.random() * 5,
+                  delay: (i % 5), // Varies delay between 0-4 seconds
                 }}
               />
             ))}
@@ -348,7 +368,6 @@ export default function MissionPage() {
                 </motion.div>
               </motion.div>
               
-              {/* FIXED: Removed the scroll-based opacity and scale transforms from the logo */}
               <motion.div 
                 className="mt-16 relative"
                 initial={{ opacity: 0, scale: 0.5 }}
@@ -545,4 +564,4 @@ export default function MissionPage() {
       </motion.div>
     </AnimatePresence>
   )
-} 
+}
