@@ -69,6 +69,7 @@ const expenseCategories: string[] = ["Transportation", "Entertainment", "Clothin
 
 const Motioncard = motion.create(Card)
 
+
 export default function Dashboard() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
@@ -100,6 +101,7 @@ export default function Dashboard() {
   const [exportEndDate, setExportEndDate] = useState<string>('')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [showHealthScore, setShowHealthScore] = useState(false)
 
   const formRef = useRef<HTMLDivElement>(null)
 
@@ -108,6 +110,55 @@ export default function Dashboard() {
       formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }, [])
+
+  const calculateHealthScore = () => {
+  // Base score starts at 50
+  let score = 50
+  
+  // Savings rate impact (0-30 points)
+  if (savingsRate > 20) score += 30
+  else if (savingsRate > 10) score += 20
+  else if (savingsRate > 5) score += 10
+  else if (savingsRate > 0) score += 5
+  
+  // Expense to income ratio impact (0-20 points)
+  const expenseRatio = totalIncome > 0 ? (totalExpenses / totalIncome) : 1
+  if (expenseRatio < 0.5) score += 20
+  else if (expenseRatio < 0.7) score += 15
+  else if (expenseRatio < 0.8) score += 10
+  else if (expenseRatio < 0.9) score += 5
+  
+  // Transaction frequency bonus (0-10 points)
+  const avgTransactionsPerMonth = transactions.length / 3 // Assuming 3 months of data
+  if (avgTransactionsPerMonth > 20) score += 10
+  else if (avgTransactionsPerMonth > 10) score += 5
+  
+  // Diverse income sources bonus (0-10 points)
+  const incomeCategories = new Set(
+    transactions
+      .filter(t => t.type === 'income')
+      .map(t => t.category)
+  ).size
+  if (incomeCategories >= 3) score += 10
+  else if (incomeCategories >= 2) score += 5
+  
+  // Cap score at 100
+  return Math.min(Math.round(score), 100)
+}
+
+const getScoreColor = (score: number) => {
+  if (score >= 80) return 'text-green-600 dark:text-green-400'
+  if (score >= 60) return 'text-yellow-600 dark:text-yellow-400'
+  if (score >= 40) return 'text-orange-600 dark:text-orange-400'
+  return 'text-red-600 dark:text-red-400'
+}
+
+const getScoreLabel = (score: number) => {
+  if (score >= 80) return 'Excellent'
+  if (score >= 60) return 'Good'
+  if (score >= 40) return 'Fair'
+  return 'Needs Improvement'
+}
 
   useEffect(() => {
     if (showForm && editingTransaction) {
@@ -756,9 +807,20 @@ export default function Dashboard() {
                 <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
                   <CardHeader>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                      <div>
-                        <CardTitle className="text-xl font-semibold text-slate-800 dark:text-white">Cash Flow Analysis</CardTitle>
-                        <CardDescription className="text-slate-600 dark:text-slate-400">Income vs Expenses over time</CardDescription>
+                      <div className="flex items-center space-x-2">
+                        <div>
+                          <CardTitle className="text-xl font-semibold text-slate-800 dark:text-white">Cash Flow Analysis</CardTitle>
+                          <CardDescription className="text-slate-600 dark:text-slate-400">Income vs Expenses over time</CardDescription>
+                        </div>
+                        <button
+                          onClick={() => setShowHealthScore(!showHealthScore)}
+                          className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                          title="View Financial Health Score"
+                        >
+                          <svg className="w-5 h-5 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </button>
                       </div>
                       <div className="flex space-x-2">
                         <Button
@@ -1472,6 +1534,111 @@ export default function Dashboard() {
                  
                 </div>
               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {/* Financial Health Score Modal */}
+        <AnimatePresence>
+          {showHealthScore && (
+            <motion.div
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowHealthScore(false)}
+            >
+              <motion.div
+                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
+                    Financial Health Score
+                  </h3>
+                  
+                  <div className="relative inline-flex items-center justify-center w-48 h-48 mb-6">
+                    <svg className="transform -rotate-90 w-48 h-48">
+                      <circle
+                        cx="96"
+                        cy="96"
+                        r="88"
+                        stroke="currentColor"
+                        strokeWidth="12"
+                        fill="none"
+                        className="text-slate-200 dark:text-slate-700"
+                      />
+                      <circle
+                        cx="96"
+                        cy="96"
+                        r="88"
+                        stroke="currentColor"
+                        strokeWidth="12"
+                        fill="none"
+                        strokeDasharray={`${2 * Math.PI * 88}`}
+                        strokeDashoffset={`${2 * Math.PI * 88 * (1 - calculateHealthScore() / 100)}`}
+                        className={getScoreColor(calculateHealthScore())}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className={`text-5xl font-bold ${getScoreColor(calculateHealthScore())}`}>
+                        {calculateHealthScore()}
+                      </span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                        out of 100
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className={`text-lg font-semibold mb-4 ${getScoreColor(calculateHealthScore())}`}>
+                    {getScoreLabel(calculateHealthScore())}
+                  </div>
+                  
+                  <div className="text-left space-y-3 mb-6">
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                      Your financial health score is calculated based on:
+                    </p>
+                    <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-2">
+                      <li className="flex items-start">
+                        <span className="text-emerald-500 mr-2">•</span>
+                        <span><strong>Savings Rate (30%):</strong> How much you save compared to income</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-emerald-500 mr-2">•</span>
+                        <span><strong>Expense Ratio (20%):</strong> Your expenses relative to income</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-emerald-500 mr-2">•</span>
+                        <span><strong>Transaction Activity (10%):</strong> Regular financial tracking</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-emerald-500 mr-2">•</span>
+                        <span><strong>Income Diversity (10%):</strong> Multiple income sources</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-emerald-500 mr-2">•</span>
+                        <span><strong>Base Score (30%):</strong> Starting baseline</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <div className="bg-slate-100 dark:bg-slate-700 rounded-lg p-4">
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      <strong>Score Scale:</strong> 0-39 (Needs Improvement) • 40-59 (Fair) • 60-79 (Good) • 80-100 (Excellent)
+                    </p>
+                  </div>
+                  
+                  <Button
+                    onClick={() => setShowHealthScore(false)}
+                    className="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700"
+                  >
+                    Close
+                  </Button>
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
