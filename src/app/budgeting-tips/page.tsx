@@ -20,6 +20,7 @@ import {
   PiggyBank,
   Target,
   Lightbulb,
+  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
@@ -42,6 +43,7 @@ export default function BudgetingTips() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showFeaturesPopup, setShowFeaturesPopup] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
@@ -291,6 +293,68 @@ export default function BudgetingTips() {
           )}
         </AnimatePresence>
 
+        {/* Features Popup */}
+        <AnimatePresence>
+          {showFeaturesPopup && (
+            <motion.div
+              className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowFeaturesPopup(false)}
+            >
+              <motion.div
+                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                transition={{ type: "spring", damping: 25 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
+                      Platform Features
+                    </h2>
+                    <button
+                      onClick={() => setShowFeaturesPopup(false)}
+                      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <X className="w-6 h-6 text-slate-600 dark:text-slate-400" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {features.map((feature, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-start space-x-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50"
+                      >
+                        <div
+                          className={`p-3 bg-gradient-to-br ${feature.gradient} rounded-xl shadow-lg flex-shrink-0`}
+                        >
+                          {feature.icon}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-slate-800 dark:text-white text-lg mb-2">
+                            {feature.title}
+                          </h3>
+                          <p className="text-slate-600 dark:text-slate-400">
+                            {feature.description}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Main Content */}
         <main className="container mx-auto px-4 pt-24 pb-12 max-w-7xl">
           <motion.div
@@ -304,42 +368,21 @@ export default function BudgetingTips() {
                 Resources
               </span>
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
-              Get expert advice and discover valuable resources
-            </p>
-          </motion.div>
-
-          {/* Features Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+            <div className="flex items-center space-x-2">
+              <p className="text-slate-600 dark:text-slate-400">
+                Get expert advice and discover valuable resources
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowFeaturesPopup(true)}
+                className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                title="View platform features"
               >
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <div
-                        className={`p-3 bg-gradient-to-br ${feature.gradient} rounded-xl shadow-lg`}
-                      >
-                        {feature.icon}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-slate-800 dark:text-white">
-                          {feature.title}
-                        </h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                          {feature.description}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+                <HelpCircle className="w-5 h-5 text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors" />
+              </motion.button>
+            </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main Chatbot Section */}
