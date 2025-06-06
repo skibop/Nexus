@@ -1947,7 +1947,7 @@ export default function Dashboard() {
                   </Button>
                   <Button
                     onClick={handleExport}
-                    className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-indigo-700 hover:to-purple-700"
+                    className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-700 hover:to-teal-700"
                   >
                     <Download className="w-4 h-4" />
                     <span>Export</span>
