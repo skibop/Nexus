@@ -1439,40 +1439,15 @@ export default function Dashboard() {
                         <Filter className="w-4 h-4 mr-2" />
                         Filter
                       </Button>
-                      <div className="relative group">
-                        <div className="relative group">
-                          <Button
-                            variant="outline"
-                            className="flex items-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
-                            size="sm"
-                          >
-                            <Download className="w-4 h-4 mr-2" />
-                            Export
-                          </Button>
-                        </div>
-                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
-                          <button
-                            onClick={() => {
-                              setExportType("pdf");
-                              setShowExportModal(true);
-                            }}
-                            className="w-full px-4 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center space-x-2"
-                          >
-                            <FileText className="w-4 h-4" />
-                            <span>Export as PDF</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              setExportType("csv");
-                              setShowExportModal(true);
-                            }}
-                            className="w-full px-4 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center space-x-2"
-                          >
-                            <FileSpreadsheet className="w-4 h-4" />
-                            <span>Export as CSV</span>
-                          </button>
-                        </div>
-                      </div>
+                      <Button
+                      onClick={() => setShowExportModal(true)}
+                      variant="outline"
+                      className="flex items-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      size="sm"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Export
+                    </Button>
                     </div>
                   </div>
                 </CardHeader>
