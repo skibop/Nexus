@@ -64,6 +64,15 @@ interface SortConfig {
   direction: 'asc' | 'desc'
 }
 
+interface Budget {
+  category: string
+  limit: number
+  period: 'monthly' | 'weekly' | 'yearly'
+  spent: number
+  remaining: number
+  percentUsed: number
+}
+
 const incomeCategories: string[] = ["Job", "Work", "Allowance", "Gift", "Chores", "Misc"]
 const expenseCategories: string[] = ["Transportation", "Entertainment", "Clothing", "Personal", "Food", "Misc"]
 
@@ -102,6 +111,11 @@ export default function Dashboard() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [showHealthScore, setShowHealthScore] = useState(false)
+  const [showBudgetingTool, setShowBudgetingTool] = useState(false)
+  const [budgets, setBudgets] = useState<Budget[]>([])
+  const [activeBudgetPeriod, setActiveBudgetPeriod] = useState<'monthly' | 'weekly' | 'yearly'>('monthly')
+  const [userBudgets, setUserBudgets] = useState<{ [key: string]: number }>({})
+  const [budgetsLoading, setBudgetsLoading] = useState(false)
 
   const formRef = useRef<HTMLDivElement>(null)
 
@@ -160,6 +174,149 @@ const getScoreLabel = (score: number) => {
   return 'Needs Improvement'
 }
 
+const fetchBudgets = useCallback(async () => {
+  const token = localStorage.getItem('token')
+  if (!token) return
+
+  setBudgetsLoading(true)
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/budgets`, {
+      headers: { 'x-auth-token': token },
+    })
+    if (!response.ok) {
+      throw new Error('Failed to fetch budgets')
+    }
+    const data = await response.json()
+    setUserBudgets(data.budgets)
+  } catch (error) {
+    console.error('Error fetching budgets:', error)
+    // Use default budgets if fetch fails
+    setUserBudgets({
+      Food: 300,
+      Transportation: 200,
+      Entertainment: 150,
+      Clothing: 100,
+      Personal: 100,
+      Misc: 50
+    })
+  } finally {
+    setBudgetsLoading(false)
+  }
+}, [])
+
+const calculateBudgetData = () => {
+  const categoryBudgets: { [key: string]: Budget } = {}
+  
+  // Calculate spent amounts for each category
+  const now = new Date()
+  let startDate: Date
+  
+  switch (activeBudgetPeriod) {
+    case 'weekly':
+      const tempDate = new Date(now)
+      startDate = new Date(tempDate.setDate(tempDate.getDate() - tempDate.getDay()))
+      break
+    case 'yearly':
+      startDate = new Date(now.getFullYear(), 0, 1)
+      break
+    default: // monthly
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+  }
+  
+  expenseCategories.forEach(category => {
+    const spent = filteredTransactions
+      .filter(t => 
+        t.type === 'expense' && 
+        t.category === category && 
+        new Date(t.date) >= startDate
+      )
+      .reduce((sum, t) => sum + t.amount, 0)
+    
+    const limit = userBudgets[category] || 100
+    const adjustedLimit = activeBudgetPeriod === 'weekly' ? limit / 4 : 
+                         activeBudgetPeriod === 'yearly' ? limit * 12 : limit
+    
+    categoryBudgets[category] = {
+      category,
+      limit: adjustedLimit,
+      period: activeBudgetPeriod,
+      spent,
+      remaining: adjustedLimit - spent,
+      percentUsed: (spent / adjustedLimit) * 100
+    }
+  })
+  
+  return Object.values(categoryBudgets)
+}
+
+const saveBudgets = async (newBudgets: { [key: string]: number }) => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    router.push('/login')
+    return
+  }
+
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/budgets`, {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-auth-token': token 
+      },
+      body: JSON.stringify({ budgets: newBudgets })
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to save budgets')
+    }
+    
+    const data = await response.json()
+    setUserBudgets(data.budgets)
+    setBudgets(calculateBudgetData())
+  } catch (error) {
+    console.error('Error saving budgets:', error)
+  }
+}
+
+const resetBudgets = async () => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    router.push('/login')
+    return
+  }
+
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/budgets/reset`, {
+      method: 'DELETE',
+      headers: { 'x-auth-token': token }
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to reset budgets')
+    }
+    
+    const data = await response.json()
+    setUserBudgets(data.budgets)
+    setBudgets(calculateBudgetData())
+  } catch (error) {
+    console.error('Error resetting budgets:', error)
+  }
+}
+
+const getBudgetStatusColor = (percentUsed: number) => {
+  if (percentUsed >= 100) return 'text-red-600 dark:text-red-400'
+  if (percentUsed >= 80) return 'text-amber-600 dark:text-amber-400'
+  if (percentUsed >= 60) return 'text-yellow-600 dark:text-yellow-400'
+  return 'text-green-600 dark:text-green-400'
+}
+
+const getBudgetProgressColor = (percentUsed: number) => {
+  if (percentUsed >= 100) return 'from-red-500 to-rose-600'
+  if (percentUsed >= 80) return 'from-amber-500 to-orange-600'
+  if (percentUsed >= 60) return 'from-yellow-500 to-amber-600'
+  return 'from-green-500 to-emerald-600'
+}
+
   useEffect(() => {
     if (showForm && editingTransaction) {
       scrollToForm()
@@ -183,16 +340,20 @@ const getScoreLabel = (score: number) => {
     }
   }, [])
 
-  const toggleDarkMode = () => {
-    const newDarkMode = !darkMode
-    setDarkMode(newDarkMode)
-    localStorage.setItem('darkMode', newDarkMode.toString())
-    if (newDarkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
+  
+  useEffect(() => {
+  if (showBudgetingTool && !budgetsLoading) {
+    fetchBudgets()
   }
+}, [showBudgetingTool, fetchBudgets])
+
+useEffect(() => {
+  if (userBudgets && Object.keys(userBudgets).length > 0) {
+    setBudgets(calculateBudgetData())
+  }
+}, [filteredTransactions, activeBudgetPeriod, userBudgets])
+
+
 
   const fetchTransactions = useCallback(async () => {
     const token = localStorage.getItem('token')
@@ -1014,6 +1175,14 @@ const getScoreLabel = (score: number) => {
                         Money Saving Recommendations
                       </Button>
                       <Button
+  onClick={() => setShowBudgetingTool(true)}
+  className="flex flex-row items-center bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 shadow-md"
+  size="sm"
+>
+  <Target className="w-4 h-4 mr-2" />
+  Budget Planner
+</Button>
+                      <Button
                         onClick={() => setShowFilterModal(true)}
                         variant="outline"
                         className="flex items-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -1642,6 +1811,261 @@ const getScoreLabel = (score: number) => {
             </motion.div>
           )}
         </AnimatePresence>
+        {/* Budgeting Tool Modal */}
+<AnimatePresence>
+  {showBudgetingTool && (
+    <motion.div
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={() => setShowBudgetingTool(false)}
+    >
+      <motion.div
+        className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 bg-white dark:bg-slate-800 p-6 border-b border-slate-200 dark:border-slate-700 z-10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
+                <Target className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-slate-800 dark:text-white">Budget Planner</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Track and manage your spending limits</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowBudgetingTool(false)}
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            >
+              <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+            </button>
+          </div>
+        </div>
+        
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-88px)]">
+          {budgetsLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 text-purple-600 animate-spin" />
+            </div>
+          ) : (
+            <>
+              {/* Period Selector */}
+              <div className="flex items-center justify-between mb-6">
+                <h4 className="text-lg font-semibold text-slate-800 dark:text-white">Budget Period</h4>
+                <div className="flex space-x-2">
+                  {(['weekly', 'monthly', 'yearly'] as const).map((period) => (
+                    <Button
+                      key={period}
+                      onClick={() => setActiveBudgetPeriod(period)}
+                      variant={activeBudgetPeriod === period ? 'default' : 'outline'}
+                      className={activeBudgetPeriod === period 
+                        ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-0 shadow-md' 
+                        : 'border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800'}
+                      size="sm"
+                    >
+                      {period.charAt(0).toUpperCase() + period.slice(1)}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Budget Overview Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <Card className="border-0 shadow-lg">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">Total Budget</span>
+                      <DollarSign className="w-4 h-4 text-slate-400" />
+                    </div>
+                    <p className="text-2xl font-bold text-slate-800 dark:text-white">
+                      {formatCurrency(budgets.reduce((sum, b) => sum + b.limit, 0))}
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      per {activeBudgetPeriod === 'weekly' ? 'week' : activeBudgetPeriod === 'monthly' ? 'month' : 'year'}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-0 shadow-lg">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">Total Spent</span>
+                      <TrendingUp className="w-4 h-4 text-slate-400" />
+                    </div>
+                    <p className="text-2xl font-bold text-slate-800 dark:text-white">
+                      {formatCurrency(budgets.reduce((sum, b) => sum + b.spent, 0))}
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      {budgets.length > 0 ? ((budgets.reduce((sum, b) => sum + b.spent, 0) / budgets.reduce((sum, b) => sum + b.limit, 0)) * 100).toFixed(1) : '0'}% of budget
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-0 shadow-lg">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">Remaining</span>
+                      <Wallet className="w-4 h-4 text-slate-400" />
+                    </div>
+                    <p className={`text-2xl font-bold ${
+                      budgets.reduce((sum, b) => sum + b.remaining, 0) >= 0 
+                        ? 'text-green-600 dark:text-green-400' 
+                        : 'text-red-600 dark:text-red-400'
+                    }`}>
+                      {formatCurrency(Math.abs(budgets.reduce((sum, b) => sum + b.remaining, 0)))}
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      {budgets.reduce((sum, b) => sum + b.remaining, 0) >= 0 ? 'under budget' : 'over budget'}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Category Budgets */}
+              <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Category Budgets</h4>
+                {budgets.map((budget) => (
+                  <motion.div
+                    key={budget.category}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center`}
+                             style={{ backgroundColor: `${categoryColors[budget.category]}20` }}>
+                          <div className="w-3 h-3 rounded-full"
+                               style={{ backgroundColor: categoryColors[budget.category] }} />
+                        </div>
+                        <div>
+                          <h5 className="font-medium text-slate-800 dark:text-white">{budget.category}</h5>
+                          <p className="text-sm text-slate-600 dark:text-slate-400">
+                            {formatCurrency(budget.spent)} of {formatCurrency(budget.limit)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className={`text-lg font-semibold ${getBudgetStatusColor(budget.percentUsed)}`}>
+                          {budget.percentUsed.toFixed(0)}%
+                        </p>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                          {budget.remaining >= 0 
+                            ? `${formatCurrency(budget.remaining)} left`
+                            : `${formatCurrency(Math.abs(budget.remaining))} over`
+                          }
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Progress Bar */}
+                    <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                      <motion.div
+                        className={`absolute left-0 top-0 h-full bg-gradient-to-r ${getBudgetProgressColor(budget.percentUsed)} rounded-full`}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.min(budget.percentUsed, 100)}%` }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                      />
+                      {budget.percentUsed > 100 && (
+                        <div className="absolute right-0 top-0 h-full bg-red-600 dark:bg-red-500 animate-pulse"
+                             style={{ width: `${budget.percentUsed - 100}%` }} />
+                      )}
+                    </div>
+
+                    {/* Edit Budget */}
+                    <div className="mt-3 flex items-center justify-between">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">
+                        Adjust {activeBudgetPeriod} limit:
+                      </span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-slate-600 dark:text-slate-400">$</span>
+                        <input
+                          type="number"
+                          defaultValue={budget.limit}
+                          onBlur={async (e) => {
+                            const newLimit = parseFloat(e.target.value) || 0
+                            if (newLimit === budget.limit) return // No change
+                            
+                            let baseLimit = newLimit
+                            if (activeBudgetPeriod === 'weekly') baseLimit = newLimit * 4
+                            if (activeBudgetPeriod === 'yearly') baseLimit = newLimit / 12
+                            
+                            const updatedBudgets = {
+                              ...userBudgets,
+                              [budget.category]: baseLimit
+                            }
+                            
+                            await saveBudgets(updatedBudgets)
+                          }}
+                          onKeyPress={async (e) => {
+                            if (e.key === 'Enter') {
+                              e.currentTarget.blur()
+                            }
+                          }}
+                          className="w-24 px-2 py-1 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Budget Insights */}
+              <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl">
+                <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-3 flex items-center">
+                  <Lightbulb className="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" />
+                  Budget Insights
+                </h4>
+                <div className="space-y-2">
+                  {budgets.filter(b => b.percentUsed >= 80).length > 0 && (
+                    <p className="text-sm text-slate-700 dark:text-slate-300">
+                      <span className="font-medium text-amber-600 dark:text-amber-400">⚠️ Alert:</span> You're approaching or exceeding your budget limit in {budgets.filter(b => b.percentUsed >= 80).map(b => b.category).join(', ')}.
+                    </p>
+                  )}
+                  {budgets.filter(b => b.percentUsed < 50).length > 0 && (
+                    <p className="text-sm text-slate-700 dark:text-slate-300">
+                      <span className="font-medium text-green-600 dark:text-green-400">✓ Great job:</span> You're under 50% budget in {budgets.filter(b => b.percentUsed < 50).map(b => b.category).join(', ')}.
+                    </p>
+                  )}
+                  <p className="text-sm text-slate-700 dark:text-slate-300">
+                    <span className="font-medium">💡 Tip:</span> Consider using the 50/30/20 rule - 50% for needs, 30% for wants, and 20% for savings.
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-6 flex justify-end space-x-3">
+                <Button
+                  onClick={async () => {
+                    if (confirm('Reset all budgets to default values?')) {
+                      await resetBudgets()
+                    }
+                  }}
+                  variant="outline"
+                  className="border-slate-300 dark:border-slate-600"
+                >
+                  Reset to Defaults
+                </Button>
+                <Button
+                  onClick={() => setShowBudgetingTool(false)}
+                  className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
+                >
+                  Done
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
       </div>
     </div>
   )
