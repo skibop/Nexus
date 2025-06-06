@@ -1,54 +1,67 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/Button"
-import { Loader2, RefreshCw } from "lucide-react"
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/Button";
+import { Loader2, RefreshCw } from "lucide-react";
 
 interface Recommendation {
-  category: string
-  tip: string
-  potentialSavings: number
+  category: string;
+  tip: string;
+  potentialSavings: number;
 }
 
 export default function MoneySavingRecommendations() {
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchRecommendations = async () => {
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem("token");
       if (!token) {
-        throw new Error('No authentication token found')
+        throw new Error("No authentication token found");
       }
-      console.log('Fetching recommendations with token:', token);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/recommendations`, {
-        headers: { 
-          'x-auth-token': token,
-          'Content-Type': 'application/json'
-        },
-      })
+      console.log("Fetching recommendations with token:", token);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/recommendations`,
+        {
+          headers: {
+            "x-auth-token": token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        throw new Error(
+          errorData.message || `HTTP error! status: ${response.status}`
+        );
       }
-      const data = await response.json()
-      console.log('Recommendations received:', data);
-      setRecommendations(data)
+      const data = await response.json();
+      console.log("Recommendations received:", data);
+      setRecommendations(data);
     } catch (err) {
-      console.error('Error fetching recommendations:', err)
-      setError(err instanceof Error ? err.message : 'An unknown error occurred')
+      console.error("Error fetching recommendations:", err);
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchRecommendations()
-  }, [])
+    fetchRecommendations();
+  }, []);
 
   if (isLoading) {
     return (
@@ -57,7 +70,7 @@ export default function MoneySavingRecommendations() {
           <Loader2 className="h-8 w-8 animate-spin" />
         </CardContent>
       </Card>
-    )
+    );
   }
 
   if (error) {
@@ -70,7 +83,7 @@ export default function MoneySavingRecommendations() {
           </Button>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -86,7 +99,10 @@ export default function MoneySavingRecommendations() {
       </CardHeader>
       <CardContent>
         {recommendations.length === 0 ? (
-          <p className="text-center text-gray-500">No recommendations available at this time. Try adding more transactions to get personalized tips.</p>
+          <p className="text-center text-gray-500">
+            No recommendations available at this time. Try adding more
+            transactions to get personalized tips.
+          </p>
         ) : (
           <ul className="space-y-4">
             {recommendations.map((rec, index) => (
@@ -102,5 +118,5 @@ export default function MoneySavingRecommendations() {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

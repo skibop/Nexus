@@ -1,106 +1,125 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  ExternalLink, Menu, X, Wallet, ChevronRight, User, LogOut,
-  BookOpen, TrendingUp, Shield, MessageSquare, Sparkles,
-  GraduationCap, PiggyBank, Target, Lightbulb
-} from 'lucide-react'
-import { Button } from "@/components/ui/Button"
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ExternalLink,
+  Menu,
+  X,
+  Wallet,
+  ChevronRight,
+  User,
+  LogOut,
+  BookOpen,
+  TrendingUp,
+  Shield,
+  MessageSquare,
+  Sparkles,
+  GraduationCap,
+  PiggyBank,
+  Target,
+  Lightbulb,
+} from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 interface Resource {
-  title: string
-  description: string
-  link: string
-  icon: React.ReactNode
-  gradient: string
+  title: string;
+  description: string;
+  link: string;
+  icon: React.ReactNode;
+  gradient: string;
 }
 
 export default function BudgetingTips() {
-  const router = useRouter()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [showUserMenu, setShowUserMenu] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
+  const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true'
-    setDarkMode(savedDarkMode)
+    const savedDarkMode = localStorage.getItem("darkMode") === "true";
+    setDarkMode(savedDarkMode);
     if (savedDarkMode) {
-      document.documentElement.classList.add('dark')
+      document.documentElement.classList.add("dark");
     }
-  }, [])
+  }, []);
 
   const resources: Resource[] = [
     {
       title: "Building a Student Budget",
-      description: "Learn the basics of creating a student-friendly budget to manage expenses for school and personal needs.",
+      description:
+        "Learn the basics of creating a student-friendly budget to manage expenses for school and personal needs.",
       link: "https://www.getcopper.com/guide/budgeting",
       icon: <GraduationCap className="w-5 h-5 text-white" />,
-      gradient: "from-blue-500 to-cyan-600"
+      gradient: "from-blue-500 to-cyan-600",
     },
     {
       title: "Saving Tips for Students",
-      description: "Explore practical ways to save money as a student and build healthy financial habits.",
+      description:
+        "Explore practical ways to save money as a student and build healthy financial habits.",
       link: "https://www.bankrate.com/banking/savings/how-to-save-money-as-high-school-student/",
       icon: <PiggyBank className="w-5 h-5 text-white" />,
-      gradient: "from-green-500 to-emerald-600"
+      gradient: "from-green-500 to-emerald-600",
     },
     {
       title: "Start an Emergency Fund",
-      description: "Find out why an emergency fund is helpful for unexpected costs, even on a student budget.",
+      description:
+        "Find out why an emergency fund is helpful for unexpected costs, even on a student budget.",
       link: "https://current.com/blog/why-does-a-student-need-an-emergency-fund/",
       icon: <Shield className="w-5 h-5 text-white" />,
-      gradient: "from-amber-500 to-orange-600"
+      gradient: "from-amber-500 to-orange-600",
     },
     {
       title: "Personal Financial Literacy Modules",
-      description: "Access comprehensive financial literacy courses designed specifically for students to master money management.",
+      description:
+        "Access comprehensive financial literacy courses designed specifically for students to master money management.",
       link: "https://www.khanacademy.org/college-careers-more/financial-literacy",
       icon: <BookOpen className="w-5 h-5 text-white" />,
-      gradient: "from-purple-500 to-indigo-600"
-    }
-  ]
+      gradient: "from-purple-500 to-indigo-600",
+    },
+  ];
 
   const features = [
     {
       icon: <Sparkles className="w-6 h-6 text-white" />,
       title: "AI-Powered Advice",
-      description: "Get personalized budgeting tips from our intelligent finance assistant",
-      gradient: "from-purple-500 to-violet-600"
+      description:
+        "Get personalized budgeting tips from our intelligent finance assistant",
+      gradient: "from-purple-500 to-violet-600",
     },
     {
       icon: <Target className="w-6 h-6 text-white" />,
       title: "Goal Setting",
-      description: "Set and track financial goals tailored to your student lifestyle",
-      gradient: "from-indigo-500 to-purple-600"
+      description:
+        "Set and track financial goals tailored to your student lifestyle",
+      gradient: "from-indigo-500 to-purple-600",
     },
     {
       icon: <Lightbulb className="w-6 h-6 text-white" />,
       title: "Smart Insights",
-      description: "Receive actionable insights based on your spending patterns described",
-      gradient: "from-rose-500 to-pink-600"
-    }
-  ]
+      description:
+        "Receive actionable insights based on your spending patterns described",
+      gradient: "from-rose-500 to-pink-600",
+    },
+  ];
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'dark' : ''}`}>
+    <div className={`min-h-screen ${darkMode ? "dark" : ""}`}>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300">
-        
         {/* Header - Same as Dashboard */}
         <header className="fixed top-0 left-0 right-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm border-b border-slate-200/50 dark:border-slate-700/50">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center space-x-4">
-                <motion.div 
+                <motion.div
                   className="flex items-center space-x-3"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 400 }}
@@ -153,7 +172,11 @@ export default function BudgetingTips() {
                     <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
                       <User className="w-5 h-5 text-white" />
                     </div>
-                    <ChevronRight className={`w-4 h-4 text-slate-600 dark:text-slate-400 transition-transform ${showUserMenu ? 'rotate-90' : ''}`} />
+                    <ChevronRight
+                      className={`w-4 h-4 text-slate-600 dark:text-slate-400 transition-transform ${
+                        showUserMenu ? "rotate-90" : ""
+                      }`}
+                    />
                   </motion.button>
 
                   <AnimatePresence>
@@ -164,10 +187,10 @@ export default function BudgetingTips() {
                         exit={{ opacity: 0, y: -10 }}
                         className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
                       >
-                        <button 
+                        <button
                           onClick={() => {
-                            localStorage.removeItem('token')
-                            router.push('/')
+                            localStorage.removeItem("token");
+                            router.push("/");
                           }}
                           className="w-full px-4 py-3 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3"
                         >
@@ -210,7 +233,9 @@ export default function BudgetingTips() {
               >
                 <div className="p-6">
                   <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Menu</h2>
+                    <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+                      Menu
+                    </h2>
                     <button
                       onClick={() => setIsMenuOpen(false)}
                       className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
@@ -218,22 +243,31 @@ export default function BudgetingTips() {
                       <X className="w-6 h-6 text-slate-600 dark:text-slate-400" />
                     </button>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <button
-                      onClick={() => { router.push("/dashboard"); setIsMenuOpen(false); }}
+                      onClick={() => {
+                        router.push("/dashboard");
+                        setIsMenuOpen(false);
+                      }}
                       className="w-full px-4 py-3 text-left rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
                     >
                       Dashboard
                     </button>
                     <button
-                      onClick={() => { router.push("/budgeting-tips"); setIsMenuOpen(false); }}
+                      onClick={() => {
+                        router.push("/budgeting-tips");
+                        setIsMenuOpen(false);
+                      }}
                       className="w-full px-4 py-3 text-left rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-medium"
                     >
                       Budgeting Tips
                     </button>
                     <button
-                      onClick={() => { router.push("/instructions"); setIsMenuOpen(false); }}
+                      onClick={() => {
+                        router.push("/instructions");
+                        setIsMenuOpen(false);
+                      }}
                       className="w-full px-4 py-3 text-left rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
                     >
                       Instructions
@@ -241,9 +275,9 @@ export default function BudgetingTips() {
                     <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
                       <button
                         onClick={() => {
-                          localStorage.removeItem('token')
-                          router.push('/')
-                          setIsMenuOpen(false)
+                          localStorage.removeItem("token");
+                          router.push("/");
+                          setIsMenuOpen(false);
                         }}
                         className="w-full px-4 py-3 text-left rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 font-medium"
                       >
@@ -265,9 +299,14 @@ export default function BudgetingTips() {
             className="mb-8"
           >
             <h1 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-white mb-2">
-              Budgeting Tips & <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">Resources</span>
+              Budgeting Tips &{" "}
+              <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
+                Resources
+              </span>
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">Get expert advice and discover valuable resources</p>
+            <p className="text-slate-600 dark:text-slate-400">
+              Get expert advice and discover valuable resources
+            </p>
           </motion.div>
 
           {/* Features Row */}
@@ -282,12 +321,18 @@ export default function BudgetingTips() {
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-4">
-                      <div className={`p-3 bg-gradient-to-br ${feature.gradient} rounded-xl shadow-lg`}>
+                      <div
+                        className={`p-3 bg-gradient-to-br ${feature.gradient} rounded-xl shadow-lg`}
+                      >
                         {feature.icon}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-slate-800 dark:text-white">{feature.title}</h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{feature.description}</p>
+                        <h3 className="font-semibold text-slate-800 dark:text-white">
+                          {feature.title}
+                        </h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                          {feature.description}
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -353,7 +398,9 @@ export default function BudgetingTips() {
                   <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
                     <CardContent className="p-6">
                       <div className="flex items-start space-x-4">
-                        <div className={`p-3 bg-gradient-to-br ${resource.gradient} rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        <div
+                          className={`p-3 bg-gradient-to-br ${resource.gradient} rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                        >
                           {resource.icon}
                         </div>
                         <div className="flex-1">
@@ -367,7 +414,11 @@ export default function BudgetingTips() {
                             variant="outline"
                             size="sm"
                             className="w-full flex items-center justify-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 group"
-                            onClick={() => resource.link !== "#" ? window.open(resource.link, "_blank") : null}
+                            onClick={() =>
+                              resource.link !== "#"
+                                ? window.open(resource.link, "_blank")
+                                : null
+                            }
                           >
                             Learn More
                             <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -377,11 +428,11 @@ export default function BudgetingTips() {
                     </CardContent>
                   </Card>
                 </motion.div>
-              ))}              
+              ))}
             </motion.div>
           </div>
         </main>
       </div>
     </div>
-  )
+  );
 }

@@ -1,58 +1,71 @@
-'use client'
+"use client";
 
-import React, { useState } from "react"
-import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@/components/ui/Button"
-import { Input } from "@/components/ui/Input"
-import { Loader2, Wallet, Lock, Mail, Sparkles } from "lucide-react"
-import { motion } from "framer-motion"
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Loader2, Wallet, Lock, Mail, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 
-const signupSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-})
+const signupSchema = z
+  .object({
+    email: z.string().email("Please enter a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
-type SignupFormValues = z.infer<typeof signupSchema>
+type SignupFormValues = z.infer<typeof signupSchema>;
 
 export default function SignupComponent() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const { register, handleSubmit, formState: { errors } } = useForm<SignupFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
-  })
+  });
 
   async function onSubmit(data: SignupFormValues) {
     try {
-      setIsLoading(true)
-      setError("")
+      setIsLoading(true);
+      setError("");
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: data.email, password: data.password }),
-      })
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: data.email, password: data.password }),
+        }
+      );
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.msg || "An error occurred during signup")
+        const errorData = await response.json();
+        throw new Error(errorData.msg || "An error occurred during signup");
       }
 
-      const responseData = await response.json()
-      localStorage.setItem("token", responseData.token)
-      router.push("/dashboard")
+      const responseData = await response.json();
+      localStorage.setItem("token", responseData.token);
+      router.push("/dashboard");
     } catch (error) {
-      setError(error instanceof Error ? error.message : "An unexpected error occurred")
+      setError(
+        error instanceof Error ? error.message : "An unexpected error occurred"
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -105,7 +118,9 @@ export default function SignupComponent() {
               <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
                 Create an account
               </h2>
-              <p className="text-slate-600">Sign up to start managing your finances</p>
+              <p className="text-slate-600">
+                Sign up to start managing your finances
+              </p>
             </div>
 
             <div className="px-8 pb-8">
@@ -120,7 +135,10 @@ export default function SignupComponent() {
               )}
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-slate-700 mb-2"
+                  >
                     Email Address
                   </label>
                   <div className="relative">
@@ -137,14 +155,21 @@ export default function SignupComponent() {
                     />
                   </div>
                   {errors.email && (
-                    <motion.p className="mt-2 text-xs text-red-600" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <motion.p
+                      className="mt-2 text-xs text-red-600"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
                       {errors.email.message}
                     </motion.p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-slate-700 mb-2"
+                  >
                     Password
                   </label>
                   <div className="relative">
@@ -161,14 +186,21 @@ export default function SignupComponent() {
                     />
                   </div>
                   {errors.password && (
-                    <motion.p className="mt-2 text-xs text-red-600" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <motion.p
+                      className="mt-2 text-xs text-red-600"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
                       {errors.password.message}
                     </motion.p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 mb-2">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block text-sm font-medium text-slate-700 mb-2"
+                  >
                     Confirm Password
                   </label>
                   <div className="relative">
@@ -185,7 +217,11 @@ export default function SignupComponent() {
                     />
                   </div>
                   {errors.confirmPassword && (
-                    <motion.p className="mt-2 text-xs text-red-600" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <motion.p
+                      className="mt-2 text-xs text-red-600"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
                       {errors.confirmPassword.message}
                     </motion.p>
                   )}
@@ -228,10 +264,18 @@ export default function SignupComponent() {
 
       <style jsx>{`
         @keyframes blob {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
+          0% {
+            transform: translate(0px, 0px) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+          100% {
+            transform: translate(0px, 0px) scale(1);
+          }
         }
         .animate-blob {
           animation: blob 7s infinite;
@@ -244,5 +288,5 @@ export default function SignupComponent() {
         }
       `}</style>
     </>
-  )
+  );
 }

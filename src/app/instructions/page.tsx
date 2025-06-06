@@ -1,42 +1,57 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  DollarSign, PieChart, Filter, Download, HelpCircle, TrendingUp, 
-  Menu, X, Wallet, ChevronRight, User, LogOut, Plus, Search, 
-  FileText, Lightbulb, Target, ArrowUpRight
-} from 'lucide-react'
-import { Button } from "@/components/ui/Button"
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  DollarSign,
+  PieChart,
+  Filter,
+  Download,
+  HelpCircle,
+  TrendingUp,
+  Menu,
+  X,
+  Wallet,
+  ChevronRight,
+  User,
+  LogOut,
+  Plus,
+  Search,
+  FileText,
+  Lightbulb,
+  Target,
+  ArrowUpRight,
+} from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 interface InstructionCard {
-  icon: React.ReactNode
-  title: string
-  content: React.ReactNode
-  gradient: string
+  icon: React.ReactNode;
+  title: string;
+  content: React.ReactNode;
+  gradient: string;
 }
 
 export default function Instructions() {
-  const router = useRouter()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [showUserMenu, setShowUserMenu] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
+  const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true'
-    setDarkMode(savedDarkMode)
+    const savedDarkMode = localStorage.getItem("darkMode") === "true";
+    setDarkMode(savedDarkMode);
     if (savedDarkMode) {
-      document.documentElement.classList.add('dark')
+      document.documentElement.classList.add("dark");
     }
-  }, [])
+  }, []);
 
   const instructionCards: InstructionCard[] = [
     {
@@ -51,7 +66,7 @@ export default function Instructions() {
           <li>Click "Add Transaction" to save</li>
         </ol>
       ),
-      gradient: "from-indigo-500 to-purple-600"
+      gradient: "from-indigo-500 to-purple-600",
     },
     {
       icon: <PieChart className="w-6 h-6 text-white" />,
@@ -64,7 +79,7 @@ export default function Instructions() {
           <li>Track your savings rate</li>
         </ul>
       ),
-      gradient: "from-green-500 to-emerald-600"
+      gradient: "from-green-500 to-emerald-600",
     },
     {
       icon: <Search className="w-6 h-6 text-white" />,
@@ -77,7 +92,7 @@ export default function Instructions() {
           <li>Sort by date, amount, or category</li>
         </ul>
       ),
-      gradient: "from-blue-500 to-cyan-600"
+      gradient: "from-blue-500 to-cyan-600",
     },
     {
       icon: <FileText className="w-6 h-6 text-white" />,
@@ -90,7 +105,7 @@ export default function Instructions() {
           <li>Select transaction types to export</li>
         </ul>
       ),
-      gradient: "from-amber-500 to-orange-600"
+      gradient: "from-amber-500 to-orange-600",
     },
     {
       icon: <Lightbulb className="w-6 h-6 text-white" />,
@@ -103,7 +118,7 @@ export default function Instructions() {
           <li>Monitor your progress</li>
         </ul>
       ),
-      gradient: "from-rose-500 to-pink-600"
+      gradient: "from-rose-500 to-pink-600",
     },
     {
       icon: <Target className="w-6 h-6 text-white" />,
@@ -116,20 +131,19 @@ export default function Instructions() {
           <li>Achieve financial milestones</li>
         </ul>
       ),
-      gradient: "from-purple-500 to-violet-600"
-    }
-  ]
+      gradient: "from-purple-500 to-violet-600",
+    },
+  ];
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'dark' : ''}`}>
+    <div className={`min-h-screen ${darkMode ? "dark" : ""}`}>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300">
-        
         {/* Header - Same as Dashboard */}
         <header className="fixed top-0 left-0 right-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm border-b border-slate-200/50 dark:border-slate-700/50">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center space-x-4">
-                <motion.div 
+                <motion.div
                   className="flex items-center space-x-3"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 400 }}
@@ -182,7 +196,11 @@ export default function Instructions() {
                     <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
                       <User className="w-5 h-5 text-white" />
                     </div>
-                    <ChevronRight className={`w-4 h-4 text-slate-600 dark:text-slate-400 transition-transform ${showUserMenu ? 'rotate-90' : ''}`} />
+                    <ChevronRight
+                      className={`w-4 h-4 text-slate-600 dark:text-slate-400 transition-transform ${
+                        showUserMenu ? "rotate-90" : ""
+                      }`}
+                    />
                   </motion.button>
 
                   <AnimatePresence>
@@ -193,10 +211,10 @@ export default function Instructions() {
                         exit={{ opacity: 0, y: -10 }}
                         className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
                       >
-                        <button 
+                        <button
                           onClick={() => {
-                            localStorage.removeItem('token')
-                            router.push('/')
+                            localStorage.removeItem("token");
+                            router.push("/");
                           }}
                           className="w-full px-4 py-3 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3"
                         >
@@ -239,7 +257,9 @@ export default function Instructions() {
               >
                 <div className="p-6">
                   <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Menu</h2>
+                    <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+                      Menu
+                    </h2>
                     <button
                       onClick={() => setIsMenuOpen(false)}
                       className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
@@ -247,22 +267,31 @@ export default function Instructions() {
                       <X className="w-6 h-6 text-slate-600 dark:text-slate-400" />
                     </button>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <button
-                      onClick={() => { router.push("/dashboard"); setIsMenuOpen(false); }}
+                      onClick={() => {
+                        router.push("/dashboard");
+                        setIsMenuOpen(false);
+                      }}
                       className="w-full px-4 py-3 text-left rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
                     >
                       Dashboard
                     </button>
                     <button
-                      onClick={() => { router.push("/budgeting-tips"); setIsMenuOpen(false); }}
+                      onClick={() => {
+                        router.push("/budgeting-tips");
+                        setIsMenuOpen(false);
+                      }}
                       className="w-full px-4 py-3 text-left rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
                     >
                       Budgeting Tips
                     </button>
                     <button
-                      onClick={() => { router.push("/instructions"); setIsMenuOpen(false); }}
+                      onClick={() => {
+                        router.push("/instructions");
+                        setIsMenuOpen(false);
+                      }}
                       className="w-full px-4 py-3 text-left rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-medium"
                     >
                       Instructions
@@ -270,9 +299,9 @@ export default function Instructions() {
                     <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
                       <button
                         onClick={() => {
-                          localStorage.removeItem('token')
-                          router.push('/')
-                          setIsMenuOpen(false)
+                          localStorage.removeItem("token");
+                          router.push("/");
+                          setIsMenuOpen(false);
                         }}
                         className="w-full px-4 py-3 text-left rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 font-medium"
                       >
@@ -294,9 +323,14 @@ export default function Instructions() {
             className="mb-8"
           >
             <h1 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-white mb-2">
-              How to Use <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">Nexus</span>
+              How to Use{" "}
+              <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
+                Nexus
+              </span>
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">Master your finances with these simple steps</p>
+            <p className="text-slate-600 dark:text-slate-400">
+              Master your finances with these simple steps
+            </p>
           </motion.div>
 
           {/* Instruction Cards Grid */}
@@ -311,7 +345,9 @@ export default function Instructions() {
                 <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
                   <CardHeader>
                     <div className="flex items-center space-x-4 mb-2">
-                      <div className={`p-3 bg-gradient-to-br ${card.gradient} rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <div
+                        className={`p-3 bg-gradient-to-br ${card.gradient} rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                      >
                         {card.icon}
                       </div>
                       <CardTitle className="text-lg font-semibold text-slate-800 dark:text-white">
@@ -319,9 +355,7 @@ export default function Instructions() {
                       </CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    {card.content}
-                  </CardContent>
+                  <CardContent>{card.content}</CardContent>
                 </Card>
               </motion.div>
             ))}
@@ -329,5 +363,5 @@ export default function Instructions() {
         </main>
       </div>
     </div>
-  )
+  );
 }
