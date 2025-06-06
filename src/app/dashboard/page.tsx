@@ -29,7 +29,6 @@ import MoneySavingRecommendations from '@/components/MoneySaver'
 
 // Enhanced color palette with gradients
 const categoryColors: { [key: string]: string } = {
-  Job: "#6366f1",
   Work: "#6366f1",
   Allowance: "#f59e0b",
   Gift: "#06b6d4",
@@ -73,7 +72,7 @@ interface Budget {
   percentUsed: number
 }
 
-const incomeCategories: string[] = ["Job", "Work", "Allowance", "Gift", "Chores", "Misc"]
+const incomeCategories: string[] = ["Work", "Allowance", "Gift", "Chores", "Misc"]
 const expenseCategories: string[] = ["Transportation", "Entertainment", "Clothing", "Personal", "Food", "Misc"]
 
 const Motioncard = motion.create(Card)
