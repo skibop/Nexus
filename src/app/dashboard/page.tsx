@@ -2413,26 +2413,28 @@ const saveBudgets = async (newBudgets: { [key: string]: number }) => {
                                   $
                                 </span>
                                 <input
-                                  type="number"
-                                  defaultValue={budget.limit}
-                                 onBlur={async (e) => {
-                                    const newLimit = parseFloat(e.target.value) || 0;
-                                    if (newLimit === budget.limit) return; // No change
+  type="number"
+  defaultValue={budget.limit}
+  key={`${budget.category}-${activeBudgetPeriod}`} // Add this key to reset the input when period changes
+  onBlur={async (e) => {
+    const newLimit = parseFloat(e.target.value) || 0;
+    if (newLimit === budget.limit) return; // No change
 
-                                    const updatedBudgets = {
-                                      ...userBudgets[activeBudgetPeriod],
-                                      [budget.category]: newLimit,
-                                    };
+    // Only update the current period's budgets
+    const updatedBudgets = {
+      ...userBudgets[activeBudgetPeriod],
+      [budget.category]: newLimit,
+    };
 
-                                    await saveBudgets(updatedBudgets);
-                                  }}
-                                  onKeyPress={async (e) => {
-                                    if (e.key === "Enter") {
-                                      e.currentTarget.blur();
-                                    }
-                                  }}
-                                  className="w-24 px-2 py-1 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                />
+    await saveBudgets(updatedBudgets);
+  }}
+  onKeyPress={async (e) => {
+    if (e.key === "Enter") {
+      e.currentTarget.blur();
+    }
+  }}
+  className="w-24 px-2 py-1 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+/>
                               </div>
                             </div>
                           </motion.div>
