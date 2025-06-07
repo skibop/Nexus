@@ -2209,7 +2209,7 @@ useEffect(() => {
                   </div>
                 </div>
                <p className="text-sm text-slate-600 dark:text-slate-400 mt-3">
-  Tracking expenses from {formatDate(budgetStartDate)} to {formatDate(budgetEndDate)}
+  Tracking expenses from {new Date(budgetStartDate + 'T00:00:00').toLocaleDateString()} to {new Date(budgetEndDate + 'T00:00:00').toLocaleDateString()}
 </p>
               </div>
 
