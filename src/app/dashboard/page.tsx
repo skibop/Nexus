@@ -174,7 +174,15 @@ export default function Dashboard() {
   const [activeBudgetPeriod, setActiveBudgetPeriod] = useState<
     "monthly" | "weekly" | "yearly"
   >("monthly");
-  const [userBudgets, setUserBudgets] = useState<{ [key: string]: number }>({});
+  const [userBudgets, setUserBudgets] = useState<{
+    monthly: { [key: string]: number };
+    weekly: { [key: string]: number };
+    yearly: { [key: string]: number };
+  }>({
+    monthly: {},
+    weekly: {},
+    yearly: {}
+  });
   const [budgetsLoading, setBudgetsLoading] = useState(false);
 
   const formRef = useRef<HTMLDivElement>(null);
@@ -232,122 +240,141 @@ export default function Dashboard() {
     return "Needs Improvement";
   };
 
-  const fetchBudgets = useCallback(async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+  // Update fetchBudgets function
+const fetchBudgets = useCallback(async () => {
+  const token = localStorage.getItem("token");
+  if (!token) return;
 
-    setBudgetsLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/budgets`,
-        {
-          headers: { "x-auth-token": token },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch budgets");
+  setBudgetsLoading(true);
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/budgets`,
+      {
+        headers: { "x-auth-token": token },
       }
-      const data = await response.json();
-      setUserBudgets(data.budgets);
-    } catch (error) {
-      console.error("Error fetching budgets:", error);
-      // Use default budgets if fetch fails
-      setUserBudgets({
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch budgets");
+    }
+    const data = await response.json();
+    setUserBudgets(data.budgets);
+  } catch (error) {
+    console.error("Error fetching budgets:", error);
+    // Use default budgets if fetch fails
+    setUserBudgets({
+      monthly: {
         Food: 300,
         Transportation: 200,
         Entertainment: 150,
         Clothing: 100,
         Personal: 100,
         Misc: 50,
-      });
-    } finally {
-      setBudgetsLoading(false);
-    }
-  }, []);
-
-  const calculateBudgetData = () => {
-    const categoryBudgets: { [key: string]: Budget } = {};
-
-    // Calculate spent amounts for each category
-    const now = new Date();
-    let startDate: Date;
-
-    switch (activeBudgetPeriod) {
-      case "weekly":
-        const tempDate = new Date(now);
-        startDate = new Date(
-          tempDate.setDate(tempDate.getDate() - tempDate.getDay())
-        );
-        break;
-      case "yearly":
-        startDate = new Date(now.getFullYear(), 0, 1);
-        break;
-      default: // monthly
-        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    }
-
-    expenseCategories.forEach((category) => {
-      const spent = filteredTransactions
-        .filter(
-          (t) =>
-            t.type === "expense" &&
-            t.category === category &&
-            new Date(t.date) >= startDate
-        )
-        .reduce((sum, t) => sum + t.amount, 0);
-
-      const limit = userBudgets[category] || 100;
-      const adjustedLimit =
-        activeBudgetPeriod === "weekly"
-          ? limit / 4
-          : activeBudgetPeriod === "yearly"
-          ? limit * 12
-          : limit;
-
-      categoryBudgets[category] = {
-        category,
-        limit: adjustedLimit,
-        period: activeBudgetPeriod,
-        spent,
-        remaining: adjustedLimit - spent,
-        percentUsed: (spent / adjustedLimit) * 100,
-      };
-    });
-
-    return Object.values(categoryBudgets);
-  };
-
-  const saveBudgets = async (newBudgets: { [key: string]: number }) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/budgets`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "x-auth-token": token,
-          },
-          body: JSON.stringify({ budgets: newBudgets }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to save budgets");
+      },
+      weekly: {
+        Food: 75,
+        Transportation: 50,
+        Entertainment: 40,
+        Clothing: 25,
+        Personal: 25,
+        Misc: 15,
+      },
+      yearly: {
+        Food: 3600,
+        Transportation: 2400,
+        Entertainment: 1800,
+        Clothing: 1200,
+        Personal: 1200,
+        Misc: 600,
       }
+    });
+  } finally {
+    setBudgetsLoading(false);
+  }
+}, []);
 
-      const data = await response.json();
-      setUserBudgets(data.budgets);
-      setBudgets(calculateBudgetData());
-    } catch (error) {
-      console.error("Error saving budgets:", error);
+// Update calculateBudgetData to use the correct period
+const calculateBudgetData = () => {
+  const categoryBudgets: { [key: string]: Budget } = {};
+
+  // Calculate spent amounts for each category
+  const now = new Date();
+  let startDate: Date;
+
+  switch (activeBudgetPeriod) {
+    case "weekly":
+      const tempDate = new Date(now);
+      startDate = new Date(
+        tempDate.setDate(tempDate.getDate() - tempDate.getDay())
+      );
+      break;
+    case "yearly":
+      startDate = new Date(now.getFullYear(), 0, 1);
+      break;
+    default: // monthly
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+
+  expenseCategories.forEach((category) => {
+    const spent = filteredTransactions
+      .filter(
+        (t) =>
+          t.type === "expense" &&
+          t.category === category &&
+          new Date(t.date) >= startDate
+      )
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    // Get the budget for the current period
+    const limit = userBudgets[activeBudgetPeriod][category] || 100;
+
+    categoryBudgets[category] = {
+      category,
+      limit,
+      period: activeBudgetPeriod,
+      spent,
+      remaining: limit - spent,
+      percentUsed: (spent / limit) * 100,
+    };
+  });
+
+  return Object.values(categoryBudgets);
+};
+
+// Update saveBudgets to include the period
+const saveBudgets = async (newBudgets: { [key: string]: number }) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    router.push("/login");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/budgets`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+        body: JSON.stringify({ 
+          budgets: newBudgets,
+          period: activeBudgetPeriod 
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to save budgets");
     }
-  };
+
+    const data = await response.json();
+    setUserBudgets(data.budgets);
+    setBudgets(calculateBudgetData());
+  } catch (error) {
+    console.error("Error saving budgets:", error);
+  }
+};
 
   const resetBudgets = async () => {
     const token = localStorage.getItem("token");
@@ -2388,20 +2415,13 @@ export default function Dashboard() {
                                 <input
                                   type="number"
                                   defaultValue={budget.limit}
-                                  onBlur={async (e) => {
-                                    const newLimit =
-                                      parseFloat(e.target.value) || 0;
+                                 onBlur={async (e) => {
+                                    const newLimit = parseFloat(e.target.value) || 0;
                                     if (newLimit === budget.limit) return; // No change
 
-                                    let baseLimit = newLimit;
-                                    if (activeBudgetPeriod === "weekly")
-                                      baseLimit = newLimit * 4;
-                                    if (activeBudgetPeriod === "yearly")
-                                      baseLimit = newLimit / 12;
-
                                     const updatedBudgets = {
-                                      ...userBudgets,
-                                      [budget.category]: baseLimit,
+                                      ...userBudgets[activeBudgetPeriod],
+                                      [budget.category]: newLimit,
                                     };
 
                                     await saveBudgets(updatedBudgets);
