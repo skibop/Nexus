@@ -2208,9 +2208,9 @@ useEffect(() => {
                     />
                   </div>
                 </div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-3">
-                  Tracking expenses from {new Date(budgetStartDate).toLocaleDateString()} to {new Date(budgetEndDate).toLocaleDateString()}
-                </p>
+               <p className="text-sm text-slate-600 dark:text-slate-400 mt-3">
+  Tracking expenses from {formatDate(budgetStartDate)} to {formatDate(budgetEndDate)}
+</p>
               </div>
 
               {/* Budget Overview Cards */}
