@@ -107,7 +107,7 @@ interface Budget {
   percentUsed: number;
 }
 
-type BudgetPeriod = 'monthly' | 'weekly' | 'yearly';
+type BudgetPeriod = "monthly" | "weekly" | "yearly";
 
 interface BudgetData {
   [key: string]: number;
@@ -184,8 +184,8 @@ export default function Dashboard() {
   const [showBudgetingTool, setShowBudgetingTool] = useState(false);
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [userBudgets, setUserBudgets] = useState<{ [key: string]: number }>({});
-  const [budgetStartDate, setBudgetStartDate] = useState<string>('');
-  const [budgetEndDate, setBudgetEndDate] = useState<string>('');
+  const [budgetStartDate, setBudgetStartDate] = useState<string>("");
+  const [budgetEndDate, setBudgetEndDate] = useState<string>("");
   const [budgetsLoading, setBudgetsLoading] = useState(false);
 
   const formRef = useRef<HTMLDivElement>(null);
@@ -244,116 +244,132 @@ export default function Dashboard() {
   };
 
   // Update fetchBudgets function
-const fetchBudgets = useCallback(async () => {
-  const token = localStorage.getItem("token");
-  if (!token) return;
+  const fetchBudgets = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
-  setBudgetsLoading(true);
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/budgets`,
-      {
-        headers: { "x-auth-token": token },
+    setBudgetsLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/budgets`,
+        {
+          headers: { "x-auth-token": token },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch budgets");
       }
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch budgets");
+      const data = await response.json();
+      setUserBudgets(data.budgets);
+      setBudgetStartDate(new Date(data.startDate).toISOString().split("T")[0]);
+      setBudgetEndDate(new Date(data.endDate).toISOString().split("T")[0]);
+    } catch (error) {
+      console.error("Error fetching budgets:", error);
+      // Use default budgets if fetch fails
+      setUserBudgets({
+        Food: 300,
+        Transportation: 200,
+        Entertainment: 150,
+        Clothing: 100,
+        Personal: 100,
+        Misc: 50,
+      });
+      // Default to current month
+      const now = new Date();
+      setBudgetStartDate(
+        new Date(now.getFullYear(), now.getMonth(), 1)
+          .toISOString()
+          .split("T")[0]
+      );
+      setBudgetEndDate(
+        new Date(now.getFullYear(), now.getMonth() + 1, 0)
+          .toISOString()
+          .split("T")[0]
+      );
+    } finally {
+      setBudgetsLoading(false);
     }
-    const data = await response.json();
-    setUserBudgets(data.budgets);
-    setBudgetStartDate(new Date(data.startDate).toISOString().split('T')[0]);
-    setBudgetEndDate(new Date(data.endDate).toISOString().split('T')[0]);
-  } catch (error) {
-    console.error("Error fetching budgets:", error);
-    // Use default budgets if fetch fails
-    setUserBudgets({
-      Food: 300,
-      Transportation: 200,
-      Entertainment: 150,
-      Clothing: 100,
-      Personal: 100,
-      Misc: 50,
+  }, []);
+
+  // Update calculateBudgetData to use the correct period
+  const calculateBudgetData = () => {
+    const categoryBudgets: { [key: string]: Budget } = {};
+
+    const startDate = new Date(budgetStartDate);
+    const endDate = new Date(budgetEndDate);
+
+    expenseCategories.forEach((category) => {
+      const spent = filteredTransactions
+        .filter(
+          (t) =>
+            t.type === "expense" &&
+            t.category === category &&
+            new Date(t.date) >= startDate &&
+            new Date(t.date) <= endDate
+        )
+        .reduce((sum, t) => sum + t.amount, 0);
+
+      const limit = userBudgets[category] || 0;
+
+      categoryBudgets[category] = {
+        category,
+        limit,
+        period: "custom",
+        spent,
+        remaining: limit - spent,
+        percentUsed: limit > 0 ? (spent / limit) * 100 : 0,
+      };
     });
-    // Default to current month
-    const now = new Date();
-    setBudgetStartDate(new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]);
-    setBudgetEndDate(new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0]);
-  } finally {
-    setBudgetsLoading(false);
-  }
-}, []);
 
-// Update calculateBudgetData to use the correct period
-const calculateBudgetData = () => {
-  const categoryBudgets: { [key: string]: Budget } = {};
+    return Object.values(categoryBudgets);
+  };
 
-  const startDate = new Date(budgetStartDate);
-  const endDate = new Date(budgetEndDate);
-
-  expenseCategories.forEach((category) => {
-    const spent = filteredTransactions
-      .filter(
-        (t) =>
-          t.type === "expense" &&
-          t.category === category &&
-          new Date(t.date) >= startDate &&
-          new Date(t.date) <= endDate
-      )
-      .reduce((sum, t) => sum + t.amount, 0);
-
-    const limit = userBudgets[category] || 0;
-
-    categoryBudgets[category] = {
-      category,
-      limit,
-      period: 'custom',
-      spent,
-      remaining: limit - spent,
-      percentUsed: limit > 0 ? (spent / limit) * 100 : 0,
-    };
-  });
-
-  return Object.values(categoryBudgets);
-};
-
-// Update saveBudgets to include the period
-const saveBudgets = async (newBudgets: { [key: string]: number }, newStartDate?: string, newEndDate?: string) => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    router.push("/login");
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/budgets`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "x-auth-token": token,
-        },
-        body: JSON.stringify({ 
-          budgets: newBudgets,
-          startDate: newStartDate || budgetStartDate,
-          endDate: newEndDate || budgetEndDate
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to save budgets");
+  // Update saveBudgets to include the period
+  const saveBudgets = async (
+    newBudgets: { [key: string]: number },
+    newStartDate?: string,
+    newEndDate?: string
+  ) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
     }
 
-    const data = await response.json();
-    setUserBudgets(data.budgets);
-    if (data.startDate) setBudgetStartDate(new Date(data.startDate).toISOString().split('T')[0]);
-    if (data.endDate) setBudgetEndDate(new Date(data.endDate).toISOString().split('T')[0]);
-    setBudgets(calculateBudgetData());
-  } catch (error) {
-    console.error("Error saving budgets:", error);
-  }
-};
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/budgets`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": token,
+          },
+          body: JSON.stringify({
+            budgets: newBudgets,
+            startDate: newStartDate || budgetStartDate,
+            endDate: newEndDate || budgetEndDate,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save budgets");
+      }
+
+      const data = await response.json();
+      setUserBudgets(data.budgets);
+      if (data.startDate)
+        setBudgetStartDate(
+          new Date(data.startDate).toISOString().split("T")[0]
+        );
+      if (data.endDate)
+        setBudgetEndDate(new Date(data.endDate).toISOString().split("T")[0]);
+      setBudgets(calculateBudgetData());
+    } catch (error) {
+      console.error("Error saving budgets:", error);
+    }
+  };
 
   const resetBudgets = async () => {
     const token = localStorage.getItem("token");
@@ -426,11 +442,16 @@ const saveBudgets = async (newBudgets: { [key: string]: number }, newStartDate?:
     }
   }, [showBudgetingTool, fetchBudgets]);
 
-useEffect(() => {
-  if (userBudgets && Object.keys(userBudgets).length > 0 && budgetStartDate && budgetEndDate) {
-    setBudgets(calculateBudgetData());
-  }
-}, [filteredTransactions, userBudgets, budgetStartDate, budgetEndDate]);
+  useEffect(() => {
+    if (
+      userBudgets &&
+      Object.keys(userBudgets).length > 0 &&
+      budgetStartDate &&
+      budgetEndDate
+    ) {
+      setBudgets(calculateBudgetData());
+    }
+  }, [filteredTransactions, userBudgets, budgetStartDate, budgetEndDate]);
 
   const fetchTransactions = useCallback(async () => {
     const token = localStorage.getItem("token");
@@ -1446,14 +1467,14 @@ useEffect(() => {
                         Filter
                       </Button>
                       <Button
-                      onClick={() => setShowExportModal(true)}
-                      variant="outline"
-                      className="flex items-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
-                      size="sm"
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      Export
-                    </Button>
+                        onClick={() => setShowExportModal(true)}
+                        variant="outline"
+                        className="flex items-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        size="sm"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Export
+                      </Button>
                     </div>
                   </div>
                 </CardHeader>
@@ -2125,375 +2146,390 @@ useEffect(() => {
         </AnimatePresence>
         {/* Budgeting Tool Modal */}
         {/* Budgeting Tool Modal */}
-<AnimatePresence>
-  {showBudgetingTool && (
-    <motion.div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={() => setShowBudgetingTool(false)}
-    >
-      <motion.div
-        className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="sticky top-0 bg-white dark:bg-slate-800 p-6 border-b border-slate-200 dark:border-slate-700 z-10">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
-                <Target className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-slate-800 dark:text-white">
-                  Budget Planner
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Set your spending limits for a custom date range
-                </p>
-              </div>
-            </div>
-            <button
+        <AnimatePresence>
+          {showBudgetingTool && (
+            <motion.div
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setShowBudgetingTool(false)}
-              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
-              <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-            </button>
-          </div>
-        </div>
-
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-88px)]">
-          {budgetsLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 text-purple-600 animate-spin" />
-            </div>
-          ) : (
-            <>
-              {/* Date Range Selector */}
-              <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
-                <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">
-                  Budget Period
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                      Start Date
-                    </label>
-                    <Input
-                      type="date"
-                      value={budgetStartDate}
-                      onChange={(e) => {
-                        setBudgetStartDate(e.target.value);
-                        saveBudgets(userBudgets, e.target.value, budgetEndDate);
-                      }}
-                      className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                      End Date
-                    </label>
-                    <Input
-                      type="date"
-                      value={budgetEndDate}
-                      onChange={(e) => {
-                        setBudgetEndDate(e.target.value);
-                        saveBudgets(userBudgets, budgetStartDate, e.target.value);
-                      }}
-                      min={budgetStartDate}
-                      className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600"
-                    />
+              <motion.div
+                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="sticky top-0 bg-white dark:bg-slate-800 p-6 border-b border-slate-200 dark:border-slate-700 z-10">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
+                        <Target className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold text-slate-800 dark:text-white">
+                          Budget Planner
+                        </h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                          Set your spending limits for a custom date range
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setShowBudgetingTool(false)}
+                      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                    </button>
                   </div>
                 </div>
-               <p className="text-sm text-slate-600 dark:text-slate-400 mt-3">
-  Tracking expenses from {new Date(budgetStartDate + 'T00:00:00').toLocaleDateString()} to {new Date(budgetEndDate + 'T00:00:00').toLocaleDateString()}
-</p>
-              </div>
 
-              {/* Budget Overview Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <Card className="border-0 shadow-lg">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        Total Budget
-                      </span>
-                      <DollarSign className="w-4 h-4 text-slate-400" />
+                <div className="p-6 overflow-y-auto max-h-[calc(90vh-88px)]">
+                  {budgetsLoading ? (
+                    <div className="flex items-center justify-center py-12">
+                      <Loader2 className="w-8 h-8 text-purple-600 animate-spin" />
                     </div>
-                    <p className="text-2xl font-bold text-slate-800 dark:text-white">
-                      {formatCurrency(
-                        budgets.reduce((sum, b) => sum + b.limit, 0)
-                      )}
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-0 shadow-lg">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        Total Spent
-                      </span>
-                      <TrendingUp className="w-4 h-4 text-slate-400" />
-                    </div>
-                    <p className="text-2xl font-bold text-slate-800 dark:text-white">
-                      {formatCurrency(
-                        budgets.reduce((sum, b) => sum + b.spent, 0)
-                      )}
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      {budgets.length > 0
-                        ? (
-                            (budgets.reduce(
-                              (sum, b) => sum + b.spent,
-                              0
-                            ) /
-                              budgets.reduce(
-                                (sum, b) => sum + b.limit,
-                                0
-                              )) *
-                            100
-                          ).toFixed(1)
-                        : "0"}
-                      % of budget
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-0 shadow-lg">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        Remaining
-                      </span>
-                      <Wallet className="w-4 h-4 text-slate-400" />
-                    </div>
-                    <p
-                      className={`text-2xl font-bold ${
-                        budgets.reduce(
-                          (sum, b) => sum + b.remaining,
-                          0
-                        ) >= 0
-                          ? "text-green-600 dark:text-green-400"
-                          : "text-red-600 dark:text-red-400"
-                      }`}
-                    >
-                      {formatCurrency(
-                        Math.abs(
-                          budgets.reduce(
-                            (sum, b) => sum + b.remaining,
-                            0
-                          )
-                        )
-                      )}
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      {budgets.reduce(
-                        (sum, b) => sum + b.remaining,
-                        0
-                      ) >= 0
-                        ? "under budget"
-                        : "over budget"}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Category Budgets */}
-              <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">
-                  Category Budgets
-                </h4>
-                {budgets.map((budget) => (
-                  <motion.div
-                    key={budget.category}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div
-                          className={`w-10 h-10 rounded-lg flex items-center justify-center`}
-                          style={{
-                            backgroundColor: `${
-                              categoryColors[budget.category]
-                            }20`,
-                          }}
-                        >
-                          <div
-                            className="w-3 h-3 rounded-full"
-                            style={{
-                              backgroundColor:
-                                categoryColors[budget.category],
-                            }}
-                          />
+                  ) : (
+                    <>
+                      {/* Date Range Selector */}
+                      <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                        <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">
+                          Budget Period
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                              Start Date
+                            </label>
+                            <Input
+                              type="date"
+                              value={budgetStartDate}
+                              onChange={(e) => {
+                                setBudgetStartDate(e.target.value);
+                                saveBudgets(
+                                  userBudgets,
+                                  e.target.value,
+                                  budgetEndDate
+                                );
+                              }}
+                              className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                              End Date
+                            </label>
+                            <Input
+                              type="date"
+                              value={budgetEndDate}
+                              onChange={(e) => {
+                                setBudgetEndDate(e.target.value);
+                                saveBudgets(
+                                  userBudgets,
+                                  budgetStartDate,
+                                  e.target.value
+                                );
+                              }}
+                              min={budgetStartDate}
+                              className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600"
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <h5 className="font-medium text-slate-800 dark:text-white">
-                            {budget.category}
-                          </h5>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">
-                            {formatCurrency(budget.spent)} of{" "}
-                            {formatCurrency(budget.limit)}
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-3">
+                          Tracking expenses from{" "}
+                          {new Date(
+                            budgetStartDate + "T00:00:00"
+                          ).toLocaleDateString()}{" "}
+                          to{" "}
+                          {new Date(
+                            budgetEndDate + "T00:00:00"
+                          ).toLocaleDateString()}
+                        </p>
+                      </div>
+
+                      {/* Budget Overview Cards */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <Card className="border-0 shadow-lg">
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm text-slate-600 dark:text-slate-400">
+                                Total Budget
+                              </span>
+                              <DollarSign className="w-4 h-4 text-slate-400" />
+                            </div>
+                            <p className="text-2xl font-bold text-slate-800 dark:text-white">
+                              {formatCurrency(
+                                budgets.reduce((sum, b) => sum + b.limit, 0)
+                              )}
+                            </p>
+                          </CardContent>
+                        </Card>
+
+                        <Card className="border-0 shadow-lg">
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm text-slate-600 dark:text-slate-400">
+                                Total Spent
+                              </span>
+                              <TrendingUp className="w-4 h-4 text-slate-400" />
+                            </div>
+                            <p className="text-2xl font-bold text-slate-800 dark:text-white">
+                              {formatCurrency(
+                                budgets.reduce((sum, b) => sum + b.spent, 0)
+                              )}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                              {budgets.length > 0
+                                ? (
+                                    (budgets.reduce(
+                                      (sum, b) => sum + b.spent,
+                                      0
+                                    ) /
+                                      budgets.reduce(
+                                        (sum, b) => sum + b.limit,
+                                        0
+                                      )) *
+                                    100
+                                  ).toFixed(1)
+                                : "0"}
+                              % of budget
+                            </p>
+                          </CardContent>
+                        </Card>
+
+                        <Card className="border-0 shadow-lg">
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm text-slate-600 dark:text-slate-400">
+                                Remaining
+                              </span>
+                              <Wallet className="w-4 h-4 text-slate-400" />
+                            </div>
+                            <p
+                              className={`text-2xl font-bold ${
+                                budgets.reduce(
+                                  (sum, b) => sum + b.remaining,
+                                  0
+                                ) >= 0
+                                  ? "text-green-600 dark:text-green-400"
+                                  : "text-red-600 dark:text-red-400"
+                              }`}
+                            >
+                              {formatCurrency(
+                                Math.abs(
+                                  budgets.reduce(
+                                    (sum, b) => sum + b.remaining,
+                                    0
+                                  )
+                                )
+                              )}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                              {budgets.reduce(
+                                (sum, b) => sum + b.remaining,
+                                0
+                              ) >= 0
+                                ? "under budget"
+                                : "over budget"}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      {/* Category Budgets */}
+                      <div className="space-y-4">
+                        <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">
+                          Category Budgets
+                        </h4>
+                        {budgets.map((budget) => (
+                          <motion.div
+                            key={budget.category}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4"
+                          >
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center space-x-3">
+                                <div
+                                  className={`w-10 h-10 rounded-lg flex items-center justify-center`}
+                                  style={{
+                                    backgroundColor: `${
+                                      categoryColors[budget.category]
+                                    }20`,
+                                  }}
+                                >
+                                  <div
+                                    className="w-3 h-3 rounded-full"
+                                    style={{
+                                      backgroundColor:
+                                        categoryColors[budget.category],
+                                    }}
+                                  />
+                                </div>
+                                <div>
+                                  <h5 className="font-medium text-slate-800 dark:text-white">
+                                    {budget.category}
+                                  </h5>
+                                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                                    {formatCurrency(budget.spent)} of{" "}
+                                    {formatCurrency(budget.limit)}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p
+                                  className={`text-lg font-semibold ${getBudgetStatusColor(
+                                    budget.percentUsed
+                                  )}`}
+                                >
+                                  {budget.percentUsed.toFixed(0)}%
+                                </p>
+                                <p className="text-sm text-slate-600 dark:text-slate-400">
+                                  {budget.remaining >= 0
+                                    ? `${formatCurrency(budget.remaining)} left`
+                                    : `${formatCurrency(
+                                        Math.abs(budget.remaining)
+                                      )} over`}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Progress Bar */}
+                            <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                              <motion.div
+                                className={`absolute left-0 top-0 h-full bg-gradient-to-r ${getBudgetProgressColor(
+                                  budget.percentUsed
+                                )} rounded-full`}
+                                initial={{ width: 0 }}
+                                animate={{
+                                  width: `${Math.min(
+                                    budget.percentUsed,
+                                    100
+                                  )}%`,
+                                }}
+                                transition={{ duration: 0.5, ease: "easeOut" }}
+                              />
+                              {budget.percentUsed > 100 && (
+                                <div
+                                  className="absolute right-0 top-0 h-full bg-red-600 dark:bg-red-500 animate-pulse"
+                                  style={{
+                                    width: `${budget.percentUsed - 100}%`,
+                                  }}
+                                />
+                              )}
+                            </div>
+
+                            {/* Edit Budget */}
+                            <div className="mt-3 flex items-center justify-between">
+                              <span className="text-sm text-slate-600 dark:text-slate-400">
+                                Budget limit:
+                              </span>
+                              <div className="flex items-center space-x-2">
+                                <span className="text-sm text-slate-600 dark:text-slate-400">
+                                  $
+                                </span>
+                                <input
+                                  type="number"
+                                  defaultValue={budget.limit}
+                                  onBlur={async (e) => {
+                                    const newLimit =
+                                      parseFloat(e.target.value) || 0;
+                                    if (newLimit === budget.limit) return; // No change
+
+                                    const updatedBudgets = {
+                                      ...userBudgets,
+                                      [budget.category]: newLimit,
+                                    };
+
+                                    await saveBudgets(updatedBudgets);
+                                  }}
+                                  onKeyPress={async (e) => {
+                                    if (e.key === "Enter") {
+                                      e.currentTarget.blur();
+                                    }
+                                  }}
+                                  className="w-24 px-2 py-1 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                />
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+
+                      {/* Budget Insights */}
+                      <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl">
+                        <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-3 flex items-center">
+                          <Lightbulb className="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" />
+                          Budget Insights
+                        </h4>
+                        <div className="space-y-2">
+                          {budgets.filter((b) => b.percentUsed >= 80).length >
+                            0 && (
+                            <p className="text-sm text-slate-700 dark:text-slate-300">
+                              <span className="font-medium text-amber-600 dark:text-amber-400">
+                                ⚠️ Alert:
+                              </span>{" "}
+                              You're approaching or exceeding your budget limit
+                              in{" "}
+                              {budgets
+                                .filter((b) => b.percentUsed >= 80)
+                                .map((b) => b.category)
+                                .join(", ")}
+                              .
+                            </p>
+                          )}
+                          {budgets.filter((b) => b.percentUsed < 50).length >
+                            0 && (
+                            <p className="text-sm text-slate-700 dark:text-slate-300">
+                              <span className="font-medium text-green-600 dark:text-green-400">
+                                ✓ Great job:
+                              </span>{" "}
+                              You're under 50% budget in{" "}
+                              {budgets
+                                .filter((b) => b.percentUsed < 50)
+                                .map((b) => b.category)
+                                .join(", ")}
+                              .
+                            </p>
+                          )}
+                          <p className="text-sm text-slate-700 dark:text-slate-300">
+                            <span className="font-medium">💡 Tip:</span> Adjust
+                            your budget period to match your income cycle for
+                            better tracking.
                           </p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p
-                          className={`text-lg font-semibold ${getBudgetStatusColor(
-                            budget.percentUsed
-                          )}`}
-                        >
-                          {budget.percentUsed.toFixed(0)}%
-                        </p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">
-                          {budget.remaining >= 0
-                            ? `${formatCurrency(budget.remaining)} left`
-                            : `${formatCurrency(
-                                Math.abs(budget.remaining)
-                              )} over`}
-                        </p>
-                      </div>
-                    </div>
 
-                    {/* Progress Bar */}
-                    <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                      <motion.div
-                        className={`absolute left-0 top-0 h-full bg-gradient-to-r ${getBudgetProgressColor(
-                          budget.percentUsed
-                        )} rounded-full`}
-                        initial={{ width: 0 }}
-                        animate={{
-                          width: `${Math.min(
-                            budget.percentUsed,
-                            100
-                          )}%`,
-                        }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                      />
-                      {budget.percentUsed > 100 && (
-                        <div
-                          className="absolute right-0 top-0 h-full bg-red-600 dark:bg-red-500 animate-pulse"
-                          style={{
-                            width: `${budget.percentUsed - 100}%`,
-                          }}
-                        />
-                      )}
-                    </div>
-
-                    {/* Edit Budget */}
-                    <div className="mt-3 flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        Budget limit:
-                      </span>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-slate-600 dark:text-slate-400">
-                          $
-                        </span>
-                        <input
-                          type="number"
-                          defaultValue={budget.limit}
-                          onBlur={async (e) => {
-                            const newLimit =
-                              parseFloat(e.target.value) || 0;
-                            if (newLimit === budget.limit) return; // No change
-
-                            const updatedBudgets = {
-                              ...userBudgets,
-                              [budget.category]: newLimit,
-                            };
-
-                            await saveBudgets(updatedBudgets);
-                          }}
-                          onKeyPress={async (e) => {
-                            if (e.key === "Enter") {
-                              e.currentTarget.blur();
+                      {/* Action Buttons */}
+                      <div className="mt-6 flex justify-end space-x-3">
+                        <Button
+                          onClick={async () => {
+                            if (
+                              confirm("Reset all budgets to default values?")
+                            ) {
+                              await resetBudgets();
                             }
                           }}
-                          className="w-24 px-2 py-1 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        />
+                          variant="outline"
+                          className="border-slate-300 dark:border-slate-600"
+                        >
+                          Reset to Defaults
+                        </Button>
+                        <Button
+                          onClick={() => setShowBudgetingTool(false)}
+                          className="bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-700 hover:to-teal-700"                        >
+                          Done
+                        </Button>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Budget Insights */}
-              <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl">
-                <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-3 flex items-center">
-                  <Lightbulb className="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" />
-                  Budget Insights
-                </h4>
-                <div className="space-y-2">
-                  {budgets.filter((b) => b.percentUsed >= 80).length >
-                    0 && (
-                    <p className="text-sm text-slate-700 dark:text-slate-300">
-                      <span className="font-medium text-amber-600 dark:text-amber-400">
-                        ⚠️ Alert:
-                      </span>{" "}
-                      You're approaching or exceeding your budget limit
-                      in{" "}
-                      {budgets
-                        .filter((b) => b.percentUsed >= 80)
-                        .map((b) => b.category)
-                        .join(", ")}
-                      .
-                    </p>
+                    </>
                   )}
-                  {budgets.filter((b) => b.percentUsed < 50).length >
-                    0 && (
-                    <p className="text-sm text-slate-700 dark:text-slate-300">
-                      <span className="font-medium text-green-600 dark:text-green-400">
-                        ✓ Great job:
-                      </span>{" "}
-                      You're under 50% budget in{" "}
-                      {budgets
-                        .filter((b) => b.percentUsed < 50)
-                        .map((b) => b.category)
-                        .join(", ")}
-                      .
-                    </p>
-                  )}
-                  <p className="text-sm text-slate-700 dark:text-slate-300">
-                    <span className="font-medium">💡 Tip:</span>{" "}
-                    Adjust your budget period to match your income cycle for better tracking.
-                  </p>
                 </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="mt-6 flex justify-end space-x-3">
-                <Button
-                  onClick={async () => {
-                    if (
-                      confirm("Reset all budgets to default values?")
-                    ) {
-                      await resetBudgets();
-                    }
-                  }}
-                  variant="outline"
-                  className="border-slate-300 dark:border-slate-600"
-                >
-                  Reset to Defaults
-                </Button>
-                <Button
-                  onClick={() => setShowBudgetingTool(false)}
-                  className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
-                >
-                  Done
-                </Button>
-              </div>
-            </>
+              </motion.div>
+            </motion.div>
           )}
-        </div>
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
+        </AnimatePresence>
       </div>
     </div>
   );
