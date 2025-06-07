@@ -324,8 +324,8 @@ const calculateBudgetData = () => {
       )
       .reduce((sum, t) => sum + t.amount, 0);
 
-    // Get the budget for the current period
-    const limit = userBudgets[activeBudgetPeriod][category] || 100;
+    // Get the budget for the current period, or 0 if not set
+    const limit = userBudgets[activeBudgetPeriod]?.[category] || 0;
 
     categoryBudgets[category] = {
       category,
@@ -333,7 +333,7 @@ const calculateBudgetData = () => {
       period: activeBudgetPeriod,
       spent,
       remaining: limit - spent,
-      percentUsed: (spent / limit) * 100,
+      percentUsed: limit > 0 ? (spent / limit) * 100 : 0,
     };
   });
 
