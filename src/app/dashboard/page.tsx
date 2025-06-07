@@ -107,6 +107,18 @@ interface Budget {
   percentUsed: number;
 }
 
+type BudgetPeriod = 'monthly' | 'weekly' | 'yearly';
+
+interface BudgetData {
+  [key: string]: number;
+}
+
+interface UserBudgets {
+  monthly: BudgetData;
+  weekly: BudgetData;
+  yearly: BudgetData;
+}
+
 const incomeCategories: string[] = [
   "Work",
   "Allowance",
@@ -171,18 +183,12 @@ export default function Dashboard() {
   const [showHealthScore, setShowHealthScore] = useState(false);
   const [showBudgetingTool, setShowBudgetingTool] = useState(false);
   const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [activeBudgetPeriod, setActiveBudgetPeriod] = useState<
-    "monthly" | "weekly" | "yearly"
-  >("monthly");
-  const [userBudgets, setUserBudgets] = useState<{
-    monthly: { [key: string]: number };
-    weekly: { [key: string]: number };
-    yearly: { [key: string]: number };
-  }>({
-    monthly: {},
-    weekly: {},
-    yearly: {}
-  });
+const [activeBudgetPeriod, setActiveBudgetPeriod] = useState<BudgetPeriod>('monthly');
+const [userBudgets, setUserBudgets] = useState<UserBudgets>({
+  monthly: {},
+  weekly: {},
+  yearly: {}
+});
   const [budgetsLoading, setBudgetsLoading] = useState(false);
 
   const formRef = useRef<HTMLDivElement>(null);
@@ -314,6 +320,13 @@ const calculateBudgetData = () => {
       startDate = new Date(now.getFullYear(), now.getMonth(), 1);
   }
 
+  // Define default budgets for each period with proper typing
+  const defaultBudgets: UserBudgets = {
+    weekly: { Food: 75, Transportation: 50, Entertainment: 40, Clothing: 25, Personal: 25, Misc: 15 },
+    monthly: { Food: 300, Transportation: 200, Entertainment: 150, Clothing: 100, Personal: 100, Misc: 50 },
+    yearly: { Food: 3600, Transportation: 2400, Entertainment: 1800, Clothing: 1200, Personal: 1200, Misc: 600 }
+  };
+
   expenseCategories.forEach((category) => {
     const spent = filteredTransactions
       .filter(
@@ -324,8 +337,9 @@ const calculateBudgetData = () => {
       )
       .reduce((sum, t) => sum + t.amount, 0);
 
-    // Get the budget for the current period, or 0 if not set
-    const limit = userBudgets[activeBudgetPeriod]?.[category] || 0;
+    // Get the budget for the current period, using defaults if not set
+    const currentPeriodBudgets = userBudgets[activeBudgetPeriod] || {};
+    const limit = currentPeriodBudgets[category] || defaultBudgets[activeBudgetPeriod][category] || 0;
 
     categoryBudgets[category] = {
       category,
@@ -341,7 +355,7 @@ const calculateBudgetData = () => {
 };
 
 // Update saveBudgets to include the period
-const saveBudgets = async (newBudgets: { [key: string]: number }) => {
+const saveBudgets = async (newBudgets: BudgetData) => {
   const token = localStorage.getItem("token");
   if (!token) {
     router.push("/login");
@@ -369,7 +383,14 @@ const saveBudgets = async (newBudgets: { [key: string]: number }) => {
     }
 
     const data = await response.json();
-    setUserBudgets(data.budgets);
+    
+    // Only update the current period in state, not all periods
+    setUserBudgets(prev => ({
+      ...prev,
+      [activeBudgetPeriod]: newBudgets
+    }));
+    
+    // Recalculate budget data with the new values
     setBudgets(calculateBudgetData());
   } catch (error) {
     console.error("Error saving budgets:", error);
