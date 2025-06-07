@@ -2219,28 +2219,21 @@ const saveBudgets = async (newBudgets: BudgetData) => {
                           Budget Period
                         </h4>
                         <div className="flex space-x-2">
-                          {(["weekly", "monthly", "yearly"] as const).map(
-                            (period) => (
-                              <Button
-                                key={period}
-                                onClick={() => setActiveBudgetPeriod(period)}
-                                variant={
-                                  activeBudgetPeriod === period
-                                    ? "default"
-                                    : "outline"
-                                }
-                                className={
-                                  activeBudgetPeriod === period
-                                    ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-0 shadow-md"
-                                    : "border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
-                                }
-                                size="sm"
-                              >
-                                {period.charAt(0).toUpperCase() +
-                                  period.slice(1)}
-                              </Button>
-                            )
-                          )}
+                          {(['weekly', 'monthly', 'yearly'] as const).map((period) => (
+  <Button
+    key={period}
+    onClick={() => setActiveBudgetPeriod(period)}
+    variant={activeBudgetPeriod === period ? "default" : "outline"}
+    className={
+      activeBudgetPeriod === period
+        ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-0 shadow-md"
+        : "border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
+    }
+    size="sm"
+  >
+    {period.charAt(0).toUpperCase() + period.slice(1)}
+  </Button>
+))}
                         </div>
                       </div>
 
