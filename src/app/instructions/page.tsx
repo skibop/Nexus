@@ -76,7 +76,8 @@ export default function Instructions() {
           <li>See total balance at the top</li>
           <li>View income and expenses breakdown</li>
           <li>Analyze spending patterns with charts</li>
-          <li>Track your savings rate</li>
+          <li>Track your savings rate & budget</li>
+          <li>View your financial health score</li>
         </ul>
       ),
       gradient: "from-green-500 to-emerald-600",
@@ -90,6 +91,7 @@ export default function Instructions() {
           <li>Filter by income or expense type</li>
           <li>Select custom date ranges</li>
           <li>Sort by date, amount, or category</li>
+          <li>View your updated filtered portfolio</li>
         </ul>
       ),
       gradient: "from-blue-500 to-cyan-600",
