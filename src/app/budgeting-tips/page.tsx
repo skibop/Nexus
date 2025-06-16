@@ -21,6 +21,8 @@ import {
   Target,
   Lightbulb,
   HelpCircle,
+  PieChart,
+  LayoutDashboard
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
@@ -115,181 +117,229 @@ export default function BudgetingTips() {
 
   return (
     <div className={`min-h-screen ${darkMode ? "dark" : ""}`}>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300">
-        {/* Header - Same as Dashboard */}
-        <header className="fixed top-0 left-0 right-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm border-b border-slate-200/50 dark:border-slate-700/50">
-          <div className="container mx-auto px-4 sm:px-6">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center space-x-4">
-                <motion.div
-                  className="flex items-center space-x-3"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <Wallet className="w-6 h-6 text-white" />
-                  </div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
-                    Nexus
-                  </h1>
-                </motion.div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300 flex">
+        
+        {/* Desktop Sidebar */}
+        <aside className="hidden md:flex fixed left-0 top-0 h-full w-64 bg-[#00674F] shadow-2xl z-50 flex-col">
+          {/* Logo Section */}
+          <div className="p-6 border-b border-white/20">
+            <motion.div
+              className="flex items-center space-x-3"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            >
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
+                <Wallet className="w-7 h-7 text-white" />
               </div>
-
-              {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center space-x-1">
-                <Button
-                  variant="ghost"
-                  className="text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-                  onClick={() => router.push("/dashboard")}
-                >
-                  Dashboard
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium"
-                  onClick={() => router.push("/budgeting-tips")}
-                >
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
-                    <span>Budgeting Tips</span>
-                  </div>
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-                  onClick={() => router.push("/instructions")}
-                >
-                  Instructions
-                </Button>
-              </nav>
-
-              {/* Right Side Actions */}
-              <div className="flex items-center space-x-3">
-                <div className="relative hidden md:block">
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center space-x-2 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                      <User className="w-5 h-5 text-white" />
-                    </div>
-                    <ChevronRight
-                      className={`w-4 h-4 text-slate-600 dark:text-slate-400 transition-transform ${
-                        showUserMenu ? "rotate-90" : ""
-                      }`}
-                    />
-                  </motion.button>
-
-                  <AnimatePresence>
-                    {showUserMenu && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
-                      >
-                        <button
-                          onClick={() => {
-                            localStorage.removeItem("token");
-                            router.push("/");
-                          }}
-                          className="w-full px-4 py-3 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          <span>Log Out</span>
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                <button
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
-                >
-                  <Menu className="w-6 h-6 text-slate-600 dark:text-slate-400" />
-                </button>
-              </div>
-            </div>
+              <h1 className="text-2xl font-bold text-white">
+                Nexus
+              </h1>
+            </motion.div>
           </div>
-        </header>
 
-        {/* Mobile Navigation Menu */}
+          {/* Navigation Links */}
+          <nav className="flex-1 p-4 space-y-2">
+            <motion.button
+              whileHover={{ x: 5 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => router.push("/dashboard")}
+              className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/20 transition-all duration-200 group"
+            >
+              <div className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors">
+                <LayoutDashboard className="w-5 h-5" />
+              </div>
+              <span className="font-medium">Dashboard</span>
+            </motion.button>
+
+            <motion.button
+              whileHover={{ x: 5 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => router.push("/budgeting-tips")}
+              className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-white/20 text-white transition-all duration-200 group"
+            >
+              <div className="p-2 bg-white/20 rounded-lg">
+                <Lightbulb className="w-5 h-5" />
+              </div>
+              <span className="font-medium">Budgeting Tips</span>
+              <div className="ml-auto">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              </div>
+            </motion.button>
+
+            <motion.button
+              whileHover={{ x: 5 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => router.push("/instructions")}
+              className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/20 transition-all duration-200 group"
+            >
+              <div className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors">
+                <HelpCircle className="w-5 h-5" />
+              </div>
+              <span className="font-medium">Instructions</span>
+            </motion.button>
+          </nav>
+
+          {/* User Section */}
+          <div className="p-4 border-t border-white/20">
+            <motion.div
+              initial={false}
+              animate={{ height: showUserMenu ? "auto" : "48px" }}
+              className="overflow-hidden"
+            >
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white hover:bg-white/20 transition-all duration-200"
+              >
+                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                  <User className="w-5 h-5" />
+                </div>
+                <span className="font-medium">Account</span>
+                <ChevronRight
+                  className={`w-4 h-4 ml-auto transition-transform ${
+                    showUserMenu ? "rotate-90" : ""
+                  }`}
+                />
+              </motion.button>
+
+              <AnimatePresence>
+                {showUserMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="mt-2 px-4"
+                  >
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem("token");
+                        router.push("/");
+                      }}
+                      className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-white transition-all duration-200"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span className="text-sm font-medium">Log Out</span>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          </div>
+        </aside>
+
+        {/* Mobile Menu Toggle */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="fixed top-4 left-4 z-[60] p-3 bg-[#11d157] rounded-xl shadow-lg md:hidden"
+        >
+          {isMenuOpen ? (
+            <X className="w-6 h-6 text-white" />
+          ) : (
+            <Menu className="w-6 h-6 text-white" />
+          )}
+        </button>
+
+        {/* Mobile Sidebar */}
         <AnimatePresence>
           {isMenuOpen && (
-            <motion.div
-              className="fixed inset-0 bg-black/50 z-50 md:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMenuOpen(false)}
-            >
+            <>
               <motion.div
-                className="fixed right-0 top-0 bottom-0 w-72 bg-white dark:bg-slate-800 shadow-2xl"
-                initial={{ x: "100%" }}
+                className="fixed inset-0 bg-black/50 z-[55] md:hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMenuOpen(false)}
+              />
+              <motion.aside
+                className="fixed left-0 top-0 h-full w-72 bg-[#11d157] shadow-2xl z-[56] md:hidden flex flex-col"
+                initial={{ x: "-100%" }}
                 animate={{ x: 0 }}
-                exit={{ x: "100%" }}
+                exit={{ x: "-100%" }}
                 transition={{ type: "spring", damping: 25 }}
-                onClick={(e) => e.stopPropagation()}
               >
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-                      Menu
-                    </h2>
-                    <button
-                      onClick={() => setIsMenuOpen(false)}
-                      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
-                    >
-                      <X className="w-6 h-6 text-slate-600 dark:text-slate-400" />
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => {
-                        router.push("/dashboard");
-                        setIsMenuOpen(false);
-                      }}
-                      className="w-full px-4 py-3 text-left rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
-                    >
-                      Dashboard
-                    </button>
-                    <button
-                      onClick={() => {
-                        router.push("/budgeting-tips");
-                        setIsMenuOpen(false);
-                      }}
-                      className="w-full px-4 py-3 text-left rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-medium"
-                    >
-                      Budgeting Tips
-                    </button>
-                    <button
-                      onClick={() => {
-                        router.push("/instructions");
-                        setIsMenuOpen(false);
-                      }}
-                      className="w-full px-4 py-3 text-left rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
-                    >
-                      Instructions
-                    </button>
-                    <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
-                      <button
-                        onClick={() => {
-                          localStorage.removeItem("token");
-                          router.push("/");
-                          setIsMenuOpen(false);
-                        }}
-                        className="w-full px-4 py-3 text-left rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 font-medium"
-                      >
-                        Log Out
-                      </button>
+                {/* Logo Section */}
+                <div className="p-6 border-b border-white/20">
+                  <motion.div
+                    className="flex items-center space-x-3"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
+                      <Wallet className="w-7 h-7 text-white" />
                     </div>
-                  </div>
+                    <h1 className="text-2xl font-bold text-white">
+                      Nexus
+                    </h1>
+                  </motion.div>
                 </div>
-              </motion.div>
-            </motion.div>
+
+                {/* Navigation Links */}
+                <nav className="flex-1 p-4 space-y-2">
+                  <motion.button
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      router.push("/dashboard");
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/20 transition-all duration-200 group"
+                  >
+                    <div className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors">
+                      <LayoutDashboard className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium">Dashboard</span>
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      router.push("/budgeting-tips");
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-white/20 text-white transition-all duration-200 group"
+                  >
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <Lightbulb className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium">Budgeting Tips</span>
+                    <div className="ml-auto">
+                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    </div>
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      router.push("/instructions");
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/20 transition-all duration-200 group"
+                  >
+                    <div className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors">
+                      <HelpCircle className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium">Instructions</span>
+                  </motion.button>
+                </nav>
+
+                {/* User Section */}
+                <div className="p-4 border-t border-white/20">
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem("token");
+                      router.push("/");
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-white transition-all duration-200"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="font-medium">Log Out</span>
+                  </button>
+                </div>
+              </motion.aside>
+            </>
           )}
         </AnimatePresence>
 
@@ -355,126 +405,164 @@ export default function BudgetingTips() {
           )}
         </AnimatePresence>
 
-        {/* Main Content */}
-        <main className="container mx-auto px-4 pt-24 pb-12 max-w-7xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
-          >
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-white mb-2">
-              Budgeting Tips &{" "}
-              <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
-                Resources
-              </span>
-            </h1>
-            <div className="flex items-center space-x-2">
-              <p className="text-slate-600 dark:text-slate-400">
-                Get expert advice and discover valuable resources
-              </p>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowFeaturesPopup(true)}
-                className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                title="View platform features"
-              >
-                <HelpCircle className="w-5 h-5 text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors" />
-              </motion.button>
-            </div>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Chatbot Section */}
-            <motion.div
-              className="lg:col-span-2"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Card className="h-full border-0 shadow-lg">
-                <CardHeader className="border-b border-slate-200 dark:border-slate-700">
-                  <CardTitle className="text-xl font-semibold text-slate-800 dark:text-white flex items-center">
-                    <MessageSquare className="w-5 h-5 mr-2 text-emerald-600" />
-                    Ask Our Finance Expert
-                  </CardTitle>
-                  <CardDescription className="text-slate-600 dark:text-slate-400">
-                    Get personalized budgeting advice from our AI assistant
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="relative overflow-hidden rounded-b-xl">
-                    <iframe
-                      title="Finance Expert Chatbot"
-                      src="https://www.chatbase.co/chatbot-iframe/twKXHAVsHvTUTt2iPXnja"
-                      width="100%"
-                      style={{ height: "700px", minHeight: "600px" }}
-                      frameBorder="0"
-                      className="bg-slate-50 dark:bg-slate-800"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Resources Section */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="space-y-4"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-slate-800 dark:text-white flex items-center">
-                  <BookOpen className="w-5 h-5 mr-2 text-emerald-600" />
-                  Additional Resources
-                </h2>
+        {/* Main Content Area */}
+        <div className="flex-1 md:ml-64">
+          {/* Header */}
+          <header className="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm border-b border-slate-200/50 dark:border-slate-700/50">
+            <div className="px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between h-16">
+                <div className="md:hidden">
+                  {/* Empty space for mobile menu button */}
+                </div>
+                <div className="flex-1 flex justify-end">
+                  <button
+                    onClick={() => {
+                      setDarkMode(!darkMode);
+                      localStorage.setItem("darkMode", (!darkMode).toString());
+                      if (!darkMode) {
+                        document.documentElement.classList.add("dark");
+                      } else {
+                        document.documentElement.classList.remove("dark");
+                      }
+                    }}
+                    className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    {darkMode ? (
+                      <svg className="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
               </div>
+            </div>
+          </header>
 
-              {resources.map((resource, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 + index * 0.1 }}
+          {/* Main Content */}
+          <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8"
+            >
+              <h1 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-white mb-2">
+                Budgeting Tips &{" "}
+                <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
+                  Resources
+                </span>
+              </h1>
+              <div className="flex items-center space-x-2">
+                <p className="text-slate-600 dark:text-slate-400">
+                  Get expert advice and discover valuable resources
+                </p>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowFeaturesPopup(true)}
+                  className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                  title="View platform features"
                 >
-                  <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                    <CardContent className="p-6">
-                      <div className="flex items-start space-x-4">
-                        <div
-                          className={`p-3 bg-gradient-to-br ${resource.gradient} rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300`}
-                        >
-                          {resource.icon}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-slate-800 dark:text-white mb-2">
-                            {resource.title}
-                          </h3>
-                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
-                            {resource.description}
-                          </p>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full flex items-center justify-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 group"
-                            onClick={() =>
-                              resource.link !== "#"
-                                ? window.open(resource.link, "_blank")
-                                : null
-                            }
-                          >
-                            Learn More
-                            <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+                  <HelpCircle className="w-5 h-5 text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors" />
+                </motion.button>
+              </div>
             </motion.div>
-          </div>
-        </main>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Main Chatbot Section */}
+              <motion.div
+                className="lg:col-span-2"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Card className="h-full border-0 shadow-lg">
+                  <CardHeader className="border-b border-slate-200 dark:border-slate-700">
+                    <CardTitle className="text-xl font-semibold text-slate-800 dark:text-white flex items-center">
+                      <MessageSquare className="w-5 h-5 mr-2 text-emerald-600" />
+                      Ask Our Finance Expert
+                    </CardTitle>
+                    <CardDescription className="text-slate-600 dark:text-slate-400">
+                      Get personalized budgeting advice from our AI assistant
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="relative overflow-hidden rounded-b-xl">
+                      <iframe
+                        title="Finance Expert Chatbot"
+                        src="https://www.chatbase.co/chatbot-iframe/twKXHAVsHvTUTt2iPXnja"
+                        width="100%"
+                        style={{ height: "700px", minHeight: "600px" }}
+                        frameBorder="0"
+                        className="bg-slate-50 dark:bg-slate-800"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Resources Section */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+                className="space-y-4"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold text-slate-800 dark:text-white flex items-center">
+                    <BookOpen className="w-5 h-5 mr-2 text-emerald-600" />
+                    Additional Resources
+                  </h2>
+                </div>
+
+                {resources.map((resource, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                  >
+                    <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                      <CardContent className="p-6">
+                        <div className="flex items-start space-x-4">
+                          <div
+                            className={`p-3 bg-gradient-to-br ${resource.gradient} rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                          >
+                            {resource.icon}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-slate-800 dark:text-white mb-2">
+                              {resource.title}
+                            </h3>
+                            <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+                              {resource.description}
+                            </p>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full flex items-center justify-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 group"
+                              onClick={() =>
+                                resource.link !== "#"
+                                  ? window.open(resource.link, "_blank")
+                                  : null
+                              }
+                            >
+                              Learn More
+                              <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );

@@ -49,6 +49,7 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
+  LayoutDashboard
 } from "lucide-react";
 import {
   Card,
@@ -60,6 +61,7 @@ import {
 } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 import "./page.css";
+import Sidebar from "@/components/Sidebar_temp";
 import MoneySavingRecommendations from "@/components/MoneySaver";
 
 // Enhanced color palette with gradients
@@ -830,186 +832,51 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Enhanced Header with Glass Effect */}
-        <header className="fixed top-0 left-0 right-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm border-b border-slate-200/50 dark:border-slate-700/50">
-          <div className="container mx-auto px-4 sm:px-6">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center space-x-4">
-                <motion.div
-                  className="flex items-center space-x-3"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <Wallet className="w-6 h-6 text-white" />
-                  </div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
-                    Nexus
-                  </h1>
-                </motion.div>
-              </div>
+    
+      {/* Sidebar Component */}
+      <Sidebar
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
+        showUserMenu={showUserMenu}
+        setShowUserMenu={setShowUserMenu}
+      />
 
-              {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center space-x-1">
-                <Button
-                  variant="ghost"
-                  className="text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium"
-                  onClick={() => router.push("/dashboard")}
-                >
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
-                    <span>Dashboard</span>
-                  </div>
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-                  onClick={() => router.push("/budgeting-tips")}
-                >
-                  Budgeting Tips
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-                  onClick={() => router.push("/instructions")}
-                >
-                  Instructions
-                </Button>
-              </nav>
-
-              {/* Right Side Actions */}
-              <div className="flex items-center space-x-3">
-                <div className="relative hidden md:block">
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center space-x-2 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                      <User className="w-5 h-5 text-white" />
-                    </div>
-                    <ChevronRight
-                      className={`w-4 h-4 text-slate-600 dark:text-slate-400 transition-transform ${
-                        showUserMenu ? "rotate-90" : ""
-                      }`}
-                    />
-                  </motion.button>
-
-                  <AnimatePresence>
-                    {showUserMenu && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
-                      >
-                        <button
-                          onClick={() => {
-                            localStorage.removeItem("token");
-                            router.push("/");
-                          }}
-                          className="w-full px-4 py-3 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          <span>Log Out</span>
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+      <div className="flex-1 md:ml-64">   
+        <header className="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm border-b border-slate-200/50 dark:border-slate-700/50">
+            <div className="px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between h-16">
+                <div className="md:hidden">
+                  {/* Empty space for mobile menu button */}
                 </div>
-
-                {/* Mobile Menu Button */}
-                <button
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
-                >
-                  <Menu className="w-6 h-6 text-slate-600 dark:text-slate-400" />
-                </button>
+                <div className="flex-1 flex justify-end">
+                  <button
+                    onClick={() => {
+                      setDarkMode(!darkMode);
+                      localStorage.setItem("darkMode", (!darkMode).toString());
+                      if (!darkMode) {
+                        document.documentElement.classList.add("dark");
+                      } else {
+                        document.documentElement.classList.remove("dark");
+                      }
+                    }}
+                    className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    {darkMode ? (
+                      <svg className="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        </header>
-
-        {/* Mobile Navigation Menu */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              className="fixed inset-0 bg-black/50 z-50 md:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <motion.div
-                className="fixed right-0 top-0 bottom-0 w-72 bg-white dark:bg-slate-800 shadow-2xl"
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "spring", damping: 25 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-                      Menu
-                    </h2>
-                    <button
-                      onClick={() => setIsMenuOpen(false)}
-                      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
-                    >
-                      <X className="w-6 h-6 text-slate-600 dark:text-slate-400" />
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => {
-                        router.push("/dashboard");
-                        setIsMenuOpen(false);
-                      }}
-                      className="w-full px-4 py-3 text-left rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-medium"
-                    >
-                      Dashboard
-                    </button>
-                    <button
-                      onClick={() => {
-                        router.push("/budgeting-tips");
-                        setIsMenuOpen(false);
-                      }}
-                      className="w-full px-4 py-3 text-left rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
-                    >
-                      Budgeting Tips
-                    </button>
-                    <button
-                      onClick={() => {
-                        router.push("/instructions");
-                        setIsMenuOpen(false);
-                      }}
-                      className="w-full px-4 py-3 text-left rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
-                    >
-                      Instructions
-                    </button>
-                    <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
-                      <button
-                        onClick={() => {
-                          localStorage.removeItem("token");
-                          router.push("/");
-                          setIsMenuOpen(false);
-                        }}
-                        className="w-full px-4 py-3 text-left rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 font-medium"
-                      >
-                        Log Out
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
+          </header>     
         {/* Main Content */}
-        <main className="container mx-auto px-4 pt-24 pb-12 max-w-7xl">
+          <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
           {/* Welcome Section with Stats */}
           <div className="mb-8">
             <motion.div
@@ -1394,14 +1261,26 @@ export default function Dashboard() {
                         width={400}
                         height={300}
                         slotProps={{
-                          legend: {
-                            direction: "horizontal",
-                            position: {
-                              vertical: "bottom",
-                              horizontal: "center",
+                        legend: {
+                          direction: "horizontal",
+                          position: {
+                            vertical: "bottom",
+                            horizontal: "center",
+                          },
+                          sx: {
+                          "& .MuiChartsLegend-label": {
+                            fontSize: 14,
+                            fontWeight: 500,
+                            color: "#708090",
+                            cursor: "pointer",
+                            "&:hover": {
+                              color: "#64b5f6",
+                              fontWeight: 600,
                             },
                           },
-                        }}
+                        },
+                        },
+                      }}
                       />
                     </div>
                   </CardContent>
@@ -1643,6 +1522,7 @@ export default function Dashboard() {
             </motion.div>
           </div>
         </main>
+      </div>
 
         {/* Money Saving Recommendations Modal */}
         <AnimatePresence>
