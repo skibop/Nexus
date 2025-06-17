@@ -270,9 +270,9 @@ export default function BudgetingTips() {
                     <div className="relative overflow-hidden rounded-b-xl">
                       <iframe
                         title="Finance Expert Chatbot"
-                        src="https://www.chatbase.co/chatbot-iframe/twKXHAVsHvTUTt2iPXnja"
+                        src="https://www.chatbase.co/chatbot-iframe/Pe_d6LDcMRDYyAIOCikFi"
                         width="100%"
-                        style={{ height: "700px", minHeight: "600px" }}
+                        style={{ height: "740px", minHeight: "600px" }}
                         frameBorder="0"
                         className="bg-slate-50 dark:bg-slate-800"
                       />
