@@ -189,6 +189,8 @@ export default function Dashboard() {
   const [budgetStartDate, setBudgetStartDate] = useState<string>("");
   const [budgetEndDate, setBudgetEndDate] = useState<string>("");
   const [budgetsLoading, setBudgetsLoading] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
 
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -834,14 +836,25 @@ export default function Dashboard() {
 
     
       {/* Sidebar Component */}
-      <Sidebar
-        isMenuOpen={isMenuOpen}
-        setIsMenuOpen={setIsMenuOpen}
-        showUserMenu={showUserMenu}
-        setShowUserMenu={setShowUserMenu}
-      />
+        <Sidebar
+          isMenuOpen={isMenuOpen}
+          setIsMenuOpen={setIsMenuOpen}
+          showUserMenu={showUserMenu}
+          setShowUserMenu={setShowUserMenu}
+          onCollapsedChange={setSidebarCollapsed}
+        />
 
-      <div className="flex-1 md:ml-64">   
+      <motion.div
+          className="flex-1 transition-all duration-300"
+          animate={{ marginLeft: sidebarCollapsed ? 80 : 256 }}
+          initial={false}
+          style={{ marginLeft: 0 }} // Override for mobile
+          // Use CSS media query for desktop only
+          {...(typeof window !== 'undefined' && window.innerWidth >= 768 && {
+            style: { marginLeft: sidebarCollapsed ? 80 : 256 }
+          })}
+        >
+
         <header className="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm border-b border-slate-200/50 dark:border-slate-700/50">
             <div className="px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-16">
@@ -877,8 +890,8 @@ export default function Dashboard() {
           </header>     
         {/* Main Content */}
           <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
-          {/* Welcome Section with Stats */}
-          <div className="mb-8">
+              {/* Welcome Section with Stats */}
+           <div className="mb-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1522,6 +1535,7 @@ export default function Dashboard() {
             </motion.div>
           </div>
         </main>
+      </motion.div>
       </div>
 
         {/* Money Saving Recommendations Modal */}
@@ -2411,6 +2425,5 @@ export default function Dashboard() {
           )}
         </AnimatePresence>
       </div>
-    </div>
   );
 }
