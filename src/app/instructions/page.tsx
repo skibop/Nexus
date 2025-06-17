@@ -105,13 +105,13 @@ export default function Instructions() {
     },
     {
       icon: <Target className="w-6 h-6 text-white" />,
-      title: "Track Your Goals",
+      title: "Correlation to Prompt",
       content: (
         <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-400 text-sm">
           <li>Monitor savings rate</li>
           <li>Analyze cash flow trends</li>
-          <li>Compare monthly performance</li>
-          <li>Achieve financial milestones</li>
+          <li>Compare financial performance</li>
+          <li>Achieve financial freedom & milestones</li>
         </ul>
       ),
       gradient: "from-purple-500 to-violet-600",
