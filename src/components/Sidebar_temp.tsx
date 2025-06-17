@@ -93,7 +93,7 @@ export default function Sidebar({
               )}
             </AnimatePresence>
           </motion.div>
-          
+
           {/* Collapse Toggle Button */}
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -156,7 +156,7 @@ export default function Sidebar({
                     <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
                   </div>
                 )}
-                
+
                 {/* Tooltip for collapsed state */}
                 {isCollapsed && (
                   <div className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">

@@ -49,7 +49,7 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
-  LayoutDashboard
+  LayoutDashboard,
 } from "lucide-react";
 import {
   Card,
@@ -190,7 +190,6 @@ export default function Dashboard() {
   const [budgetEndDate, setBudgetEndDate] = useState<string>("");
   const [budgetsLoading, setBudgetsLoading] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
 
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -834,8 +833,7 @@ export default function Dashboard() {
           </p>
         </div>
 
-    
-      {/* Sidebar Component */}
+        {/* Sidebar Component */}
         <Sidebar
           isMenuOpen={isMenuOpen}
           setIsMenuOpen={setIsMenuOpen}
@@ -844,18 +842,18 @@ export default function Dashboard() {
           onCollapsedChange={setSidebarCollapsed}
         />
 
-      <motion.div
+        <motion.div
           className="flex-1 transition-all duration-300"
           animate={{ marginLeft: sidebarCollapsed ? 80 : 256 }}
           initial={false}
           style={{ marginLeft: 0 }} // Override for mobile
           // Use CSS media query for desktop only
-          {...(typeof window !== 'undefined' && window.innerWidth >= 768 && {
-            style: { marginLeft: sidebarCollapsed ? 80 : 256 }
-          })}
+          {...(typeof window !== "undefined" &&
+            window.innerWidth >= 768 && {
+              style: { marginLeft: sidebarCollapsed ? 80 : 256 },
+            })}
         >
-
-        <header className="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm border-b border-slate-200/50 dark:border-slate-700/50">
+          <header className="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm border-b border-slate-200/50 dark:border-slate-700/50">
             <div className="px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-16">
                 <div className="md:hidden">
@@ -875,1555 +873,1569 @@ export default function Dashboard() {
                     className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   >
                     {darkMode ? (
-                      <svg className="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                      <svg
+                        className="w-5 h-5 text-yellow-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                        />
                       </svg>
                     ) : (
-                      <svg className="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                      <svg
+                        className="w-5 h-5 text-slate-700"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                        />
                       </svg>
                     )}
                   </button>
                 </div>
               </div>
             </div>
-          </header>     
-        {/* Main Content */}
+          </header>
+          {/* Main Content */}
           <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
-              {/* Welcome Section with Stats */}
-           <div className="mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-8"
-            >
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-white mb-2">
-                Welcome to{" "}
-                <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
-                  Nexus!
-                </span>
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400">
-                Here's your financial overview
-              </p>
-            </motion.div>
-
-            {/* Enhanced Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {/* Welcome Section with Stats */}
+            <div className="mb-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
+                className="mb-8"
               >
-                <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10"></div>
-                  <CardContent className="p-6 relative">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg">
-                        <Wallet className="w-6 h-6 text-white" />
-                      </div>
-                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Current Balance
-                      </span>
-                    </div>
-                    <p className="text-3xl font-bold text-slate-800 dark:text-white">
-                      {formatCurrency(totalBalance)}
-                    </p>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
-                      Real-time net worth
-                    </p>
-                  </CardContent>
-                </Card>
+                <h1 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-white mb-2">
+                  Welcome to{" "}
+                  <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
+                    Nexus!
+                  </span>
+                </h1>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Here's your financial overview
+                </p>
               </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10"></div>
-                  <CardContent className="p-6 relative">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg">
-                        <TrendingUp className="w-6 h-6 text-white" />
+              {/* Enhanced Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10"></div>
+                    <CardContent className="p-6 relative">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg">
+                          <Wallet className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                          Current Balance
+                        </span>
                       </div>
-                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Total Income
-                      </span>
-                    </div>
-                    <p className="text-3xl font-bold text-slate-800 dark:text-white">
-                      {formatCurrency(totalIncome)}
-                    </p>
-                    <div className="flex items-center mt-2 space-x-1">
-                      <ArrowUpRight className="w-4 h-4 text-green-500" />
-                      <span className="text-sm font-medium text-green-500">
-                        +12.5%
-                      </span>
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        vs last month
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                      <p className="text-3xl font-bold text-slate-800 dark:text-white">
+                        {formatCurrency(totalBalance)}
+                      </p>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                        Real-time net worth
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-rose-500/10"></div>
-                  <CardContent className="p-6 relative">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="p-3 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl shadow-lg">
-                        <TrendingDown className="w-6 h-6 text-white" />
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10"></div>
+                    <CardContent className="p-6 relative">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg">
+                          <TrendingUp className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                          Total Income
+                        </span>
                       </div>
-                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Total Expenses
-                      </span>
-                    </div>
-                    <p className="text-3xl font-bold text-slate-800 dark:text-white">
-                      {formatCurrency(totalExpenses)}
-                    </p>
-                    <div className="flex items-center mt-2 space-x-1">
-                      <ArrowDownRight className="w-4 h-4 text-red-500" />
-                      <span className="text-sm font-medium text-red-500">
-                        -8.3%
-                      </span>
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        vs last month
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-orange-500/10"></div>
-                  <CardContent className="p-6 relative">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-lg">
-                        <PiggyBank className="w-6 h-6 text-white" />
+                      <p className="text-3xl font-bold text-slate-800 dark:text-white">
+                        {formatCurrency(totalIncome)}
+                      </p>
+                      <div className="flex items-center mt-2 space-x-1">
+                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                        <span className="text-sm font-medium text-green-500">
+                          +12.5%
+                        </span>
+                        <span className="text-sm text-slate-600 dark:text-slate-400">
+                          vs last month
+                        </span>
                       </div>
-                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Savings Rate
-                      </span>
-                    </div>
-                    <p className="text-3xl font-bold text-slate-800 dark:text-white">
-                      {savingsRate.toFixed(1)}%
-                    </p>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
-                      Of total income
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
 
-            {/* Charts Section - Reversed Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              {/* Cash Flow Analysis (Bar Chart) - Left Side */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <CardHeader>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                      <div className="flex items-center space-x-2">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-rose-500/10"></div>
+                    <CardContent className="p-6 relative">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl shadow-lg">
+                          <TrendingDown className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                          Total Expenses
+                        </span>
+                      </div>
+                      <p className="text-3xl font-bold text-slate-800 dark:text-white">
+                        {formatCurrency(totalExpenses)}
+                      </p>
+                      <div className="flex items-center mt-2 space-x-1">
+                        <ArrowDownRight className="w-4 h-4 text-red-500" />
+                        <span className="text-sm font-medium text-red-500">
+                          -8.3%
+                        </span>
+                        <span className="text-sm text-slate-600 dark:text-slate-400">
+                          vs last month
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-orange-500/10"></div>
+                    <CardContent className="p-6 relative">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-lg">
+                          <PiggyBank className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                          Savings Rate
+                        </span>
+                      </div>
+                      <p className="text-3xl font-bold text-slate-800 dark:text-white">
+                        {savingsRate.toFixed(1)}%
+                      </p>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                        Of total income
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </div>
+
+              {/* Charts Section - Reversed Layout */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                {/* Cash Flow Analysis (Bar Chart) - Left Side */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <CardHeader>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                        <div className="flex items-center space-x-2">
+                          <div>
+                            <CardTitle className="text-xl font-semibold text-slate-800 dark:text-white">
+                              Cash Flow Analysis
+                            </CardTitle>
+                            <CardDescription className="text-slate-600 dark:text-slate-400">
+                              Income vs Expenses over time
+                            </CardDescription>
+                          </div>
+                          <button
+                            onClick={() => setShowHealthScore(!showHealthScore)}
+                            className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            title="View Financial Health Score"
+                          >
+                            <svg
+                              className="w-5 h-5 text-slate-500 dark:text-slate-400"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Button
+                            onClick={() => setTimePeriod("weekly")}
+                            variant={
+                              timePeriod === "weekly" ? "default" : "outline"
+                            }
+                            className={
+                              timePeriod === "weekly"
+                                ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-md"
+                                : "border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
+                            }
+                            size="sm"
+                          >
+                            Weekly
+                          </Button>
+                          <Button
+                            onClick={() => setTimePeriod("monthly")}
+                            variant={
+                              timePeriod === "monthly" ? "default" : "outline"
+                            }
+                            className={
+                              timePeriod === "monthly"
+                                ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-md"
+                                : "border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
+                            }
+                            size="sm"
+                          >
+                            Monthly
+                          </Button>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="h-[350px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart
+                            data={barChartData}
+                            margin={{ top: 10, right: 30, left: 0, bottom: 1 }} // increase bottom margin for legend
+                          >
+                            <defs>
+                              <linearGradient
+                                id="incomeGradient"
+                                x1="0"
+                                y1="0"
+                                x2="0"
+                                y2="1"
+                              >
+                                <stop
+                                  offset="5%"
+                                  stopColor="#10b981"
+                                  stopOpacity={0.8}
+                                />
+                                <stop
+                                  offset="95%"
+                                  stopColor="#10b981"
+                                  stopOpacity={0.4}
+                                />
+                              </linearGradient>
+                              <linearGradient
+                                id="expenseGradient"
+                                x1="0"
+                                y1="0"
+                                x2="0"
+                                y2="1"
+                              >
+                                <stop
+                                  offset="5%"
+                                  stopColor="#ef4444"
+                                  stopOpacity={0.8}
+                                />
+                                <stop
+                                  offset="95%"
+                                  stopColor="#ef4444"
+                                  stopOpacity={0.4}
+                                />
+                              </linearGradient>
+                            </defs>
+                            <CartesianGrid
+                              strokeDasharray="3 3"
+                              className="stroke-slate-200 dark:stroke-slate-700"
+                            />
+                            <XAxis
+                              dataKey="date"
+                              className="text-xs"
+                              tick={{ fill: darkMode ? "#94a3b8" : "#64748b" }}
+                            />
+                            <YAxis
+                              className="text-xs"
+                              tick={{ fill: darkMode ? "#94a3b8" : "#64748b" }}
+                              tickFormatter={(value) =>
+                                `${
+                                  value >= 1000
+                                    ? `${(value / 1000).toFixed(0)}k`
+                                    : value
+                                }`
+                              }
+                            />
+                            <Tooltip
+                              contentStyle={{
+                                backgroundColor: darkMode
+                                  ? "#1e293b"
+                                  : "#ffffff",
+                                border: "none",
+                                borderRadius: "12px",
+                                boxShadow: "0 10px 40px rgba(0,0,0,0.1)",
+                              }}
+                              formatter={(value: any) => formatCurrency(value)}
+                            />
+                            <Legend
+                              verticalAlign="bottom"
+                              align="center"
+                              height={36}
+                              iconType="circle"
+                              wrapperStyle={{ paddingTop: "10px" }}
+                            />
+                            <Bar
+                              dataKey="income"
+                              fill="url(#incomeGradient)"
+                              radius={[8, 8, 0, 0]}
+                              name="Income"
+                            />
+                            <Bar
+                              dataKey="expenses"
+                              fill="url(#expenseGradient)"
+                              radius={[8, 8, 0, 0]}
+                              name="Expenses"
+                            />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                {/* Combined Income & Expense Breakdown - Right Side */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <CardHeader className="pb-4">
+                      <div className="flex items-center justify-between">
                         <div>
                           <CardTitle className="text-xl font-semibold text-slate-800 dark:text-white">
-                            Cash Flow Analysis
+                            Category Breakdown
                           </CardTitle>
                           <CardDescription className="text-slate-600 dark:text-slate-400">
-                            Income vs Expenses over time
+                            Distribution by category
                           </CardDescription>
                         </div>
-                        <button
-                          onClick={() => setShowHealthScore(!showHealthScore)}
-                          className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                          title="View Financial Health Score"
-                        >
-                          <svg
-                            className="w-5 h-5 text-slate-500 dark:text-slate-400"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                      <div className="flex space-x-2">
-                        <Button
-                          onClick={() => setTimePeriod("weekly")}
-                          variant={
-                            timePeriod === "weekly" ? "default" : "outline"
-                          }
-                          className={
-                            timePeriod === "weekly"
-                              ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-md"
-                              : "border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
-                          }
-                          size="sm"
-                        >
-                          Weekly
-                        </Button>
-                        <Button
-                          onClick={() => setTimePeriod("monthly")}
-                          variant={
-                            timePeriod === "monthly" ? "default" : "outline"
-                          }
-                          className={
-                            timePeriod === "monthly"
-                              ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-md"
-                              : "border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
-                          }
-                          size="sm"
-                        >
-                          Monthly
-                        </Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-[350px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                          data={barChartData}
-                          margin={{ top: 10, right: 30, left: 0, bottom: 1 }} // increase bottom margin for legend
-                        >
-                          <defs>
-                            <linearGradient
-                              id="incomeGradient"
-                              x1="0"
-                              y1="0"
-                              x2="0"
-                              y2="1"
-                            >
-                              <stop
-                                offset="5%"
-                                stopColor="#10b981"
-                                stopOpacity={0.8}
-                              />
-                              <stop
-                                offset="95%"
-                                stopColor="#10b981"
-                                stopOpacity={0.4}
-                              />
-                            </linearGradient>
-                            <linearGradient
-                              id="expenseGradient"
-                              x1="0"
-                              y1="0"
-                              x2="0"
-                              y2="1"
-                            >
-                              <stop
-                                offset="5%"
-                                stopColor="#ef4444"
-                                stopOpacity={0.8}
-                              />
-                              <stop
-                                offset="95%"
-                                stopColor="#ef4444"
-                                stopOpacity={0.4}
-                              />
-                            </linearGradient>
-                          </defs>
-                          <CartesianGrid
-                            strokeDasharray="3 3"
-                            className="stroke-slate-200 dark:stroke-slate-700"
-                          />
-                          <XAxis
-                            dataKey="date"
-                            className="text-xs"
-                            tick={{ fill: darkMode ? "#94a3b8" : "#64748b" }}
-                          />
-                          <YAxis
-                            className="text-xs"
-                            tick={{ fill: darkMode ? "#94a3b8" : "#64748b" }}
-                            tickFormatter={(value) =>
-                              `${
-                                value >= 1000
-                                  ? `${(value / 1000).toFixed(0)}k`
-                                  : value
-                              }`
+                        <div className="flex space-x-2">
+                          <Button
+                            onClick={() => setBreakdownType("income")}
+                            variant={
+                              breakdownType === "income" ? "default" : "outline"
                             }
-                          />
-                          <Tooltip
-                            contentStyle={{
-                              backgroundColor: darkMode ? "#1e293b" : "#ffffff",
-                              border: "none",
-                              borderRadius: "12px",
-                              boxShadow: "0 10px 40px rgba(0,0,0,0.1)",
-                            }}
-                            formatter={(value: any) => formatCurrency(value)}
-                          />
-                          <Legend
-                            verticalAlign="bottom"
-                            align="center"
-                            height={36}
-                            iconType="circle"
-                            wrapperStyle={{ paddingTop: "10px" }}
-                          />
-                          <Bar
-                            dataKey="income"
-                            fill="url(#incomeGradient)"
-                            radius={[8, 8, 0, 0]}
-                            name="Income"
-                          />
-                          <Bar
-                            dataKey="expenses"
-                            fill="url(#expenseGradient)"
-                            radius={[8, 8, 0, 0]}
-                            name="Expenses"
-                          />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                            className={
+                              breakdownType === "income"
+                                ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-md"
+                                : "border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
+                            }
+                            size="sm"
+                          >
+                            Income
+                          </Button>
+                          <Button
+                            onClick={() => setBreakdownType("expense")}
+                            variant={
+                              breakdownType === "expense"
+                                ? "default"
+                                : "outline"
+                            }
+                            className={
+                              breakdownType === "expense"
+                                ? "bg-gradient-to-r from-red-500 to-rose-600 text-white border-0 shadow-md"
+                                : "border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
+                            }
+                            size="sm"
+                          >
+                            Expenses
+                          </Button>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="h-[350px] flex items-center justify-center">
+                        <PieChart
+                          series={[
+                            {
+                              data: generatePieChartData(breakdownType),
+                              highlightScope: {
+                                fade: "global",
+                                highlight: "item",
+                              },
+                              faded: {
+                                innerRadius: 30,
+                                additionalRadius: -30,
+                                color: "gray",
+                              },
+                              innerRadius: 60,
+                              outerRadius: 120,
+                              paddingAngle: 2,
+                              cornerRadius: 5,
+                              cx: "50%",
+                              cy: "50%",
+                            },
+                          ]}
+                          width={400}
+                          height={300}
+                          slotProps={{
+                            legend: {
+                              direction: "horizontal",
+                              position: {
+                                vertical: "bottom",
+                                horizontal: "center",
+                              },
+                              sx: {
+                                "& .MuiChartsLegend-label": {
+                                  fontSize: 14,
+                                  fontWeight: 500,
+                                  color: "#708090",
+                                  cursor: "pointer",
+                                  "&:hover": {
+                                    color: "#64b5f6",
+                                    fontWeight: 600,
+                                  },
+                                },
+                              },
+                            },
+                          }}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </div>
 
-              {/* Combined Income & Expense Breakdown - Right Side */}
+              {/* Enhanced Transactions Section */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
               >
-                <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between">
+                <Card className="border-0 shadow-lg">
+                  <CardHeader className="border-b border-slate-200 dark:border-slate-700">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
                       <div>
                         <CardTitle className="text-xl font-semibold text-slate-800 dark:text-white">
-                          Category Breakdown
+                          Recent Transactions
+                          {filters.type !== "all" &&
+                            ` • ${
+                              filters.type.charAt(0).toUpperCase() +
+                              filters.type.slice(1)
+                            }`}
+                          {filters.searchTerm && ` • "${filters.searchTerm}"`}
                         </CardTitle>
                         <CardDescription className="text-slate-600 dark:text-slate-400">
-                          Distribution by category
+                          {filteredTransactions.length} transactions found
                         </CardDescription>
                       </div>
                       <div className="flex space-x-2">
                         <Button
-                          onClick={() => setBreakdownType("income")}
-                          variant={
-                            breakdownType === "income" ? "default" : "outline"
-                          }
-                          className={
-                            breakdownType === "income"
-                              ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-md"
-                              : "border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
-                          }
+                          onClick={() => setShowForm(true)}
+                          className="flex flex-row items-center bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-700 hover:to-green-700 shadow-md"
                           size="sm"
                         >
-                          Income
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Transaction
                         </Button>
                         <Button
-                          onClick={() => setBreakdownType("expense")}
-                          variant={
-                            breakdownType === "expense" ? "default" : "outline"
-                          }
-                          className={
-                            breakdownType === "expense"
-                              ? "bg-gradient-to-r from-red-500 to-rose-600 text-white border-0 shadow-md"
-                              : "border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
-                          }
+                          onClick={() => setShowRecommendations(true)}
+                          className="flex flex-row items-center bg-gradient-to-r from-amber-500 to-yellow-500 text-white hover:from-amber-600 hover:to-yellow-600 shadow-md"
                           size="sm"
                         >
-                          Expenses
+                          <Lightbulb className="w-4 h-4 mr-2" />
+                          Money Saving Recommendations
+                        </Button>
+                        <Button
+                          onClick={() => setShowBudgetingTool(true)}
+                          className="flex flex-row items-center bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 shadow-md"
+                          size="sm"
+                        >
+                          <Target className="w-4 h-4 mr-2" />
+                          Budget Planner
+                        </Button>
+                        <Button
+                          onClick={() => setShowFilterModal(true)}
+                          variant="outline"
+                          className="flex items-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
+                          size="sm"
+                        >
+                          <Filter className="w-4 h-4 mr-2" />
+                          Filter
+                        </Button>
+                        <Button
+                          onClick={() => setShowExportModal(true)}
+                          variant="outline"
+                          className="flex items-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
+                          size="sm"
+                        >
+                          <Download className="w-4 h-4 mr-2" />
+                          Export
                         </Button>
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="h-[350px] flex items-center justify-center">
-                      <PieChart
-                        series={[
-                          {
-                            data: generatePieChartData(breakdownType),
-                            highlightScope: {
-                              fade: "global",
-                              highlight: "item",
-                            },
-                            faded: {
-                              innerRadius: 30,
-                              additionalRadius: -30,
-                              color: "gray",
-                            },
-                            innerRadius: 60,
-                            outerRadius: 120,
-                            paddingAngle: 2,
-                            cornerRadius: 5,
-                            cx: "50%",
-                            cy: "50%",
-                          },
-                        ]}
-                        width={400}
-                        height={300}
-                        slotProps={{
-                        legend: {
-                          direction: "horizontal",
-                          position: {
-                            vertical: "bottom",
-                            horizontal: "center",
-                          },
-                          sx: {
-                          "& .MuiChartsLegend-label": {
-                            fontSize: 14,
-                            fontWeight: 500,
-                            color: "#708090",
-                            cursor: "pointer",
-                            "&:hover": {
-                              color: "#64b5f6",
-                              fontWeight: 600,
-                            },
-                          },
-                        },
-                        },
-                      }}
-                      />
+                  <CardContent className="p-0">
+                    {showForm && (
+                      <div
+                        ref={formRef}
+                        className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50"
+                      >
+                        <TransactionForm
+                          onSubmit={handleSubmit}
+                          initialValues={editingTransaction || undefined}
+                          onCancel={() => {
+                            setShowForm(false);
+                            setEditingTransaction(null);
+                          }}
+                          incomeCategories={incomeCategories}
+                          expenseCategories={expenseCategories}
+                        />
+                      </div>
+                    )}
+
+                    {/* Search Bar */}
+                    <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <Input
+                          type="text"
+                          placeholder="Search transactions..."
+                          value={filters.searchTerm}
+                          onChange={(e) => {
+                            setFilters({
+                              ...filters,
+                              searchTerm: e.target.value,
+                            });
+                            applyFilters();
+                          }}
+                          className="pl-10 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Transactions Table */}
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-emerald-300 border-b border-slate-200 dark:border-slate-700">
+                          <tr>
+                            <th className="px-6 py-4 text-left">
+                              <button
+                                onClick={() => handleSort("date")}
+                                className="flex items-center space-x-1 text-base font-bold text-slate-800 dark:text-white uppercase tracking-wide hover:text-indigo-600 dark:hover:text-indigo-400"
+                              >
+                                <span>Date</span>
+                                {getSortIcon("date")}
+                              </button>
+                            </th>
+                            <th className="px-6 py-4 text-left">
+                              <button
+                                onClick={() => handleSort("description")}
+                                className="flex items-center space-x-1 text-base font-bold text-slate-800 dark:text-white uppercase tracking-wide hover:text-indigo-600 dark:hover:text-indigo-400"
+                              >
+                                <span>Description</span>
+                                {getSortIcon("description")}
+                              </button>
+                            </th>
+                            <th className="px-6 py-4 text-left">
+                              <button
+                                onClick={() => handleSort("category")}
+                                className="flex items-center space-x-1 text-base font-bold text-slate-800 dark:text-white uppercase tracking-wide hover:text-indigo-600 dark:hover:text-indigo-400"
+                              >
+                                <span>Category</span>
+                                {getSortIcon("category")}
+                              </button>
+                            </th>
+                            <th className="px-6 py-4 text-left">
+                              <button
+                                onClick={() => handleSort("amount")}
+                                className="flex items-center space-x-1 text-base font-bold text-slate-800 dark:text-white uppercase tracking-wide hover:text-indigo-600 dark:hover:text-indigo-400"
+                              >
+                                <span>Amount</span>
+                                {getSortIcon("amount")}
+                              </button>
+                            </th>
+                            <th className="px-6 py-4 text-center text-base font-bold text-slate-800 dark:text-white uppercase tracking-wide">
+                              Actions
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                          {sortedTransactions.length > 0 ? (
+                            sortedTransactions.map((transaction, index) => (
+                              <motion.tr
+                                key={transaction._id}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                                className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-150"
+                              >
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">
+                                  {formatDate(transaction.date)}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-slate-800 dark:text-slate-200">
+                                  {transaction.description || ""}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <span
+                                    className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                                      transaction.type === "income"
+                                        ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+                                        : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
+                                    }`}
+                                  >
+                                    {transaction.category}
+                                  </span>
+                                </td>
+                                <td
+                                  className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${
+                                    transaction.type === "income"
+                                      ? "text-green-600 dark:text-green-400"
+                                      : "text-red-600 dark:text-red-400"
+                                  }`}
+                                >
+                                  {transaction.type === "income" ? "+" : "-"}
+                                  {formatCurrency(transaction.amount)}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-center">
+                                  <div className="flex items-center justify-center space-x-2">
+                                    <button
+                                      onClick={() => {
+                                        setEditingTransaction(transaction);
+                                        setShowForm(true);
+                                      }}
+                                      className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                                      title="Edit"
+                                    >
+                                      <Edit2 className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        handleDelete(transaction._id)
+                                      }
+                                      className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors"
+                                      title="Delete"
+                                    >
+                                      <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
+                                    </button>
+                                  </div>
+                                </td>
+                              </motion.tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td
+                                colSpan={5}
+                                className="px-6 py-12 text-center text-slate-500 dark:text-slate-400"
+                              >
+                                No transactions found
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
                     </div>
                   </CardContent>
                 </Card>
               </motion.div>
             </div>
-
-            {/* Enhanced Transactions Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-            >
-              <Card className="border-0 shadow-lg">
-                <CardHeader className="border-b border-slate-200 dark:border-slate-700">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                    <div>
-                      <CardTitle className="text-xl font-semibold text-slate-800 dark:text-white">
-                        Recent Transactions
-                        {filters.type !== "all" &&
-                          ` • ${
-                            filters.type.charAt(0).toUpperCase() +
-                            filters.type.slice(1)
-                          }`}
-                        {filters.searchTerm && ` • "${filters.searchTerm}"`}
-                      </CardTitle>
-                      <CardDescription className="text-slate-600 dark:text-slate-400">
-                        {filteredTransactions.length} transactions found
-                      </CardDescription>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button
-                        onClick={() => setShowForm(true)}
-                        className="flex flex-row items-center bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-700 hover:to-green-700 shadow-md"
-                        size="sm"
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Transaction
-                      </Button>
-                      <Button
-                        onClick={() => setShowRecommendations(true)}
-                        className="flex flex-row items-center bg-gradient-to-r from-amber-500 to-yellow-500 text-white hover:from-amber-600 hover:to-yellow-600 shadow-md"
-                        size="sm"
-                      >
-                        <Lightbulb className="w-4 h-4 mr-2" />
-                        Money Saving Recommendations
-                      </Button>
-                      <Button
-                        onClick={() => setShowBudgetingTool(true)}
-                        className="flex flex-row items-center bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 shadow-md"
-                        size="sm"
-                      >
-                        <Target className="w-4 h-4 mr-2" />
-                        Budget Planner
-                      </Button>
-                      <Button
-                        onClick={() => setShowFilterModal(true)}
-                        variant="outline"
-                        className="flex items-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
-                        size="sm"
-                      >
-                        <Filter className="w-4 h-4 mr-2" />
-                        Filter
-                      </Button>
-                      <Button
-                        onClick={() => setShowExportModal(true)}
-                        variant="outline"
-                        className="flex items-center border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
-                        size="sm"
-                      >
-                        <Download className="w-4 h-4 mr-2" />
-                        Export
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  {showForm && (
-                    <div
-                      ref={formRef}
-                      className="p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50"
-                    >
-                      <TransactionForm
-                        onSubmit={handleSubmit}
-                        initialValues={editingTransaction || undefined}
-                        onCancel={() => {
-                          setShowForm(false);
-                          setEditingTransaction(null);
-                        }}
-                        incomeCategories={incomeCategories}
-                        expenseCategories={expenseCategories}
-                      />
-                    </div>
-                  )}
-
-                  {/* Search Bar */}
-                  <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                      <Input
-                        type="text"
-                        placeholder="Search transactions..."
-                        value={filters.searchTerm}
-                        onChange={(e) => {
-                          setFilters({
-                            ...filters,
-                            searchTerm: e.target.value,
-                          });
-                          applyFilters();
-                        }}
-                        className="pl-10 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Transactions Table */}
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead className="bg-emerald-300 border-b border-slate-200 dark:border-slate-700">
-                        <tr>
-                          <th className="px-6 py-4 text-left">
-                            <button
-                              onClick={() => handleSort("date")}
-                              className="flex items-center space-x-1 text-base font-bold text-slate-800 dark:text-white uppercase tracking-wide hover:text-indigo-600 dark:hover:text-indigo-400"
-                            >
-                              <span>Date</span>
-                              {getSortIcon("date")}
-                            </button>
-                          </th>
-                          <th className="px-6 py-4 text-left">
-                            <button
-                              onClick={() => handleSort("description")}
-                              className="flex items-center space-x-1 text-base font-bold text-slate-800 dark:text-white uppercase tracking-wide hover:text-indigo-600 dark:hover:text-indigo-400"
-                            >
-                              <span>Description</span>
-                              {getSortIcon("description")}
-                            </button>
-                          </th>
-                          <th className="px-6 py-4 text-left">
-                            <button
-                              onClick={() => handleSort("category")}
-                              className="flex items-center space-x-1 text-base font-bold text-slate-800 dark:text-white uppercase tracking-wide hover:text-indigo-600 dark:hover:text-indigo-400"
-                            >
-                              <span>Category</span>
-                              {getSortIcon("category")}
-                            </button>
-                          </th>
-                          <th className="px-6 py-4 text-left">
-                            <button
-                              onClick={() => handleSort("amount")}
-                              className="flex items-center space-x-1 text-base font-bold text-slate-800 dark:text-white uppercase tracking-wide hover:text-indigo-600 dark:hover:text-indigo-400"
-                            >
-                              <span>Amount</span>
-                              {getSortIcon("amount")}
-                            </button>
-                          </th>
-                          <th className="px-6 py-4 text-center text-base font-bold text-slate-800 dark:text-white uppercase tracking-wide">
-                            Actions
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                        {sortedTransactions.length > 0 ? (
-                          sortedTransactions.map((transaction, index) => (
-                            <motion.tr
-                              key={transaction._id}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: index * 0.05 }}
-                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-150"
-                            >
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">
-                                {formatDate(transaction.date)}
-                              </td>
-                              <td className="px-6 py-4 text-sm text-slate-800 dark:text-slate-200">
-                                {transaction.description || ""}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span
-                                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                                    transaction.type === "income"
-                                      ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                                      : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
-                                  }`}
-                                >
-                                  {transaction.category}
-                                </span>
-                              </td>
-                              <td
-                                className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${
-                                  transaction.type === "income"
-                                    ? "text-green-600 dark:text-green-400"
-                                    : "text-red-600 dark:text-red-400"
-                                }`}
-                              >
-                                {transaction.type === "income" ? "+" : "-"}
-                                {formatCurrency(transaction.amount)}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-center">
-                                <div className="flex items-center justify-center space-x-2">
-                                  <button
-                                    onClick={() => {
-                                      setEditingTransaction(transaction);
-                                      setShowForm(true);
-                                    }}
-                                    className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                                    title="Edit"
-                                  >
-                                    <Edit2 className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      handleDelete(transaction._id)
-                                    }
-                                    className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors"
-                                    title="Delete"
-                                  >
-                                    <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
-                                  </button>
-                                </div>
-                              </td>
-                            </motion.tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td
-                              colSpan={5}
-                              className="px-6 py-12 text-center text-slate-500 dark:text-slate-400"
-                            >
-                              No transactions found
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-        </main>
-      </motion.div>
+          </main>
+        </motion.div>
       </div>
 
-        {/* Money Saving Recommendations Modal */}
-        <AnimatePresence>
-          {showRecommendations && (
+      {/* Money Saving Recommendations Modal */}
+      <AnimatePresence>
+        {showRecommendations && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowRecommendations(false)}
+          >
             <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowRecommendations(false)}
+              className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
             >
-              <motion.div
-                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="sticky top-0 bg-white dark:bg-slate-800 p-6 border-b border-slate-200 dark:border-slate-700 z-10">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-amber-100 dark:bg-amber-900/20 rounded-lg">
-                        <Lightbulb className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-                      </div>
+              <div className="sticky top-0 bg-white dark:bg-slate-800 p-6 border-b border-slate-200 dark:border-slate-700 z-10">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 bg-amber-100 dark:bg-amber-900/20 rounded-lg">
+                      <Lightbulb className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-slate-800 dark:text-white">
+                      Money Saving Recommendations
+                    </h3>
+                  </div>
+                  <button
+                    onClick={() => setShowRecommendations(false)}
+                    className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                  </button>
+                </div>
+              </div>
+              <div className="p-6">
+                <MoneySavingRecommendations />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Filter Modal */}
+      <AnimatePresence>
+        {showFilterModal && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowFilterModal(false)}
+          >
+            <motion.div
+              className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-xl font-semibold text-slate-800 dark:text-white mb-6">
+                Filter Transactions
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Transaction Type
+                  </label>
+                  <select
+                    value={filters.type}
+                    onChange={(e) =>
+                      setFilters({
+                        ...filters,
+                        type: e.target.value as "all" | "income" | "expense",
+                      })
+                    }
+                    className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  >
+                    <option value="all">All Transactions</option>
+                    <option value="income">Income Only</option>
+                    <option value="expense">Expenses Only</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Date Range
+                  </label>
+                  <div className="space-y-2">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="dateRange"
+                        value="all"
+                        checked={filters.dateRange === "all"}
+                        onChange={() =>
+                          setFilters({ ...filters, dateRange: "all" })
+                        }
+                        className="mr-2"
+                      />
+                      <span className="text-sm text-slate-700 dark:text-slate-300">
+                        All Dates
+                      </span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="dateRange"
+                        value="custom"
+                        checked={filters.dateRange === "custom"}
+                        onChange={() =>
+                          setFilters({ ...filters, dateRange: "custom" })
+                        }
+                        className="mr-2"
+                      />
+                      <span className="text-sm text-slate-700 dark:text-slate-300">
+                        Custom Range
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                {filters.dateRange === "custom" && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        Start Date
+                      </label>
+                      <Input
+                        type="date"
+                        value={filters.startDate}
+                        onChange={(e) =>
+                          setFilters({
+                            ...filters,
+                            startDate: e.target.value,
+                          })
+                        }
+                        className="bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        End Date
+                      </label>
+                      <Input
+                        type="date"
+                        value={filters.endDate}
+                        onChange={(e) =>
+                          setFilters({ ...filters, endDate: e.target.value })
+                        }
+                        className="bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <Button
+                  onClick={() => setShowFilterModal(false)}
+                  variant="outline"
+                  className="border-slate-300 dark:border-slate-600"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={applyFilters}
+                  className="bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-700 hover:to-teal-700"
+                >
+                  Apply Filters
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Export Modal */}
+      <AnimatePresence>
+        {showExportModal && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowExportModal(false)}
+          >
+            <motion.div
+              className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-xl font-semibold text-slate-800 dark:text-white mb-6">
+                Export Transactions
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Export Format
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setExportType("pdf")}
+                      className={`p-3 rounded-lg border-2 transition-all ${
+                        exportType === "pdf"
+                          ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20"
+                          : "border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500"
+                      }`}
+                    >
+                      <FileText className="w-6 h-6 mx-auto mb-1 text-slate-700 dark:text-slate-300" />
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                        PDF
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => setExportType("csv")}
+                      className={`p-3 rounded-lg border-2 transition-all ${
+                        exportType === "csv"
+                          ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20"
+                          : "border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500"
+                      }`}
+                    >
+                      <FileSpreadsheet className="w-6 h-6 mx-auto mb-1 text-slate-700 dark:text-slate-300" />
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                        CSV
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Content to Export
+                  </label>
+                  <select
+                    value={exportContent}
+                    onChange={(e) =>
+                      setExportContent(
+                        e.target.value as
+                          | "all"
+                          | "income"
+                          | "expenses"
+                          | "selected"
+                      )
+                    }
+                    className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  >
+                    <option value="all">All Transactions</option>
+                    <option value="income">Income Only</option>
+                    <option value="expenses">Expenses Only</option>
+                    <option value="selected">Filtered Transactions</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Date Range
+                  </label>
+                  <div className="space-y-2">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="exportDateRange"
+                        value="all"
+                        checked={exportDateRange === "all"}
+                        onChange={() => setExportDateRange("all")}
+                        className="mr-2"
+                      />
+                      <span className="text-sm text-slate-700 dark:text-slate-300">
+                        All Dates
+                      </span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="exportDateRange"
+                        value="custom"
+                        checked={exportDateRange === "custom"}
+                        onChange={() => setExportDateRange("custom")}
+                        className="mr-2"
+                      />
+                      <span className="text-sm text-slate-700 dark:text-slate-300">
+                        Custom Range
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                {exportDateRange === "custom" && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        Start Date
+                      </label>
+                      <Input
+                        type="date"
+                        value={exportStartDate}
+                        onChange={(e) => setExportStartDate(e.target.value)}
+                        className="bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        End Date
+                      </label>
+                      <Input
+                        type="date"
+                        value={exportEndDate}
+                        onChange={(e) => setExportEndDate(e.target.value)}
+                        className="bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <Button
+                  onClick={() => setShowExportModal(false)}
+                  variant="outline"
+                  className="border-slate-300 dark:border-slate-600"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleExport}
+                  className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-700 hover:to-teal-700"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Export</span>
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Notification Dropdown */}
+      <AnimatePresence>
+        {showNotifications && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="fixed top-20 right-4 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 z-50"
+          >
+            <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+              <h3 className="font-semibold text-slate-800 dark:text-white">
+                Notifications
+              </h3>
+            </div>
+            <div className="p-4 space-y-3">
+              <div className="flex items-start space-x-3">
+                <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
+                  <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="p-2 bg-amber-100 dark:bg-amber-900/20 rounded-lg">
+                  <Target className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Financial Health Score Modal */}
+      <AnimatePresence>
+        {showHealthScore && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowHealthScore(false)}
+          >
+            <motion.div
+              className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
+                  Financial Health Score
+                </h3>
+
+                <div className="relative inline-flex items-center justify-center w-48 h-48 mb-6">
+                  <svg className="transform -rotate-90 w-48 h-48">
+                    <circle
+                      cx="96"
+                      cy="96"
+                      r="88"
+                      stroke="currentColor"
+                      strokeWidth="12"
+                      fill="none"
+                      className="text-slate-200 dark:text-slate-700"
+                    />
+                    <circle
+                      cx="96"
+                      cy="96"
+                      r="88"
+                      stroke="currentColor"
+                      strokeWidth="12"
+                      fill="none"
+                      strokeDasharray={`${2 * Math.PI * 88}`}
+                      strokeDashoffset={`${
+                        2 * Math.PI * 88 * (1 - calculateHealthScore() / 100)
+                      }`}
+                      className={getScoreColor(calculateHealthScore())}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span
+                      className={`text-5xl font-bold ${getScoreColor(
+                        calculateHealthScore()
+                      )}`}
+                    >
+                      {calculateHealthScore()}
+                    </span>
+                    <span className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                      out of 100
+                    </span>
+                  </div>
+                </div>
+
+                <div
+                  className={`text-lg font-semibold mb-4 ${getScoreColor(
+                    calculateHealthScore()
+                  )}`}
+                >
+                  {getScoreLabel(calculateHealthScore())}
+                </div>
+
+                <div className="text-left space-y-3 mb-6">
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Your financial health score is calculated based on:
+                  </p>
+                  <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-2">
+                    <li className="flex items-start">
+                      <span className="text-emerald-500 mr-2">•</span>
+                      <span>
+                        <strong>Savings Rate (30%):</strong> How much you save
+                        compared to income
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-emerald-500 mr-2">•</span>
+                      <span>
+                        <strong>Expense Ratio (20%):</strong> Your expenses
+                        relative to income
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-emerald-500 mr-2">•</span>
+                      <span>
+                        <strong>Transaction Activity (10%):</strong> Regular
+                        financial tracking
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-emerald-500 mr-2">•</span>
+                      <span>
+                        <strong>Income Diversity (10%):</strong> Multiple income
+                        sources
+                      </span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-emerald-500 mr-2">•</span>
+                      <span>
+                        <strong>Base Score (30%):</strong> Starting baseline
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="bg-slate-100 dark:bg-slate-700 rounded-lg p-4">
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                    <strong>Score Scale:</strong> 0-39 (Needs Improvement) •
+                    40-59 (Fair) • 60-79 (Good) • 80-100 (Excellent)
+                  </p>
+                </div>
+
+                <Button
+                  onClick={() => setShowHealthScore(false)}
+                  className="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700"
+                >
+                  Close
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Budgeting Tool Modal */}
+      {/* Budgeting Tool Modal */}
+      <AnimatePresence>
+        {showBudgetingTool && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowBudgetingTool(false)}
+          >
+            <motion.div
+              className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 bg-white dark:bg-slate-800 p-6 border-b border-slate-200 dark:border-slate-700 z-10">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
+                      <Target className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div>
                       <h3 className="text-xl font-semibold text-slate-800 dark:text-white">
-                        Money Saving Recommendations
+                        Budget Planner
                       </h3>
-                    </div>
-                    <button
-                      onClick={() => setShowRecommendations(false)}
-                      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                    >
-                      <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <MoneySavingRecommendations />
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Filter Modal */}
-        <AnimatePresence>
-          {showFilterModal && (
-            <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowFilterModal(false)}
-            >
-              <motion.div
-                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h3 className="text-xl font-semibold text-slate-800 dark:text-white mb-6">
-                  Filter Transactions
-                </h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                      Transaction Type
-                    </label>
-                    <select
-                      value={filters.type}
-                      onChange={(e) =>
-                        setFilters({
-                          ...filters,
-                          type: e.target.value as "all" | "income" | "expense",
-                        })
-                      }
-                      className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    >
-                      <option value="all">All Transactions</option>
-                      <option value="income">Income Only</option>
-                      <option value="expense">Expenses Only</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                      Date Range
-                    </label>
-                    <div className="space-y-2">
-                      <label className="flex items-center">
-                        <input
-                          type="radio"
-                          name="dateRange"
-                          value="all"
-                          checked={filters.dateRange === "all"}
-                          onChange={() =>
-                            setFilters({ ...filters, dateRange: "all" })
-                          }
-                          className="mr-2"
-                        />
-                        <span className="text-sm text-slate-700 dark:text-slate-300">
-                          All Dates
-                        </span>
-                      </label>
-                      <label className="flex items-center">
-                        <input
-                          type="radio"
-                          name="dateRange"
-                          value="custom"
-                          checked={filters.dateRange === "custom"}
-                          onChange={() =>
-                            setFilters({ ...filters, dateRange: "custom" })
-                          }
-                          className="mr-2"
-                        />
-                        <span className="text-sm text-slate-700 dark:text-slate-300">
-                          Custom Range
-                        </span>
-                      </label>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        Set your spending limits for a custom date range
+                      </p>
                     </div>
                   </div>
-
-                  {filters.dateRange === "custom" && (
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                          Start Date
-                        </label>
-                        <Input
-                          type="date"
-                          value={filters.startDate}
-                          onChange={(e) =>
-                            setFilters({
-                              ...filters,
-                              startDate: e.target.value,
-                            })
-                          }
-                          className="bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                          End Date
-                        </label>
-                        <Input
-                          type="date"
-                          value={filters.endDate}
-                          onChange={(e) =>
-                            setFilters({ ...filters, endDate: e.target.value })
-                          }
-                          className="bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex justify-end space-x-3 mt-6">
-                  <Button
-                    onClick={() => setShowFilterModal(false)}
-                    variant="outline"
-                    className="border-slate-300 dark:border-slate-600"
+                  <button
+                    onClick={() => setShowBudgetingTool(false)}
+                    className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
                   >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={applyFilters}
-                    className="bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-700 hover:to-teal-700"
-                  >
-                    Apply Filters
-                  </Button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Export Modal */}
-        <AnimatePresence>
-          {showExportModal && (
-            <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowExportModal(false)}
-            >
-              <motion.div
-                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h3 className="text-xl font-semibold text-slate-800 dark:text-white mb-6">
-                  Export Transactions
-                </h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                      Export Format
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        onClick={() => setExportType("pdf")}
-                        className={`p-3 rounded-lg border-2 transition-all ${
-                          exportType === "pdf"
-                            ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20"
-                            : "border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500"
-                        }`}
-                      >
-                        <FileText className="w-6 h-6 mx-auto mb-1 text-slate-700 dark:text-slate-300" />
-                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                          PDF
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => setExportType("csv")}
-                        className={`p-3 rounded-lg border-2 transition-all ${
-                          exportType === "csv"
-                            ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20"
-                            : "border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500"
-                        }`}
-                      >
-                        <FileSpreadsheet className="w-6 h-6 mx-auto mb-1 text-slate-700 dark:text-slate-300" />
-                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                          CSV
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                      Content to Export
-                    </label>
-                    <select
-                      value={exportContent}
-                      onChange={(e) =>
-                        setExportContent(
-                          e.target.value as
-                            | "all"
-                            | "income"
-                            | "expenses"
-                            | "selected"
-                        )
-                      }
-                      className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    >
-                      <option value="all">All Transactions</option>
-                      <option value="income">Income Only</option>
-                      <option value="expenses">Expenses Only</option>
-                      <option value="selected">Filtered Transactions</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                      Date Range
-                    </label>
-                    <div className="space-y-2">
-                      <label className="flex items-center">
-                        <input
-                          type="radio"
-                          name="exportDateRange"
-                          value="all"
-                          checked={exportDateRange === "all"}
-                          onChange={() => setExportDateRange("all")}
-                          className="mr-2"
-                        />
-                        <span className="text-sm text-slate-700 dark:text-slate-300">
-                          All Dates
-                        </span>
-                      </label>
-                      <label className="flex items-center">
-                        <input
-                          type="radio"
-                          name="exportDateRange"
-                          value="custom"
-                          checked={exportDateRange === "custom"}
-                          onChange={() => setExportDateRange("custom")}
-                          className="mr-2"
-                        />
-                        <span className="text-sm text-slate-700 dark:text-slate-300">
-                          Custom Range
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {exportDateRange === "custom" && (
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                          Start Date
-                        </label>
-                        <Input
-                          type="date"
-                          value={exportStartDate}
-                          onChange={(e) => setExportStartDate(e.target.value)}
-                          className="bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                          End Date
-                        </label>
-                        <Input
-                          type="date"
-                          value={exportEndDate}
-                          onChange={(e) => setExportEndDate(e.target.value)}
-                          className="bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex justify-end space-x-3 mt-6">
-                  <Button
-                    onClick={() => setShowExportModal(false)}
-                    variant="outline"
-                    className="border-slate-300 dark:border-slate-600"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleExport}
-                    className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-700 hover:to-teal-700"
-                  >
-                    <Download className="w-4 h-4" />
-                    <span>Export</span>
-                  </Button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Notification Dropdown */}
-        <AnimatePresence>
-          {showNotifications && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="fixed top-20 right-4 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 z-50"
-            >
-              <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-                <h3 className="font-semibold text-slate-800 dark:text-white">
-                  Notifications
-                </h3>
-              </div>
-              <div className="p-4 space-y-3">
-                <div className="flex items-start space-x-3">
-                  <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
-                    <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="p-2 bg-amber-100 dark:bg-amber-900/20 rounded-lg">
-                    <Target className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  </div>
+                    <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                  </button>
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {/* Financial Health Score Modal */}
-        <AnimatePresence>
-          {showHealthScore && (
-            <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowHealthScore(false)}
-            >
-              <motion.div
-                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
-                    Financial Health Score
-                  </h3>
 
-                  <div className="relative inline-flex items-center justify-center w-48 h-48 mb-6">
-                    <svg className="transform -rotate-90 w-48 h-48">
-                      <circle
-                        cx="96"
-                        cy="96"
-                        r="88"
-                        stroke="currentColor"
-                        strokeWidth="12"
-                        fill="none"
-                        className="text-slate-200 dark:text-slate-700"
-                      />
-                      <circle
-                        cx="96"
-                        cy="96"
-                        r="88"
-                        stroke="currentColor"
-                        strokeWidth="12"
-                        fill="none"
-                        strokeDasharray={`${2 * Math.PI * 88}`}
-                        strokeDashoffset={`${
-                          2 * Math.PI * 88 * (1 - calculateHealthScore() / 100)
-                        }`}
-                        className={getScoreColor(calculateHealthScore())}
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span
-                        className={`text-5xl font-bold ${getScoreColor(
-                          calculateHealthScore()
-                        )}`}
-                      >
-                        {calculateHealthScore()}
-                      </span>
-                      <span className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                        out of 100
-                      </span>
-                    </div>
+              <div className="p-6 overflow-y-auto max-h-[calc(90vh-88px)]">
+                {budgetsLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="w-8 h-8 text-purple-600 animate-spin" />
                   </div>
-
-                  <div
-                    className={`text-lg font-semibold mb-4 ${getScoreColor(
-                      calculateHealthScore()
-                    )}`}
-                  >
-                    {getScoreLabel(calculateHealthScore())}
-                  </div>
-
-                  <div className="text-left space-y-3 mb-6">
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      Your financial health score is calculated based on:
-                    </p>
-                    <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-2">
-                      <li className="flex items-start">
-                        <span className="text-emerald-500 mr-2">•</span>
-                        <span>
-                          <strong>Savings Rate (30%):</strong> How much you save
-                          compared to income
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-emerald-500 mr-2">•</span>
-                        <span>
-                          <strong>Expense Ratio (20%):</strong> Your expenses
-                          relative to income
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-emerald-500 mr-2">•</span>
-                        <span>
-                          <strong>Transaction Activity (10%):</strong> Regular
-                          financial tracking
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-emerald-500 mr-2">•</span>
-                        <span>
-                          <strong>Income Diversity (10%):</strong> Multiple
-                          income sources
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-emerald-500 mr-2">•</span>
-                        <span>
-                          <strong>Base Score (30%):</strong> Starting baseline
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="bg-slate-100 dark:bg-slate-700 rounded-lg p-4">
-                    <p className="text-xs text-slate-600 dark:text-slate-400">
-                      <strong>Score Scale:</strong> 0-39 (Needs Improvement) •
-                      40-59 (Fair) • 60-79 (Good) • 80-100 (Excellent)
-                    </p>
-                  </div>
-
-                  <Button
-                    onClick={() => setShowHealthScore(false)}
-                    className="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700"
-                  >
-                    Close
-                  </Button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {/* Budgeting Tool Modal */}
-        {/* Budgeting Tool Modal */}
-        <AnimatePresence>
-          {showBudgetingTool && (
-            <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowBudgetingTool(false)}
-            >
-              <motion.div
-                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="sticky top-0 bg-white dark:bg-slate-800 p-6 border-b border-slate-200 dark:border-slate-700 z-10">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
-                        <Target className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold text-slate-800 dark:text-white">
-                          Budget Planner
-                        </h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">
-                          Set your spending limits for a custom date range
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setShowBudgetingTool(false)}
-                      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                    >
-                      <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="p-6 overflow-y-auto max-h-[calc(90vh-88px)]">
-                  {budgetsLoading ? (
-                    <div className="flex items-center justify-center py-12">
-                      <Loader2 className="w-8 h-8 text-purple-600 animate-spin" />
-                    </div>
-                  ) : (
-                    <>
-                      {/* Date Range Selector */}
-                      <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
-                        <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">
-                          Budget Period
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                              Start Date
-                            </label>
-                            <Input
-                              type="date"
-                              value={budgetStartDate}
-                              onChange={(e) => {
-                                setBudgetStartDate(e.target.value);
-                                saveBudgets(
-                                  userBudgets,
-                                  e.target.value,
-                                  budgetEndDate
-                                );
-                              }}
-                              className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                              End Date
-                            </label>
-                            <Input
-                              type="date"
-                              value={budgetEndDate}
-                              onChange={(e) => {
-                                setBudgetEndDate(e.target.value);
-                                saveBudgets(
-                                  userBudgets,
-                                  budgetStartDate,
-                                  e.target.value
-                                );
-                              }}
-                              min={budgetStartDate}
-                              className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600"
-                            />
-                          </div>
+                ) : (
+                  <>
+                    {/* Date Range Selector */}
+                    <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                      <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">
+                        Budget Period
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                            Start Date
+                          </label>
+                          <Input
+                            type="date"
+                            value={budgetStartDate}
+                            onChange={(e) => {
+                              setBudgetStartDate(e.target.value);
+                              saveBudgets(
+                                userBudgets,
+                                e.target.value,
+                                budgetEndDate
+                              );
+                            }}
+                            className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600"
+                          />
                         </div>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-3">
-                          Tracking expenses from{" "}
-                          {new Date(
-                            budgetStartDate + "T00:00:00"
-                          ).toLocaleDateString()}{" "}
-                          to{" "}
-                          {new Date(
-                            budgetEndDate + "T00:00:00"
-                          ).toLocaleDateString()}
-                        </p>
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                            End Date
+                          </label>
+                          <Input
+                            type="date"
+                            value={budgetEndDate}
+                            onChange={(e) => {
+                              setBudgetEndDate(e.target.value);
+                              saveBudgets(
+                                userBudgets,
+                                budgetStartDate,
+                                e.target.value
+                              );
+                            }}
+                            min={budgetStartDate}
+                            className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600"
+                          />
+                        </div>
                       </div>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 mt-3">
+                        Tracking expenses from{" "}
+                        {new Date(
+                          budgetStartDate + "T00:00:00"
+                        ).toLocaleDateString()}{" "}
+                        to{" "}
+                        {new Date(
+                          budgetEndDate + "T00:00:00"
+                        ).toLocaleDateString()}
+                      </p>
+                    </div>
 
-                      {/* Budget Overview Cards */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                        <Card className="border-0 shadow-lg">
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm text-slate-600 dark:text-slate-400">
-                                Total Budget
-                              </span>
-                              <DollarSign className="w-4 h-4 text-slate-400" />
-                            </div>
-                            <p className="text-2xl font-bold text-slate-800 dark:text-white">
-                              {formatCurrency(
-                                budgets.reduce((sum, b) => sum + b.limit, 0)
-                              )}
-                            </p>
-                          </CardContent>
-                        </Card>
+                    {/* Budget Overview Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                      <Card className="border-0 shadow-lg">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-slate-600 dark:text-slate-400">
+                              Total Budget
+                            </span>
+                            <DollarSign className="w-4 h-4 text-slate-400" />
+                          </div>
+                          <p className="text-2xl font-bold text-slate-800 dark:text-white">
+                            {formatCurrency(
+                              budgets.reduce((sum, b) => sum + b.limit, 0)
+                            )}
+                          </p>
+                        </CardContent>
+                      </Card>
 
-                        <Card className="border-0 shadow-lg">
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm text-slate-600 dark:text-slate-400">
-                                Total Spent
-                              </span>
-                              <TrendingUp className="w-4 h-4 text-slate-400" />
-                            </div>
-                            <p className="text-2xl font-bold text-slate-800 dark:text-white">
-                              {formatCurrency(
-                                budgets.reduce((sum, b) => sum + b.spent, 0)
-                              )}
-                            </p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                              {budgets.length > 0
-                                ? (
-                                    (budgets.reduce(
-                                      (sum, b) => sum + b.spent,
-                                      0
-                                    ) /
-                                      budgets.reduce(
-                                        (sum, b) => sum + b.limit,
-                                        0
-                                      )) *
-                                    100
-                                  ).toFixed(1)
-                                : "0"}
-                              % of budget
-                            </p>
-                          </CardContent>
-                        </Card>
-
-                        <Card className="border-0 shadow-lg">
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm text-slate-600 dark:text-slate-400">
-                                Remaining
-                              </span>
-                              <Wallet className="w-4 h-4 text-slate-400" />
-                            </div>
-                            <p
-                              className={`text-2xl font-bold ${
-                                budgets.reduce(
-                                  (sum, b) => sum + b.remaining,
-                                  0
-                                ) >= 0
-                                  ? "text-green-600 dark:text-green-400"
-                                  : "text-red-600 dark:text-red-400"
-                              }`}
-                            >
-                              {formatCurrency(
-                                Math.abs(
-                                  budgets.reduce(
-                                    (sum, b) => sum + b.remaining,
+                      <Card className="border-0 shadow-lg">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-slate-600 dark:text-slate-400">
+                              Total Spent
+                            </span>
+                            <TrendingUp className="w-4 h-4 text-slate-400" />
+                          </div>
+                          <p className="text-2xl font-bold text-slate-800 dark:text-white">
+                            {formatCurrency(
+                              budgets.reduce((sum, b) => sum + b.spent, 0)
+                            )}
+                          </p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            {budgets.length > 0
+                              ? (
+                                  (budgets.reduce(
+                                    (sum, b) => sum + b.spent,
                                     0
-                                  )
-                                )
-                              )}
-                            </p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                              {budgets.reduce(
+                                  ) /
+                                    budgets.reduce(
+                                      (sum, b) => sum + b.limit,
+                                      0
+                                    )) *
+                                  100
+                                ).toFixed(1)
+                              : "0"}
+                            % of budget
+                          </p>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-0 shadow-lg">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-slate-600 dark:text-slate-400">
+                              Remaining
+                            </span>
+                            <Wallet className="w-4 h-4 text-slate-400" />
+                          </div>
+                          <p
+                            className={`text-2xl font-bold ${
+                              budgets.reduce(
                                 (sum, b) => sum + b.remaining,
                                 0
                               ) >= 0
-                                ? "under budget"
-                                : "over budget"}
-                            </p>
-                          </CardContent>
-                        </Card>
-                      </div>
-
-                      {/* Category Budgets */}
-                      <div className="space-y-4">
-                        <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">
-                          Category Budgets
-                        </h4>
-                        {budgets.map((budget) => (
-                          <motion.div
-                            key={budget.category}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4"
+                                ? "text-green-600 dark:text-green-400"
+                                : "text-red-600 dark:text-red-400"
+                            }`}
                           >
-                            <div className="flex items-center justify-between mb-3">
-                              <div className="flex items-center space-x-3">
-                                <div
-                                  className={`w-10 h-10 rounded-lg flex items-center justify-center`}
-                                  style={{
-                                    backgroundColor: `${
-                                      categoryColors[budget.category]
-                                    }20`,
-                                  }}
-                                >
-                                  <div
-                                    className="w-3 h-3 rounded-full"
-                                    style={{
-                                      backgroundColor:
-                                        categoryColors[budget.category],
-                                    }}
-                                  />
-                                </div>
-                                <div>
-                                  <h5 className="font-medium text-slate-800 dark:text-white">
-                                    {budget.category}
-                                  </h5>
-                                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                                    {formatCurrency(budget.spent)} of{" "}
-                                    {formatCurrency(budget.limit)}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="text-right">
-                                <p
-                                  className={`text-lg font-semibold ${getBudgetStatusColor(
-                                    budget.percentUsed
-                                  )}`}
-                                >
-                                  {budget.percentUsed.toFixed(0)}%
-                                </p>
-                                <p className="text-sm text-slate-600 dark:text-slate-400">
-                                  {budget.remaining >= 0
-                                    ? `${formatCurrency(budget.remaining)} left`
-                                    : `${formatCurrency(
-                                        Math.abs(budget.remaining)
-                                      )} over`}
-                                </p>
-                              </div>
-                            </div>
-
-                            {/* Progress Bar */}
-                            <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                              <motion.div
-                                className={`absolute left-0 top-0 h-full bg-gradient-to-r ${getBudgetProgressColor(
-                                  budget.percentUsed
-                                )} rounded-full`}
-                                initial={{ width: 0 }}
-                                animate={{
-                                  width: `${Math.min(
-                                    budget.percentUsed,
-                                    100
-                                  )}%`,
-                                }}
-                                transition={{ duration: 0.5, ease: "easeOut" }}
-                              />
-                              {budget.percentUsed > 100 && (
-                                <div
-                                  className="absolute right-0 top-0 h-full bg-red-600 dark:bg-red-500 animate-pulse"
-                                  style={{
-                                    width: `${budget.percentUsed - 100}%`,
-                                  }}
-                                />
-                              )}
-                            </div>
-
-                            {/* Edit Budget */}
-                            <div className="mt-3 flex items-center justify-between">
-                              <span className="text-sm text-slate-600 dark:text-slate-400">
-                                Budget limit:
-                              </span>
-                              <div className="flex items-center space-x-2">
-                                <span className="text-sm text-slate-600 dark:text-slate-400">
-                                  $
-                                </span>
-                                <input
-                                  type="number"
-                                  defaultValue={budget.limit}
-                                  onBlur={async (e) => {
-                                    const newLimit =
-                                      parseFloat(e.target.value) || 0;
-                                    if (newLimit === budget.limit) return; // No change
-
-                                    const updatedBudgets = {
-                                      ...userBudgets,
-                                      [budget.category]: newLimit,
-                                    };
-
-                                    await saveBudgets(updatedBudgets);
-                                  }}
-                                  onKeyPress={async (e) => {
-                                    if (e.key === "Enter") {
-                                      e.currentTarget.blur();
-                                    }
-                                  }}
-                                  className="w-24 px-2 py-1 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                />
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-
-                      {/* Budget Insights */}
-                      <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl">
-                        <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-3 flex items-center">
-                          <Lightbulb className="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" />
-                          Budget Insights
-                        </h4>
-                        <div className="space-y-2">
-                          {budgets.filter((b) => b.percentUsed >= 80).length >
-                            0 && (
-                            <p className="text-sm text-slate-700 dark:text-slate-300">
-                              <span className="font-medium text-amber-600 dark:text-amber-400">
-                                ⚠️ Alert:
-                              </span>{" "}
-                              You're approaching or exceeding your budget limit
-                              in{" "}
-                              {budgets
-                                .filter((b) => b.percentUsed >= 80)
-                                .map((b) => b.category)
-                                .join(", ")}
-                              .
-                            </p>
-                          )}
-                          {budgets.filter((b) => b.percentUsed < 50).length >
-                            0 && (
-                            <p className="text-sm text-slate-700 dark:text-slate-300">
-                              <span className="font-medium text-green-600 dark:text-green-400">
-                                ✓ Great job:
-                              </span>{" "}
-                              You're under 50% budget in{" "}
-                              {budgets
-                                .filter((b) => b.percentUsed < 50)
-                                .map((b) => b.category)
-                                .join(", ")}
-                              .
-                            </p>
-                          )}
-                          <p className="text-sm text-slate-700 dark:text-slate-300">
-                            <span className="font-medium">💡 Tip:</span> Adjust
-                            your budget period to match your income cycle for
-                            better tracking.
+                            {formatCurrency(
+                              Math.abs(
+                                budgets.reduce((sum, b) => sum + b.remaining, 0)
+                              )
+                            )}
                           </p>
-                        </div>
-                      </div>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            {budgets.reduce((sum, b) => sum + b.remaining, 0) >=
+                            0
+                              ? "under budget"
+                              : "over budget"}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
 
-                      {/* Action Buttons */}
-                      <div className="mt-6 flex justify-end space-x-3">
-                        <Button
-                          onClick={async () => {
-                            if (
-                              confirm("Reset all budgets to default values?")
-                            ) {
-                              await resetBudgets();
-                            }
-                          }}
-                          variant="outline"
-                          className="border-slate-300 dark:border-slate-600"
+                    {/* Category Budgets */}
+                    <div className="space-y-4">
+                      <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">
+                        Category Budgets
+                      </h4>
+                      {budgets.map((budget) => (
+                        <motion.div
+                          key={budget.category}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4"
                         >
-                          Reset to Defaults
-                        </Button>
-                        <Button
-                          onClick={() => setShowBudgetingTool(false)}
-                          className="bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-700 hover:to-teal-700"                        >
-                          Done
-                        </Button>
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center space-x-3">
+                              <div
+                                className={`w-10 h-10 rounded-lg flex items-center justify-center`}
+                                style={{
+                                  backgroundColor: `${
+                                    categoryColors[budget.category]
+                                  }20`,
+                                }}
+                              >
+                                <div
+                                  className="w-3 h-3 rounded-full"
+                                  style={{
+                                    backgroundColor:
+                                      categoryColors[budget.category],
+                                  }}
+                                />
+                              </div>
+                              <div>
+                                <h5 className="font-medium text-slate-800 dark:text-white">
+                                  {budget.category}
+                                </h5>
+                                <p className="text-sm text-slate-600 dark:text-slate-400">
+                                  {formatCurrency(budget.spent)} of{" "}
+                                  {formatCurrency(budget.limit)}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p
+                                className={`text-lg font-semibold ${getBudgetStatusColor(
+                                  budget.percentUsed
+                                )}`}
+                              >
+                                {budget.percentUsed.toFixed(0)}%
+                              </p>
+                              <p className="text-sm text-slate-600 dark:text-slate-400">
+                                {budget.remaining >= 0
+                                  ? `${formatCurrency(budget.remaining)} left`
+                                  : `${formatCurrency(
+                                      Math.abs(budget.remaining)
+                                    )} over`}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Progress Bar */}
+                          <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <motion.div
+                              className={`absolute left-0 top-0 h-full bg-gradient-to-r ${getBudgetProgressColor(
+                                budget.percentUsed
+                              )} rounded-full`}
+                              initial={{ width: 0 }}
+                              animate={{
+                                width: `${Math.min(budget.percentUsed, 100)}%`,
+                              }}
+                              transition={{ duration: 0.5, ease: "easeOut" }}
+                            />
+                            {budget.percentUsed > 100 && (
+                              <div
+                                className="absolute right-0 top-0 h-full bg-red-600 dark:bg-red-500 animate-pulse"
+                                style={{
+                                  width: `${budget.percentUsed - 100}%`,
+                                }}
+                              />
+                            )}
+                          </div>
+
+                          {/* Edit Budget */}
+                          <div className="mt-3 flex items-center justify-between">
+                            <span className="text-sm text-slate-600 dark:text-slate-400">
+                              Budget limit:
+                            </span>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-sm text-slate-600 dark:text-slate-400">
+                                $
+                              </span>
+                              <input
+                                type="number"
+                                defaultValue={budget.limit}
+                                onBlur={async (e) => {
+                                  const newLimit =
+                                    parseFloat(e.target.value) || 0;
+                                  if (newLimit === budget.limit) return; // No change
+
+                                  const updatedBudgets = {
+                                    ...userBudgets,
+                                    [budget.category]: newLimit,
+                                  };
+
+                                  await saveBudgets(updatedBudgets);
+                                }}
+                                onKeyPress={async (e) => {
+                                  if (e.key === "Enter") {
+                                    e.currentTarget.blur();
+                                  }
+                                }}
+                                className="w-24 px-2 py-1 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                              />
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Budget Insights */}
+                    <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl">
+                      <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-3 flex items-center">
+                        <Lightbulb className="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" />
+                        Budget Insights
+                      </h4>
+                      <div className="space-y-2">
+                        {budgets.filter((b) => b.percentUsed >= 80).length >
+                          0 && (
+                          <p className="text-sm text-slate-700 dark:text-slate-300">
+                            <span className="font-medium text-amber-600 dark:text-amber-400">
+                              ⚠️ Alert:
+                            </span>{" "}
+                            You're approaching or exceeding your budget limit in{" "}
+                            {budgets
+                              .filter((b) => b.percentUsed >= 80)
+                              .map((b) => b.category)
+                              .join(", ")}
+                            .
+                          </p>
+                        )}
+                        {budgets.filter((b) => b.percentUsed < 50).length >
+                          0 && (
+                          <p className="text-sm text-slate-700 dark:text-slate-300">
+                            <span className="font-medium text-green-600 dark:text-green-400">
+                              ✓ Great job:
+                            </span>{" "}
+                            You're under 50% budget in{" "}
+                            {budgets
+                              .filter((b) => b.percentUsed < 50)
+                              .map((b) => b.category)
+                              .join(", ")}
+                            .
+                          </p>
+                        )}
+                        <p className="text-sm text-slate-700 dark:text-slate-300">
+                          <span className="font-medium">💡 Tip:</span> Adjust
+                          your budget period to match your income cycle for
+                          better tracking.
+                        </p>
                       </div>
-                    </>
-                  )}
-                </div>
-              </motion.div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="mt-6 flex justify-end space-x-3">
+                      <Button
+                        onClick={async () => {
+                          if (confirm("Reset all budgets to default values?")) {
+                            await resetBudgets();
+                          }
+                        }}
+                        variant="outline"
+                        className="border-slate-300 dark:border-slate-600"
+                      >
+                        Reset to Defaults
+                      </Button>
+                      <Button
+                        onClick={() => setShowBudgetingTool(false)}
+                        className="bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-700 hover:to-teal-700"
+                      >
+                        Done
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
