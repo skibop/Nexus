@@ -490,13 +490,15 @@ export default function Dashboard() {
   }, [fetchTransactions]);
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "2-digit",
-      day: "2-digit",
-      year: "numeric",
-    });
-  };
+  const date = new Date(dateString);
+  // Adjust for timezone offset to prevent date shifting
+  const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+  return adjustedDate.toLocaleDateString("en-US", {
+    month: "2-digit",
+    day: "2-digit", 
+    year: "numeric",
+  });
+};
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {

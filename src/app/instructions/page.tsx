@@ -211,18 +211,22 @@ export default function Instructions() {
 
             {/* Instruction Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Map over each card in the instructionCards array to render them */}
               {instructionCards.map((card, index) => (
                 <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  key={index} // A unique key for React list rendering
+                  initial={{ opacity: 0, y: 20 }} //An initial state (fade out and shift down)
+                  animate={{ opacity: 1, y: 0 }} // Animate to be visible and in-place
+                  transition={{ delay: index * 0.1 }} // Just some transition animations
                 >
                   <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                    <CardHeader>
+                    <CardHeader> 
                       <div className="flex items-center space-x-4 mb-2">
+                      {/* Icon container with dynamic gradient background and hover scale effect */}
                         <div
-                          className={`p-3 bg-gradient-to-br ${card.gradient} rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                          className=
+                          {`p-3 bg-gradient-to-br ${card.gradient} 
+                          rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300`}
                         >
                           {card.icon}
                         </div>
@@ -231,6 +235,7 @@ export default function Instructions() {
                         </CardTitle>
                       </div>
                     </CardHeader>
+                    {/* Main Card Content */}
                     <CardContent>{card.content}</CardContent>
                   </Card>
                 </motion.div>
