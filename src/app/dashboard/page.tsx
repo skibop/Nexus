@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // Enables navigation and routing within React applications
 import {
   BarChart,
   Bar,
@@ -12,7 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { PieChart } from "@mui/x-charts/PieChart";
+import { PieChart } from "@mui/x-charts/PieChart"; // Using Material UI X Library
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { TransactionForm } from "@/components/TransactionForm";
@@ -22,7 +22,6 @@ import {
   Loader2,
   TrendingUp,
   TrendingDown,
-  Menu,
   X,
   Download,
   Filter,
@@ -33,32 +32,17 @@ import {
   Wallet,
   PiggyBank,
   Target,
-  ChevronRight,
   Search,
-  Bell,
-  User,
-  Settings,
-  LogOut,
   FileText,
   FileSpreadsheet,
-  Moon,
-  Sun,
   Edit2,
   Trash2,
   Lightbulb,
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
-  LayoutDashboard,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 import "./page.css";
 import Sidebar from "@/components/Sidebar_temp";
@@ -78,6 +62,7 @@ const categoryColors: { [key: string]: string } = {
   Food: "#a855f7",
 };
 
+// A lot of interfaces need to be defined for this dashboard to work properly.
 interface Transaction {
   _id: string;
   type: "income" | "expense";
@@ -109,16 +94,8 @@ interface Budget {
   percentUsed: number;
 }
 
-type BudgetPeriod = "monthly" | "weekly" | "yearly";
-
 interface BudgetData {
   [key: string]: number;
-}
-
-interface UserBudgets {
-  monthly: BudgetData;
-  weekly: BudgetData;
-  yearly: BudgetData;
 }
 
 const incomeCategories: string[] = [
@@ -139,6 +116,7 @@ const expenseCategories: string[] = [
 
 const Motioncard = motion.create(Card);
 
+// A lot of use states need to be incorporated along with the interfaces.
 export default function Dashboard() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -199,6 +177,7 @@ export default function Dashboard() {
     }
   }, []);
 
+  // Calculating our health score by looking at a lot of different variables defined below.
   const calculateHealthScore = () => {
     // Base score starts at 50
     let score = 50;
@@ -314,13 +293,14 @@ export default function Dashboard() {
 
       const limit = userBudgets[category] || 0;
 
-      categoryBudgets[category] = {
-        category,
-        limit,
-        period: "custom",
-        spent,
-        remaining: limit - spent,
-        percentUsed: limit > 0 ? (spent / limit) * 100 : 0,
+    // Create or update budget object for the specific category
+    categoryBudgets[category] = {
+        category, // Category name (shorthand for category: category)
+        limit, // Budget limit amount set by user
+        period: "custom", // Budget period type - hardcoded as "custom"
+        spent, // Total amount already spent in this category
+        remaining: limit - spent, // Calculate remaining budget (limit minus spent)
+        percentUsed: limit > 0 ? (spent / limit) * 100 : 0, // Calculate percentage used, avoid division by zero
       };
     });
 
@@ -348,6 +328,7 @@ export default function Dashboard() {
             "Content-Type": "application/json",
             "x-auth-token": token,
           },
+          // Converting Object to JSON String! Really useful
           body: JSON.stringify({
             budgets: newBudgets,
             startDate: newStartDate || budgetStartDate,
@@ -416,6 +397,7 @@ export default function Dashboard() {
     return "from-green-500 to-emerald-600";
   };
 
+  // A lot of use effects needed for the use states and for overall seamless feel
   useEffect(() => {
     if (showForm && editingTransaction) {
       scrollToForm();
@@ -575,29 +557,41 @@ export default function Dashboard() {
     setSortConfig({ key, direction });
   };
 
+  // Memoized sorted transactions to avoid re-sorting on every render
   const sortedTransactions = React.useMemo(() => {
-    const sortableTransactions = [...filteredTransactions];
-    if (sortConfig.key) {
-      sortableTransactions.sort((a, b) => {
-        if (sortConfig.key === "amount") {
-          return sortConfig.direction === "asc"
-            ? a.amount - b.amount
-            : b.amount - a.amount;
-        }
-        if (sortConfig.key === "date") {
-          return sortConfig.direction === "asc"
-            ? new Date(a.date).getTime() - new Date(b.date).getTime()
-            : new Date(b.date).getTime() - new Date(a.date).getTime();
-        }
-        const aValue = a[sortConfig.key as keyof Transaction];
-        const bValue = b[sortConfig.key as keyof Transaction];
-        if (aValue! < bValue!) return sortConfig.direction === "asc" ? -1 : 1;
-        if (aValue! > bValue!) return sortConfig.direction === "asc" ? 1 : -1;
-        return 0;
-      });
-    }
-    return sortableTransactions;
-  }, [filteredTransactions, sortConfig]);
+  // Create a copy of filtered transactions to avoid mutating original array
+  const sortableTransactions = [...filteredTransactions];
+  
+  // Only sort if a sort key is specified
+  if (sortConfig.key) {
+    sortableTransactions.sort((a, b) => {
+      // Special handling for numeric amount sorting
+      if (sortConfig.key === "amount") {
+        return sortConfig.direction === "asc"
+          ? a.amount - b.amount // Ascending: subtract for numeric comparison
+          : b.amount - a.amount; // Descending: reverse the subtraction
+      }
+      
+      // Special handling for date sorting using timestamps
+      if (sortConfig.key === "date") {
+        return sortConfig.direction === "asc"
+          ? new Date(a.date).getTime() - new Date(b.date).getTime() // Ascending: older dates first
+          : new Date(b.date).getTime() - new Date(a.date).getTime(); // Descending: newer dates first
+      }
+      
+      // Generic string/text sorting for other fields (category, description, etc.)
+      const aValue = a[sortConfig.key as keyof Transaction];
+      const bValue = b[sortConfig.key as keyof Transaction];
+      
+      // String comparison with direction handling
+      if (aValue! < bValue!) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue! > bValue!) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0; // Values are equal
+    });
+  }
+  
+  return sortableTransactions;
+  }, [filteredTransactions, sortConfig]); // Re-run when filtered data or sort config changes
 
   const applyFilters = () => {
     const filtered = transactions.filter((transaction) => {
@@ -632,13 +626,15 @@ export default function Dashboard() {
     setShowFilterModal(false);
   };
 
+  // Function to calculate total amounts grouped by category for income or expense transactions
   const calculateTotalByCategory = (type: "income" | "expense") => {
-    return filteredTransactions
-      .filter((t) => t.type === type)
-      .reduce((acc, t) => {
-        acc[t.category] = (acc[t.category] || 0) + t.amount;
-        return acc;
-      }, {} as Record<string, number>);
+  return filteredTransactions
+    .filter((t) => t.type === type) // Filter to only income OR expense transactions
+    .reduce((acc, t) => {
+      // Add current transaction amount to the category total in accumulator (acc) helps with adding stuff
+      acc[t.category] = (acc[t.category] || 0) + t.amount;
+      return acc; // Return updated accumulator for next iteration
+    }, {} as Record<string, number>); // Start with empty object, type as string->number mapping
   };
 
   const totalIncome = filteredTransactions
@@ -667,66 +663,86 @@ export default function Dashboard() {
       .filter((item) => item.value > 0);
   };
 
+  // Function to generate data for bar chart visualization, grouped by time period
   const generateBarChartData = () => {
-    const sortedTransactions = [...filteredTransactions].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
-    const data: { date: string; income: number; expenses: number }[] = [];
+  // Sort transactions chronologically by date for proper time series data
+  const sortedTransactions = [...filteredTransactions].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  
+  // Initialize data array with structure for chart: date label + income/expense totals
+  const data: { date: string; income: number; expenses: number }[] = [];
 
-    if (timePeriod === "weekly") {
-      sortedTransactions.forEach((transaction) => {
-        const date = new Date(transaction.date);
-        const weekStart = new Date(
-          date.setDate(date.getDate() - date.getDay())
-        );
-        const weekKey = `${(weekStart.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}/${weekStart
-          .getDate()
-          .toString()
-          .padStart(2, "0")}`;
-        const existingEntry = data.find((entry) => entry.date === weekKey);
+  // Handle weekly grouping
+  if (timePeriod === "weekly") {
+    sortedTransactions.forEach((transaction) => {
+      const date = new Date(transaction.date);
+      
+      // Calculate start of week (Sunday) by subtracting day of week
+      const weekStart = new Date(
+        date.setDate(date.getDate() - date.getDay())
+      );
+      
+      // Format week as "MM/DD" (e.g., "03/15" for week starting March 15)
+      const weekKey = `${(weekStart.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}/${weekStart
+        .getDate()
+        .toString()
+        .padStart(2, "0")}`;
+      
+      // Check if we already have data for this week
+      const existingEntry = data.find((entry) => entry.date === weekKey);
 
-        if (existingEntry) {
-          if (transaction.type === "income") {
-            existingEntry.income += transaction.amount;
-          } else {
-            existingEntry.expenses += transaction.amount;
-          }
+      if (existingEntry) {
+        // Add to existing week's totals
+        if (transaction.type === "income") {
+          existingEntry.income += transaction.amount;
         } else {
-          data.push({
-            date: weekKey,
-            income: transaction.type === "income" ? transaction.amount : 0,
-            expenses: transaction.type === "expense" ? transaction.amount : 0,
-          });
+          existingEntry.expenses += transaction.amount;
         }
-      });
-    } else {
-      sortedTransactions.forEach((transaction) => {
-        const date = new Date(transaction.date);
-        const monthKey = date.toLocaleDateString("en-US", {
-          month: "short",
-          year: "2-digit",
+      } else {
+        // Create new week entry
+        data.push({
+          date: weekKey,
+          income: transaction.type === "income" ? transaction.amount : 0,
+          expenses: transaction.type === "expense" ? transaction.amount : 0,
         });
-        const existingEntry = data.find((entry) => entry.date === monthKey);
-
-        if (existingEntry) {
-          if (transaction.type === "income") {
-            existingEntry.income += transaction.amount;
-          } else {
-            existingEntry.expenses += transaction.amount;
-          }
-        } else {
-          data.push({
-            date: monthKey,
-            income: transaction.type === "income" ? transaction.amount : 0,
-            expenses: transaction.type === "expense" ? transaction.amount : 0,
-          });
-        }
+      }
+    });
+  } else {
+    // Handle monthly grouping (default case)
+    sortedTransactions.forEach((transaction) => {
+      const date = new Date(transaction.date);
+      
+      // Format month as "MMM YY" (e.g., "Jan 24" for January 2024)
+      const monthKey = date.toLocaleDateString("en-US", {
+        month: "short", // 3-letter month abbreviation
+        year: "2-digit", // 2-digit year
       });
-    }
+      
+      // Check if we already have data for this month
+      const existingEntry = data.find((entry) => entry.date === monthKey);
 
-    return data;
+      if (existingEntry) {
+        // Add to existing month's totals
+        if (transaction.type === "income") {
+          existingEntry.income += transaction.amount;
+        } else {
+          existingEntry.expenses += transaction.amount;
+        }
+      } else {
+        // Create new month entry
+        data.push({
+          date: monthKey,
+          income: transaction.type === "income" ? transaction.amount : 0,
+          expenses: transaction.type === "expense" ? transaction.amount : 0,
+        });
+      }
+    });
+  }
+
+  return data; // Return chart-ready data array
   };
 
   const barChartData = generateBarChartData();
@@ -1274,7 +1290,7 @@ export default function Dashboard() {
                     </CardHeader>
                     <CardContent>
                       <div className="h-[350px] flex items-center justify-center">
-                        <PieChart
+                        <PieChart // Really odd stuff with MUI X Library that is taken straight from documentation
                           series={[
                             {
                               data: generatePieChartData(breakdownType),
@@ -1562,6 +1578,7 @@ export default function Dashboard() {
         </motion.div>
       </div>
 
+    {/* Animate Presence is really important for transitions, animations, and updating things, comes from Framer Motion */}
       {/* Money Saving Recommendations Modal */}
       <AnimatePresence>
         {showRecommendations && (
@@ -2062,7 +2079,6 @@ export default function Dashboard() {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* Budgeting Tool Modal */}
       {/* Budgeting Tool Modal */}
       <AnimatePresence>
         {showBudgetingTool && (

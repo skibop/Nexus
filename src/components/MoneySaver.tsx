@@ -31,6 +31,7 @@ export default function MoneySavingRecommendations() {
         throw new Error("No authentication token found");
       }
       console.log("Fetching recommendations with token:", token);
+      // Handle this stuff in the backend for more optimized response times
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/users/recommendations`,
         {

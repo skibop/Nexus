@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@hookform/resolvers/zod"; // TypeScript-first schema declaration and validation library
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/Button";
@@ -43,6 +43,7 @@ export default function SignupComponent() {
       setIsLoading(true);
       setError("");
 
+      // Calling to our backend through an ENV 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/users/register`,
         {

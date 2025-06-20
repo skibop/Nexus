@@ -1,15 +1,8 @@
-"use client";
-
+"use client";;
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useSpring,
-  useInView,
-} from "framer-motion";
+import { motion, useScroll, useSpring, useInView } from "framer-motion"; // Transition library
 import { Button } from "@/components/ui/Button";
 import {
   CreditCard,
@@ -25,17 +18,16 @@ import {
   Shield,
   Zap,
   Wallet,
-} from "lucide-react";
+} from "lucide-react"; // Icons
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
+import "swiper/css"; // Transitions with modern touch sliders with hardware-accelerated transitions
 
 const FeatureItem = ({
   icon: Icon,
   title,
   description,
-}: {
-  icon: React.ElementType;
+}: { // Typescript requires the additional type-safe objects
+  icon: React.ElementType; 
   title: string;
   description: string;
 }) => {
@@ -43,6 +35,7 @@ const FeatureItem = ({
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
   return (
+    // Motion transition
     <motion.div
       ref={ref}
       className="group relative flex flex-col items-center p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-green-100 transition-all duration-500 hover:shadow-2xl hover:scale-105 hover:bg-white/90"
@@ -56,6 +49,7 @@ const FeatureItem = ({
         <Icon className="w-10 h-10 text-green-600" />
       </div>
       <h3 className="text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-green-700 transition-colors duration-300">
+        {/* Lets you loop through the title and then description below later */}
         {title}
       </h3>
       <p className="text-gray-600 text-center leading-relaxed">{description}</p>
@@ -86,7 +80,8 @@ const TestimonialItem = ({
             {author.charAt(0)}
           </span>
         </div>
-        <div>
+        <div> 
+          {/* // Same concept as above, loop through the quote, author, and role */}
           <p className="font-bold text-gray-900 text-lg">{author}</p>
           <p className="text-sm text-green-600 font-medium">{role}</p>
         </div>
@@ -95,8 +90,10 @@ const TestimonialItem = ({
         "{quote}"
       </p>
       <div className="flex text-yellow-400">
+        {/* Generate array of 5 stars and map each to a Star component */}
         {[...Array(5)].map((_, i) => (
           <Star key={i} className="w-6 h-6 fill-current drop-shadow-sm" />
+          // There is a unique key for React's reconciliation
         ))}
       </div>
     </div>
@@ -108,6 +105,7 @@ const StatItem = ({ number, label }: { number: string; label: string }) => {
   const isInView = useInView(ref, { once: true });
 
   return (
+    // More transition stuff and continue to loop through number & label
     <motion.div
       ref={ref}
       className="text-center"
@@ -135,6 +133,7 @@ export default function Home() {
     restDelta: 0.001,
   });
 
+  // This is the stuff that handles the top bar of the page as well as scroll dynamics and transitions
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -149,7 +148,7 @@ export default function Home() {
         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-600 transform origin-left z-50"
         style={{ scaleX }}
       />
-
+      {/* Transparent header as you scroll down --> creates a more professional look */}
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
           isScrolled
@@ -157,6 +156,7 @@ export default function Home() {
             : "bg-transparent"
         }`}
       >
+      {/* Some other header stuff for the corporate look.  */}
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4 md:justify-start md:space-x-10">
             <div className="flex items-center space-x-4">
@@ -220,7 +220,7 @@ export default function Home() {
           </div>
         </div>
       </header>
-
+      {/* The Mobile Interface */}
       {isMenuOpen && (
         <motion.div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
@@ -294,7 +294,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
       )}
-
+      {/* Our Hero Section with the Container Scroll Animation */}
       <main>
         <ContainerScroll
           titleComponent={
@@ -348,7 +348,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-
+        {/* Features Section */}
         <section
           id="features"
           className="py-32 bg-gradient-to-br from-white via-green-50/20 to-emerald-50/30 relative overflow-hidden"
@@ -459,7 +459,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-
+        {/* Call to Action Section */}
         <section className="bg-gradient-to-br from-green-600 via-green-500 to-emerald-600 relative overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="absolute top-0 left-0 w-full h-full">

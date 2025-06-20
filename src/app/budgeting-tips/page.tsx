@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/card";
 import Sidebar from "@/components/Sidebar_temp";
 
+// Using an interface for the cards that we will display on the page.
 interface Resource {
   title: string;
   description: string;
@@ -48,6 +49,8 @@ export default function BudgetingTips() {
     }
   }, []);
 
+
+  // Same idea from the instructions file --> an array with objects in it that is defined before makes the code a lot cleaner
   const resources: Resource[] = [
     {
       title: "Building a Student Budget",
@@ -299,6 +302,8 @@ export default function BudgetingTips() {
                         frameBorder="0"
                         className="bg-slate-50 dark:bg-slate-800"
                       />
+                      {/* Watermark cover overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-black pointer-events-none z-10"></div>
                     </div>
                   </CardContent>
                 </Card>

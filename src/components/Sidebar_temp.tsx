@@ -111,6 +111,7 @@ export default function Sidebar({
 
         {/* Navigation Links */}
         <nav className="flex-1 p-4 space-y-2 overflow-hidden">
+          {/* Basic Mapping through items for easier handling of different tabs */}
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);

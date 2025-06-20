@@ -103,6 +103,7 @@ export function TransactionForm({
                 ) : (
                   <Minus className="w-6 h-6 text-white" />
                 )}
+               {/* Ternary Operator for If else */}
               </motion.div>
               <h2
                 className={`text-xl font-bold mb-1 bg-gradient-to-r ${
@@ -112,6 +113,7 @@ export function TransactionForm({
                 } bg-clip-text text-transparent`}
               >
                 {initialValues ? "Edit Transaction" : "Add Transaction"}
+                {/* Ternary Operator for If else */}
               </h2>
             </div>
 
@@ -134,6 +136,8 @@ export function TransactionForm({
                           <input
                             type="radio"
                             {...field}
+                            // You need the ...field because its a SPREAD operator
+                            // Explains stuff like the name, onChange, onBlur, ref, ALL in one section basically.
                             value="income"
                             className="sr-only"
                           />
@@ -173,36 +177,42 @@ export function TransactionForm({
                   >
                     Amount
                   </Label>
+                  {/* Controller component connects form field to React Hook Form */}
                   <Controller
-                    name="amount"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <DollarSign className="h-4 w-4 text-slate-400" />
-                        </div>
-                        <Input
-                          id="amount"
-                          type="number"
-                          step="0.01"
-                          {...field}
-                          value={field.value || ""}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (value === "") {
-                              field.onChange("");
-                            } else {
-                              const parsedValue = parseFloat(value);
-                              field.onChange(
-                                isNaN(parsedValue) ? "" : parsedValue
-                              );
-                            }
-                          }}
-                          className="pl-9 bg-slate-50 border-slate-300 focus:border-green-500 focus:ring-green-500 rounded-lg"
-                          placeholder="0.00"
-                        />
+                  name="amount" // Field name in form data
+                  control={control} // Form control object from useForm hook
+                  render={({ field }) => (
+                    <div className="relative"> {/* Container for positioning dollar sign icon */}
+                      
+                      {/* Dollar sign icon positioned absolutely on the left */}
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <DollarSign className="h-4 w-4 text-slate-400" />
                       </div>
-                    )}
+                      
+                      {/* Number input field for monetary amounts */}
+                      <Input
+                        id="amount"
+                        type="number" // Numeric input with browser validation
+                        step="0.01" // Allow decimal values (cents)
+                        {...field} // Spread form field properties (name, ref, etc.)
+                        value={field.value || ""} // Display empty string if value is null/undefined 
+                        onChange={(e) => {  
+                          {/* Custom onChange handler for number parsing */}
+                          const value = e.target.value;
+                          if (value === "") {
+                            field.onChange(""); // Keep empty string for empty input
+                          } else {
+                            const parsedValue = parseFloat(value);
+                            field.onChange(
+                              isNaN(parsedValue) ? "" : parsedValue // Store as number or empty string
+                            );
+                          }
+                        }}
+                        className="pl-9 bg-slate-50 border-slate-300 focus:border-green-500 focus:ring-green-500 rounded-lg" // Styling with left padding for icon
+                        placeholder="0.00" // Hint text for currency format
+                      />
+                    </div>
+                  )}
                   />
                   {errors.amount && (
                     <motion.p
@@ -223,34 +233,43 @@ export function TransactionForm({
                   >
                     Category
                   </Label>
+                  {/* Controller component connects category select field to React Hook Form */}
                   <Controller
-                    name="category"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                          <Tag className="h-4 w-4 text-slate-400" />
-                        </div>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="pl-9 bg-slate-50 border-slate-300 focus:border-green-500 focus:ring-green-500 rounded-lg">
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {(transactionType === "income"
-                              ? incomeCategories
-                              : expenseCategories
-                            ).map((category) => (
-                              <SelectItem key={category} value={category}>
-                                {category}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                  name="category" // Field name in form data
+                  control={control} // Form control object from useForm hook
+                  render={({ field }) => (
+                    <div className="relative"> {/* Container for positioning tag icon */}
+                      
+                      {/* Tag icon positioned absolutely on the left inside select */}
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                        <Tag className="h-4 w-4 text-slate-400" />
                       </div>
-                    )}
+                      
+                      {/* Custom Select component (likely from shadcn/ui or similar) */}
+                      <Select
+                        onValueChange={field.onChange} // Connect select change to form field
+                        defaultValue={field.value} // Set initial selected value from form state
+                      >
+                        {/* Select trigger button with icon spacing */}
+                        <SelectTrigger className="pl-9 bg-slate-50 border-slate-300 focus:border-green-500 focus:ring-green-500 rounded-lg">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        
+                        {/* Dropdown content with dynamic category options */}
+                        <SelectContent>
+                          {/* Conditionally render income or expense categories based on transaction type */}
+                          {(transactionType === "income"
+                            ? incomeCategories // Use income categories if transaction type is income
+                            : expenseCategories // Use expense categories if transaction type is expense
+                          ).map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category} {/* Display category name */}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                   />
                   {errors.category && (
                     <motion.p
@@ -308,40 +327,50 @@ export function TransactionForm({
                   >
                     Date
                   </Label>
+                  {/* Controller component connects date field to React Hook Form */}
                   <Controller
-                    name="date"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <Calendar className="h-4 w-4 text-slate-400" />
-                        </div>
-                        <Input
-                          id="date"
-                          type="date"
-                          {...field}
-                          value={
-                            field.value
-                              ? new Date(
-                                  new Date(field.value).getTime() +
-                                    new Date().getTimezoneOffset() * 60000
-                                )
-                                  .toISOString()
-                                  .split("T")[0]
-                              : ""
-                          }
-                          onChange={(e) => {
-                            const date = e.target.value
-                              ? new Date(e.target.value)
-                              : null;
-                            field.onChange(
-                              date ? date.toISOString().split("T")[0] : ""
-                            );
-                          }}
-                          className="pl-9 bg-slate-50 border-slate-300 focus:border-green-500 focus:ring-green-500 rounded-lg"
-                        />
+                  name="date" // Field name in form data
+                  control={control} // Form control object from useForm hook
+                  render={({ field }) => (
+                    <div className="relative"> {/* Container for positioning calendar icon */}
+                      
+                      {/* Calendar icon positioned absolutely on the left */}
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Calendar className="h-4 w-4 text-slate-400" />
                       </div>
-                    )}
+                      
+                      {/* Date input field with timezone handling */}
+                      <Input
+                        id="date"
+                        type="date" // HTML5 date picker
+                        {...field} // Spread form field properties (name, ref, etc.)
+                        
+                        // Complex value handling to prevent timezone issues
+                        value={
+                          field.value
+                            ? new Date(
+                                new Date(field.value).getTime() + // Get timestamp
+                                  new Date().getTimezoneOffset() * 60000 // Add timezone offset in milliseconds
+                              )
+                                .toISOString() // Convert to ISO string
+                                .split("T")[0] // Extract just the date part (YYYY-MM-DD)
+                            : "" // Empty string if no value
+                        } 
+                        
+                        
+                        // Custom onChange handler for date processing
+                        onChange={(e) => {
+                          const date = e.target.value
+                            ? new Date(e.target.value) // Create Date object from input
+                            : null; // null if empty input
+                          field.onChange(
+                            date ? date.toISOString().split("T")[0] : "" // Store as YYYY-MM-DD string or empty
+                          );
+                        }}
+                        className="pl-9 bg-slate-50 border-slate-300 focus:border-green-500 focus:ring-green-500 rounded-lg" // Styling with left padding for icon
+                      />
+                    </div>
+                  )}
                   />
                   {errors.date && (
                     <motion.p
