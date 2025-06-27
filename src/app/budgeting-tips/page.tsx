@@ -298,30 +298,13 @@ export default function BudgetingTips() {
                         title="Finance Expert Chatbot"
                         src="https://www.chatbase.co/chatbot-iframe/Pe_d6LDcMRDYyAIOCikFi"
                         width="100%"
-                        style={{ height: "740px", minHeight: "600px" }}
+                        style={{ height: "840px", minHeight: "600px" }}
                         frameBorder="0"
                         className="bg-slate-50 dark:bg-slate-800"
                       />
                       {/* Watermark cover overlay */}
-                      <div 
-                        className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none"
-                        style={{ zIndex: 9999 }}
-                      >
-                        <svg 
-                          width="100%" 
-                          height="100%" 
-                          style={{ display: 'block' }}
-                        >
-                          <rect 
-                            x="0" 
-                            y="0" 
-                            width="100%" 
-                            height="100%" 
-                            fill="#000000" 
-                            fillOpacity="1"
-                          />
-                        </svg>
-                      </div>                    </div>
+                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-black pointer-events-none z-10"></div>
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
