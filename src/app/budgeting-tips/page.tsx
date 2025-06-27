@@ -303,14 +303,12 @@ export default function BudgetingTips() {
                         className="bg-slate-50 dark:bg-slate-800"
                       />
                       {/* Watermark cover overlay */}
-   <div 
-                        className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none z-10"
-                        style={{ 
-                          backgroundColor: '#000000',
-                          WebkitBackdropFilter: 'none',
-                          backdropFilter: 'none'
-                        }}
-                      ></div>                    </div>
+<div 
+  className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none z-10"
+  style={{ 
+    background: 'linear-gradient(to bottom, black)'
+  }}
+></div>                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
