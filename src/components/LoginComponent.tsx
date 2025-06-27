@@ -10,6 +10,9 @@ import { Input } from "@/components/ui/Input";
 import { Loader2, Wallet, Mail, Lock, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
+// Look at sign up component for more in detail components (most of the stuff is the same)
+
+
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),

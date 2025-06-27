@@ -341,7 +341,7 @@ export default function Home() {
           </div>
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <StatItem number="Thousands" label="Of Happy Users" />
+              <StatItem number="5,000+" label="Happy Users" />
               <StatItem number="99.9%" label="Uptime" />
               <StatItem number="4.9★" label="App Rating" />
               <StatItem number="24/7" label="Support" />

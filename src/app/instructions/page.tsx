@@ -11,8 +11,9 @@ import {
   Target,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Sidebar from "@/components/Sidebar_temp";
+import Sidebar from "@/components/Sidebar_temp"; // Import a sidebar to keep code redunancy low between files
 
+// Create a react interface to keep features within the page similar
 interface InstructionCard {
   icon: React.ReactNode;
   title: string;
@@ -21,11 +22,13 @@ interface InstructionCard {
 }
 
 export default function Instructions() {
+  // React use states are useful for things that can either be True or False --> really helpful for basic things.
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
+  // Handling our dark mode
   useEffect(() => {
     const savedDarkMode = localStorage.getItem("darkMode") === "true";
     setDarkMode(savedDarkMode);
@@ -34,6 +37,7 @@ export default function Instructions() {
     }
   }, []);
 
+  // Defining our instruction cards within an array and then an objects within
   const instructionCards: InstructionCard[] = [
     {
       icon: <Plus className="w-6 h-6 text-white" />,

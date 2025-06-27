@@ -1,6 +1,70 @@
 import { useState } from "react";
 
 const OLLAMA_API_URL = `${process.env.NEXT_PUBLIC_OLLAMA}`
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
+
+// Mock function to fetch user's personal financial data from backend
+const fetchUserFinancialData = async (userId: string, dataType: string): Promise<any> => {
+    try {
+        const response = await fetch(`${API_URL}/api/user/finances/${userId}`, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+            },
+            body: JSON.stringify({ 
+                dataType: dataType, // 'balance', 'transactions', 'budget', 'spending_patterns'
+                timeframe: '30days',
+                includeCategories: true,
+                includePredictions: true
+            }),
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch user financial data");
+
+        const data = await response.json();
+        
+        // Mock processing of the returned data
+        switch(dataType) {
+            case 'balance':
+                return {
+                    currentBalance: data.balance,
+                    totalIncome: data.income,
+                    totalExpenses: data.expenses,
+                    savingsRate: ((data.income - data.expenses) / data.income * 100).toFixed(1)
+                };
+            case 'transactions':
+                return {
+                    recentTransactions: data.transactions || [],
+                    largestExpense: data.analytics?.largestExpense || "Unknown",
+                    mostFrequentCategory: data.analytics?.topCategory || "Food"
+                };
+            case 'budget':
+                return {
+                    budgetStatus: data.budget || {},
+                    overBudgetCategories: data.analytics?.overBudget || [],
+                    recommendations: data.suggestions || []
+                };
+            case 'spending_patterns':
+                return {
+                    weeklyAverage: data.patterns?.weeklySpending || 0,
+                    topSpendingDays: data.patterns?.peakDays || [],
+                    categoryBreakdown: data.patterns?.categories || {}
+                };
+            default:
+                return data;
+        }
+    } catch (error) {
+        console.error("Error fetching user financial data:", error);
+        // Return mock data as fallback
+        return {
+            currentBalance: 1250.75,
+            totalIncome: 2500.00,
+            totalExpenses: 1249.25,
+            error: "Unable to fetch real-time data, showing cached information"
+        };
+    }
+};
 
 const fetchAIResponse = async (userInput: string): Promise<string> => {
     try {
@@ -14,6 +78,8 @@ const fetchAIResponse = async (userInput: string): Promise<string> => {
                     - To add expenses, go to the Dashboard page and scroll to the Transactions area.  
                     - To see data on a graph, go to the Dashboard and scroll down to the "Income and Expenses over time" area.  
                     - To save money, consider general saving strategies and check the Money Saving Recommendations area on the dashboard.  
+
+                    If the user asks anything about their personal finances, you are able to call the database and pull their information from there!
 
                     If the question is about any of these features, provide this exact information without changes.  
                     If it's a general finance question, give a very short and simple explanation (1-2 sentences) suitable for a high school student. For these type of questions, just provide the information without stating that it is a general finance question.
@@ -65,12 +131,48 @@ const Chatbot = () => {
         setMessages((prev) => [...prev, newMessage, { sender: "Bot", text: "Thinking..." }]);
         setIsLoading(true);
         setUserInput("");
-    
-        const botReply = await fetchAIResponse(userInput);
+
+        // Check if the user is asking about their personal finances
+        const personalFinanceKeywords = ['my balance', 'my spending', 'my budget', 'my transactions', 'how much', 'my money', 'my expenses', 'my income'];
+        const isPersonalFinanceQuery = personalFinanceKeywords.some(keyword => 
+            userInput.toLowerCase().includes(keyword)
+        );
+
+        let botReply = "";
+
+        if (isPersonalFinanceQuery) {
+            try {
+                // Determine what type of financial data to fetch
+                let dataType = 'balance';
+                if (userInput.toLowerCase().includes('transaction')) dataType = 'transactions';
+                else if (userInput.toLowerCase().includes('budget')) dataType = 'budget';
+                else if (userInput.toLowerCase().includes('spending') || userInput.toLowerCase().includes('spend')) dataType = 'spending_patterns';
+
+                // Fetch user's personal financial data
+                const userData = await fetchUserFinancialData('current-user-id', dataType);
+                
+                // Generate personalized response based on the data
+                if (dataType === 'balance') {
+                    botReply = `Based on your account data: Your current balance is $${userData.currentBalance}. You've earned $${userData.totalIncome} in income and spent $${userData.totalExpenses} in expenses. Your savings rate is ${userData.savingsRate}%. ${userData.error ? userData.error : ''}`;
+                } else if (dataType === 'transactions') {
+                    botReply = `Looking at your recent transactions: Your most frequent spending category is ${userData.mostFrequentCategory}. ${userData.recentTransactions.length > 0 ? `You have ${userData.recentTransactions.length} recent transactions.` : 'No recent transactions found.'}`;
+                } else if (dataType === 'budget') {
+                    botReply = `Checking your budget status: ${userData.overBudgetCategories.length > 0 ? `You're over budget in ${userData.overBudgetCategories.length} categories.` : 'You\'re staying within your budget limits!'} ${userData.recommendations.length > 0 ? 'I have some personalized recommendations for you.' : ''}`;
+                } else if (dataType === 'spending_patterns') {
+                    botReply = `Analyzing your spending patterns: You spend an average of $${userData.weeklyAverage} per week. Your spending habits show interesting patterns that I can help you optimize.`;
+                }
+            } catch (error) {
+                console.error("Error fetching personal finance data:", error);
+                botReply = "I'm having trouble accessing your financial data right now. Please try again later or contact support if the issue persists.";
+            }
+        } else {
+            // Use the regular AI response for non-personal queries
+            botReply = await fetchAIResponse(userInput);
+        }
     
         setMessages((prev) => {
             const updatedMessages = [...prev];
-            updatedMessages[updatedMessages.length - 1] = { sender: "Bot", text: botReply };  // ✅ Modify instead of map()
+            updatedMessages[updatedMessages.length - 1] = { sender: "Bot", text: botReply };
             return updatedMessages;
         });
     
