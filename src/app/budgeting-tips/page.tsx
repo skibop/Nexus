@@ -292,7 +292,7 @@ export default function BudgetingTips() {
                       Get personalized budgeting advice from our AI assistant
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-0">
+               <CardContent className="p-0">
                     <div className="relative overflow-hidden rounded-b-xl">
                       <iframe
                         title="Finance Expert Chatbot"
@@ -302,8 +302,6 @@ export default function BudgetingTips() {
                         frameBorder="0"
                         className="bg-slate-50 dark:bg-slate-800"
                       />
-                      {/* Watermark cover overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-black pointer-events-none z-10"></div>
                     </div>
                   </CardContent>
                 </Card>
